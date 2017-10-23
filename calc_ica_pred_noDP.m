@@ -1,0 +1,446 @@
+%% sea ice cover anomaly experiments
+
+% clear all
+close all
+
+% region = 'scratch'
+% region = 'Arctic';
+% region = 'ChukchiBeaufort';
+% region = 'Beaufort';
+% region = 'Chukchi';
+% region = 'EastSibLaptev';
+% region = 'EastSib';
+% region = 'Laptev';
+% region = 'BarentsKara';
+% region = 'Barents';
+% region = 'Kara';
+% region = 'Greenland';
+% region = 'Baffin';
+% region = 'Labrador';
+% region = 'Hudson';
+% region = 'Bering';
+% region = 'Okhotsk';
+
+% embedWin = 12;
+
+% varsUsed = 'SIC';
+% varsUsed = 'SIC_SST';
+% varsUsed = 'SIC_SST_SIT';
+% varsUsed = 'SIC_SST_SIT_SLP';
+
+% predOn = 1;
+% fullDataOn = 1;
+
+
+%% define experiment
+switch region
+
+    case 'scratch'
+        lonLim = [165 200];
+        latLim = [55 65];
+
+    case 'Arctic'
+        lonLim = [0 360];
+        latLim = [45 90];
+
+    case 'ChukchiBeaufort'
+        lonLim = [175 235];
+        latLim = [65 75];
+
+    case 'Chukchi'
+        lonLim = [175 205];
+        latLim = [65 75];
+
+    case 'Beaufort'
+        lonLim = [205 235];
+        latLim = [65 75];
+
+    case 'EastSibLaptev'
+        lonLim = [105 175];
+        latLim = [65 75];
+
+    case 'EastSib'
+        lonLim = [140 175];
+        latLim = [65 75];
+
+    case 'Laptev'
+        lonLim = [105 140];
+        latLim = [70 80];
+
+    case 'BarentsKara'
+        lonLim = [30 95];
+        latLim = [65 80];
+
+    case 'Barents'
+        lonLim = [30 60];
+        latLim = [65 80];
+
+    case 'Kara'
+        lonLim = [60 95];
+        latLim = [65 80];
+
+    case 'Greenland'
+        lonLim = [325 360];
+        latLim = [65 80];
+
+    case 'Baffin'
+        lonLim = [280 310];
+        latLim = [70 80];
+
+    case 'Labrador'
+        lonLim = [290 310];
+        latLim = [50 70];
+
+    case 'Hudson'
+        lonLim = [265 285];
+        latLim = [55 65];
+
+    case 'Bering'
+        lonLim = [165 200];
+        latLim = [55 65];
+
+    case 'Okhotsk'
+        lonLim = [135 165];
+        latLim = [45 65];
+
+end
+
+switch varsUsed
+
+    case 'SIC'
+        varsFlag = 1;
+
+    case 'SIC_SST'
+        varsFlag = 2;
+
+    case 'SIC_SST_SIT'
+        varsFlag = 3;
+
+    case 'SIC_SST_SIT_SLP'
+        varsFlag = 4;
+
+    case 'SIC_SIT'
+        varsFlag = 5;
+
+    case 'SIC_SLP'
+        varsFlag = 6;
+
+end
+
+
+saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_',num2str(trainLim(1)),'_',num2str(trainLim(2)));
+saveDir = fullfile('output/',saveTag,'/');
+arcticTag = strcat('Arctic_',varsUsed,'_q',num2str(embedWin),'_train_',num2str(trainLim(1)),'_',num2str(trainLim(2)));
+arcticDir = fullfile('output/',arcticTag,'/');
+
+if exist(saveDir) == 0
+    mkdir(saveDir)
+end
+
+trainTag = sprintf( 'x%i-%i_y%i-%i_yr%i-%i', lonLim( 1 ), ...
+                                             lonLim( 2 ), ...
+                                             latLim( 1 ), ...
+                                             latLim( 2 ), ...
+                                             trainLim( 1 ), ...
+                                             trainLim( 2 ) );
+
+testTag = sprintf( 'x%i-%i_y%i-%i_yr%i-%i', lonLim( 1 ), ...
+                                            lonLim( 2 ), ...
+                                            latLim( 1 ), ...
+                                            latLim( 2 ), ...
+                                            testLim( 1 ), ...
+                                            testLim( 2 ) );
+
+%% get raw data
+checkDir = fullfile('data/raw/CCSM4_Data/b40.1850/SIC/',trainTag,'/data/');
+if exist(checkDir) == 0
+    ccsm4DataRaw(lonLim(1),lonLim(2),latLim(1),latLim(2),trainLim(1),trainLim(2),'SIC')
+    ccsm4DataRaw(lonLim(1),lonLim(2),latLim(1),latLim(2),testLim(1),testLim(2),'SIC')
+end
+
+checkDir = fullfile('data/raw/CCSM4_Data/b40.1850/SST/',trainTag,'/data/');
+if exist(checkDir) == 0
+    ccsm4DataRaw(lonLim(1),lonLim(2),latLim(1),latLim(2),trainLim(1),trainLim(2),'SST')
+    ccsm4DataRaw(lonLim(1),lonLim(2),latLim(1),latLim(2),testLim(1),testLim(2),'SST')
+end
+
+checkDir = fullfile('data/raw/CCSM4_Data/b40.1850/SIT/',trainTag,'/data/');
+if exist(checkDir) == 0
+    ccsm4DataRaw(lonLim(1),lonLim(2),latLim(1),latLim(2),trainLim(1),trainLim(2),'SIT')
+    ccsm4DataRaw(lonLim(1),lonLim(2),latLim(1),latLim(2),testLim(1),testLim(2),'SIT')
+end
+
+
+%% calculate anomalies
+checkFile = fullfile(strcat(saveDir,'ICA.mat'));
+
+if exist(checkFile) == 0
+
+    dataTrainPath = fullfile('data/raw/CCSM4_Data/b40.1850/SIA/',trainTag,'/data/');
+    dataTestPath = fullfile('data/raw/CCSM4_Data/b40.1850/SIA/',testTag,'/data/');
+    if exist(dataTrainPath) == 0
+        ccsm4DataRaw(lonLim(1),lonLim(2),latLim(1),latLim(2),trainLim(1),trainLim(2),'SIA')
+        ccsm4DataRaw(lonLim(1),lonLim(2),latLim(1),latLim(2),testLim(1),testLim(2),'SIA')
+    end
+
+    load ( fullfile( dataTrainPath, 'dataX.mat' ) )
+    ice_raw = x; % dimensions space x time
+
+    % domain climatology
+    ice_clim = zeros(12,1);
+    ice_anom_train = zeros(nT,1);
+    for i = 1:12
+        month = 0;
+        j = 1;
+        while i + (j-1)*12 <=nT
+            month(j) = sum(ice_raw(:,i+(j-1)*12));
+            j = j+1;
+        end
+        ice_clim(i) = mean(month);
+    end
+    for i = 1:nT
+        if mod(i,12) ~= 0
+            ice_anom_train(i) = sum(ice_raw(:,i)) - ice_clim(mod(i,12));
+        elseif mod(i,12) == 0
+            ice_anom_train(i) = sum(ice_raw(:,i)) - ice_clim(12);
+        end
+    end
+
+    load ( fullfile( dataTestPath, 'dataX.mat' ) )
+    ice_raw = x; % dimensions space x time
+    ice_anom_test = zeros(nT,1);
+    for i = 1:nT
+        if mod(i,12) ~= 0
+            ice_anom_test(i) = sum(ice_raw(:,i)) - ice_clim(mod(i,12));
+        elseif mod(i,12) == 0
+            ice_anom_test(i) = sum(ice_raw(:,i)) - ice_clim(12);
+        end
+    end
+
+    ice_anom_train = ice_anom_train*10^(-6);
+    ice_anom_test  = ice_anom_test*10^(-6);
+    ice_clim       = ice_clim*10^(-6);
+    
+    S = fullfile(strcat(saveDir,'ICA.mat'));
+    save(S,'ice_anom_train','ice_anom_test','ice_clim')
+
+end
+
+%% evaluate kernel distances, either based on region only or pan-Arctic data
+if fullDataOn == 0
+    checkFile = fullfile(strcat(saveDir,'pMatrix.mat'));
+end
+if fullDataOn == 1
+    checkFile = fullfile(strcat(arcticDir, 'pMatrix.mat'))
+end
+
+if exist(checkFile) == 0
+
+    if fullDataOn == 0
+        model = nlsa_ose_ica( lonLim, latLim, trainLim, testLim, embedWin, varsFlag );
+    end
+    if fullDataOn == 1
+        model = nlsa_ose_ica( [0 360], [45 90], trainLim, testLim, embedWin, varsFlag );
+    end
+    disp( 'Embedding' ); makeEmbedding( model )
+    disp( 'Phase space velocity' ); computePhaseSpaceVelocity( model, 'ifWriteXi', true )
+    fprintf( 'Pairwise distances, %i/%i\n', 1, 1 ); computePairwiseDistances( model, 1, 1 )
+    disp( 'OSE embedding' ); makeOSEEmbedding( model );
+    disp( 'OSE phase space velocity' ); computeOSEPhaseSpaceVelocity( model, 'ifWriteXi', true )
+    fprintf( 'OSE pairwise distances, %i/%i\n', 1, 1 ); computeOSEPairwiseDistances( model, 1, 1 )
+
+    distPath = model.pDistance.path;
+    distPath = fullfile( distPath, model.pDistance.pathY );
+
+    % dcnote find cleaner way
+    if embedWin == 6
+        load ( fullfile( distPath, 'dataY_1_1-4791.mat' ) );
+        p1 = yVal;
+        y1 = yInd;
+        clear yVal yInd;
+
+    elseif embedWin == 12
+        load ( fullfile( distPath, 'dataY_1_1-4785.mat' ) );
+        p1 = yVal;
+        y1 = yInd;
+        clear yVal yInd;
+
+    elseif embedWin == 24
+        load ( fullfile( distPath, 'dataY_1_1-4773.mat' ) );
+        p1 = yVal;
+        y1 = yInd;
+        clear yVal yInd;
+
+    end
+
+    dist_ord = zeros(size(p1));
+    [disti, distj] = size(p1);
+    for i = 1:disti
+        for j = 1:distj
+            dist_ord(i,y1(i,j)) = p1(i,j);
+        end
+    end
+
+    clear p1 y1
+
+    oseDistPath = model.osePDistance.path;
+    oseDistPath = fullfile( oseDistPath, model.osePDistance.pathY );
+
+    if embedWin == 6
+        load ( fullfile( oseDistPath, 'dataY_1_1-4791.mat' ) );
+        p1 = yVal;
+        y1 = yInd;
+        clear yVal yInd;
+
+    elseif embedWin == 12
+        load ( fullfile( oseDistPath, 'dataY_1_1-4785.mat' ) );
+        p1 = yVal;
+        y1 = yInd;
+        clear yVal yInd;  
+
+    elseif embedWin == 24
+        load ( fullfile( oseDistPath, 'dataY_1_1-4773.mat' ) );
+        p1 = yVal;
+        y1 = yInd;
+        clear yVal yInd; 
+
+    end
+
+    % form kernel matrix
+
+    oseDist_ord = zeros(size(p1));
+    [disti, distj] = size(p1);
+    for i = 1:disti
+        for j = 1:distj
+            oseDist_ord(i,y1(i,j)) = p1(i,j);
+        end
+    end
+
+    clear p1 y1
+
+    if fullDataOn == 0
+        S = fullfile(strcat(saveDir,'pMatrix.mat'));
+    end
+
+    if fullDataOn == 1
+        S = fullfile(strcat(arcticDir,'pMatrix.mat'));
+    end
+
+    save(S,'dist_ord','oseDist_ord')
+
+    rmdir('ica_scratch/*','s')
+
+end
+
+%% form predictions
+checkFile = fullfile(strcat(saveDir,'pred_ica.mat'));
+
+if exist(checkFile) == 0 | predOn == 1
+
+    S = fullfile(strcat(saveDir,'ICA.mat'));
+    load(S)
+    % note shift by embedding window, as well as adjustment for phase space
+    % velocity calculation (In.fdOrder = 4 in nlsa_ose_ica.m)
+    data_train = ice_anom_train(embedWin + 2: end - 2);
+    data_test = ice_anom_test(embedWin + 2: end - 2);  
+
+    S = fullfile(strcat(saveDir,'pMatrix.mat'));
+    load(S)
+
+    % Laplacian pyramid extention inputs
+    tLag = 13;
+    d_ref = dist_ord(1:end-tLag,1:end-tLag);
+    d_ose = oseDist_ord(:,1:end-tLag);
+    f_ref = data_train;
+    A=d_ref;
+    A(d_ref==0)=NaN;
+    eps_0 = nanmedian(nanmedian(A));
+%     eps_0 = .1*eps_0;
+
+    decomp = LP_precomp(d_ref, f_ref, tLag, eps_0);
+    V_pred = LP_forecast(d_ose, eps_0, decomp);
+
+    f_ext = V_pred(:,1);
+
+    % check for NaNs in predictions - make loop over loosening tol_cons
+    S = fullfile(strcat(saveDir,'nan_sum.mat'));
+    if exist(S) > 0
+        delete(S)
+    end
+    if sum(sum(isnan(V_pred))) > 0
+        nan_sum = sum(sum(isnan(V_pred)))
+        save(S,'nan_sum')
+    end
+
+    % errors for all
+    pred_traj = V_pred(1:end-tLag+1,:);
+
+    % format truth
+    [nIter, tmp] = size(pred_traj);
+    truth = zeros(nIter,tLag);
+    for j = 1:nIter
+        for i = 1:tLag
+            truth(j,i) = data_test(j+i-1);
+        end
+    end
+
+    [ pred_rms, pred_pc, pred_rmsP, pred_pcP ] = calc_errors_v2( pred_traj, truth );
+
+    % condition trajectories on initial month
+    pred_rmsIM  = zeros(12,tLag);
+    pred_pcIM   = zeros(12,tLag);
+    pred_rmsIMP = zeros(12,tLag);
+    pred_pcIMP  = zeros(12,tLag);
+    
+    pred_rmsTM  = zeros(12,tLag);
+    pred_pcTM   = zeros(12,tLag);
+    pred_rmsTMP = zeros(12,tLag);
+    pred_pcTMP  = zeros(12,tLag);
+    
+    mIter = floor(nIter/12);
+
+    for m = 1:12
+        initM = m;
+
+        % initial month - predictions start in month initM
+        pred_trajM = zeros(mIter,tLag);
+        truthM = zeros(mIter,tLag);
+
+        for j = 1:mIter-1
+            pred_trajM(j,:) = pred_traj(initM + (j-1)*12, :);
+            truthM(j,:) = truth(initM + (j-1)*12, :);
+        end
+
+        [ pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp ] = calc_errors_v2( pred_trajM, truthM );
+
+        pred_rmsIM(initM,:)  = pred_rms_tmp;
+        pred_pcIM(initM,:)   = pred_pc_tmp;
+        pred_rmsIMP(initM,:) = pred_rmsP_tmp;
+        pred_pcIMP(initM,:)  = pred_pcP_tmp;
+
+        % target month - predictions end in month initM
+        pred_trajM = zeros(mIter,tLag);
+        truthM = zeros(mIter,tLag);
+
+        for j = 1:mIter-1
+            for i = 1:tLag
+                pred_trajM(j,i) = pred_traj(initM + (i-1) + (j-1)*12, i);
+                truthM    (j,i) = truth    (initM + (i-1) + (j-1)*12, i);
+            end
+        end
+
+        [ pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp ] = calc_errors_v2( pred_trajM, truthM );
+
+        pred_rmsTM(initM,:)  = pred_rms_tmp;
+        pred_pcTM(initM,:)   = pred_pc_tmp;
+        pred_rmsTMP(initM,:) = pred_rmsP_tmp;
+        pred_pcTMP(initM,:)  = pred_pcP_tmp;
+
+    end
+
+    S = fullfile(strcat(saveDir,'pred_ica.mat'));
+    save(S,'pred_traj','pred_rms','pred_pc','pred_rmsIM','pred_pcIM','pred_rmsTM','pred_pcTM', ...
+        'pred_rmsP','pred_pcP','pred_rmsIMP','pred_pcIMP','pred_rmsTMP','pred_pcTMP', ...
+        'f_ext','truth','d_ref','d_ose','tLag','data_train','data_test','eps_0')
+
+end
