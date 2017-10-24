@@ -303,7 +303,7 @@ Out.idxT1   = max( Out.nE, Out.nET ) + Out.nXB;               % time origin for 
 Out.nSE     = Out.nS - Out.idxT1 + 1 - Out.nXA;                     % sample number after embedding
 
 
-nlsaPath = fullfile('/kontiki_array4/comeau/nlsa/nlsa_v2014/examples/ica/ica_scratch' );
+nlsaPath = fullfile('/kontiki_array4/comeau/nlsa/nlsa_v2014/examples/KAF_ASIA/ica_scratch' );
 
 % Source data
 for iC = In.nC : -1 : 1
