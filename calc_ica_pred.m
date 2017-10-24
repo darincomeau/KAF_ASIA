@@ -335,7 +335,8 @@ end
 %% form predictions
 checkFile = fullfile(strcat(saveDir,'pred_ica.mat'));
 
-if exist(checkFile) == 0 | predOn == 1
+% if exist(checkFile) == 0 | predOn == 1
+if predOn == 1
 
     S = fullfile(strcat(saveDir,'ICA.mat'));
     load(S)
@@ -344,7 +345,12 @@ if exist(checkFile) == 0 | predOn == 1
     data_train = ice_anom_train(embedWin + 2: end - 2);
     data_test = ice_anom_test(embedWin + 2: end - 2);  
 
-    S = fullfile(strcat(saveDir,'pMatrix.mat'));
+    if fullDataOn == 0
+        S = fullfile(strcat(saveDir,'pMatrix.mat'));
+    end
+    if fullDataOn == 1
+        S = fullfile(strcat(arcticDir,'pMatrix.mat'));
+    end    
     load(S)
 
     % Laplacian pyramid extention inputs
