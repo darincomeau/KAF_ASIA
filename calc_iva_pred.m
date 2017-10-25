@@ -406,7 +406,7 @@ if predOn == 1
     [acf,lags] = autocorr(data_test,1)
     ar1coef = acf(2)
     % [ pred_rms, pred_pc, pred_rmsP, pred_pcP ] = calc_errors_v2( pred_traj, truth );
-    [ pred_rms, pred_pc, pred_rmsP, pred_pcP, pred_rms_DP, pred_pcDP ] = calc_errors_v3( pred_traj, truth, ar1coef );
+    [ pred_rms, pred_pc, pred_rmsP, pred_pcP, pred_rmsDP, pred_pcDP ] = calc_errors_v3( pred_traj, truth, ar1coef );
 
     % condition trajectories on initial month
     pred_rmsIM  = zeros(12,tLag);
