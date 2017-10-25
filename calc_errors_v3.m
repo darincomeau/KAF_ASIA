@@ -52,7 +52,7 @@ end
 %% persistence errors
 % note persistence is based on truth
 for j = 1:nIter
-        predP(j,:) = truth(j,1);
+    predP(j,:) = truth(j,1);
 end
 predP(1,:)
 
@@ -78,7 +78,8 @@ end
 
 %% damped persistence errors
 for j = 1:nIter
-        predDP(j,:) = ar1coef^(j-1)*truth(j,1);
+    for i = 1:tLag
+        predDP(j,i) = ar1coef^(i-1)*truth(j,1);
 end
 predDP(1,:)
 
