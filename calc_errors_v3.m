@@ -54,7 +54,7 @@ end
 for j = 1:nIter
         predP(j,:) = truth(j,1);
 end
-print predP(1,:)
+predP(1,:)
 
 % rms
 for i = 1:tLag
@@ -80,7 +80,7 @@ end
 for j = 1:nIter
         predDP(j,:) = ar1coef^(j-1)*truth(j,1);
 end
-print predDP(1,:)
+predDP(1,:)
 
 % rms
 for i = 1:tLag
