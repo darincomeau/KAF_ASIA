@@ -402,18 +402,27 @@ if predOn == 1
         end
     end
 
-    [ pred_rms, pred_pc, pred_rmsP, pred_pcP ] = calc_errors_v2( pred_traj, truth );
+    % dctest this
+    % [acf,lags] = autocorr(data_test,1)
+    % ar1coef = autocorr(data_test,1)
+    ar1coef = 1
+    % [ pred_rms, pred_pc, pred_rmsP, pred_pcP ] = calc_errors_v2( pred_traj, truth );
+    [ pred_rms, pred_pc, pred_rmsP, pred_pcP, pred_rms_DP, pred_pcDP ] = calc_errors_v3( pred_traj, truth, ar1coef );
 
     % condition trajectories on initial month
     pred_rmsIM  = zeros(12,tLag);
     pred_pcIM   = zeros(12,tLag);
     pred_rmsIMP = zeros(12,tLag);
     pred_pcIMP  = zeros(12,tLag);
+    pred_rmsIMDP = zeros(12,tLag);
+    pred_pcIMDP  = zeros(12,tLag);
 
     pred_rmsTM  = zeros(12,tLag);
     pred_pcTM   = zeros(12,tLag);
     pred_rmsTMP = zeros(12,tLag);
     pred_pcTMP  = zeros(12,tLag);
+    pred_rmsTMDP = zeros(12,tLag);
+    pred_pcTMDP  = zeros(12,tLag);
 
     mIter = floor(nIter/12);
 
@@ -429,12 +438,14 @@ if predOn == 1
             truthM(j,:) = truth(initM + (j-1)*12, :);
         end
 
-        [ pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp ] = calc_errors_v2( pred_trajM, truthM );
+        [ pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pred_rmsDP_tmp, pred_pcDP_tmp ] = calc_errors_v3( pred_trajM, truthM, ar1coef );
 
         pred_rmsIM(initM,:)  = pred_rms_tmp;
         pred_pcIM(initM,:)   = pred_pc_tmp;
         pred_rmsIMP(initM,:) = pred_rmsP_tmp;
         pred_pcIMP(initM,:)  = pred_pcP_tmp;
+        pred_rmsIMDP(initM,:) = pred_rmsDP_tmp;
+        pred_pcIMDP(initM,:)  = pred_pcDP_tmp;
 
         % target month - predictions end in month initM
         pred_trajM = zeros(mIter,tLag);
@@ -447,18 +458,22 @@ if predOn == 1
             end
         end
 
-        [ pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp ] = calc_errors_v2( pred_trajM, truthM );
+        [ pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pred_rmsDP_tmp, pred_pcDP_tmp ] = calc_errors_v3( pred_trajM, truthM, ar1coef );
 
         pred_rmsTM(initM,:)  = pred_rms_tmp;
         pred_pcTM(initM,:)   = pred_pc_tmp;
         pred_rmsTMP(initM,:) = pred_rmsP_tmp;
         pred_pcTMP(initM,:)  = pred_pcP_tmp;
+        pred_rmsTMDP(initM,:) = pred_rmsDP_tmp;
+        pred_pcTMDP(initM,:)  = pred_pcDP_tmp;
 
     end
 
-    S = fullfile(strcat(saveDir,'pred_iva.mat'));
+    % S = fullfile(strcat(saveDir,'pred_ica.mat'));
+    S = fullfile(strcat(saveDir,'pred_ica',num2str(fullDataOn),'.mat'));
     save(S,'pred_traj','pred_rms','pred_pc','pred_rmsIM','pred_pcIM','pred_rmsTM','pred_pcTM', ...
         'pred_rmsP','pred_pcP','pred_rmsIMP','pred_pcIMP','pred_rmsTMP','pred_pcTMP', ...
+        'pred_rmsDP','pred_pcDP','pred_rmsIMDP','pred_pcIMDP','pred_rmsTMDP','pred_pcTMDP', 'ar1coef', ...
         'f_ext','truth','d_ref','d_ose','tLag','data_train','data_test','eps_0')
 
 end
