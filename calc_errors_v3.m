@@ -79,6 +79,7 @@ end
 for j = 1:nIter
     for i = 1:tLag
         predDP(j,i) = ar1coef^(i-1)*truth(j,1);
+    end
 end
 
 % rms
