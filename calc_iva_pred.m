@@ -402,11 +402,20 @@ if predOn == 1
         end
     end
 
+    % format damped persistence
     % calculcate AR1 coefficient for damped persistence
-    [acf,lags] = autocorr(data_test,1)
-    ar1coef = acf(2);
-    % [ pred_rms, pred_pc, pred_rmsP, pred_pcP ] = calc_errors_v2( pred_traj, truth );
-    [ pred_rms, pred_pc, pred_rmsP, pred_pcP, pred_rmsDP, pred_pcDP ] = calc_errors_v3( pred_traj, truth, ar1coef );
+    [acf,lags] = autocorr(data_test,1);
+    ar1coef = acf(2)
+    pred_trajDP = zeros(nIter,tLag);
+    for j = 1:nIter
+        for i = 1:tLag
+            pred_trajDP(j,i) = ar1coef^(i-1)*truth(j,1);
+        end
+    end
+
+    [pred_rms, pred_pc, pred_rmsP, pred_pcP] = calc_errors_v2(pred_traj, truth);
+    [pred_rmsDP, pred_pcDP, pred_rmsP, pred_pcP] = calc_errors_v2(pred_trajDP, truth);
+    % [ pred_rms, pred_pc, pred_rmsP, pred_pcP, pred_rmsDP, pred_pcDP ] = calc_errors_v3( pred_traj, truth, ar1coef );
 
     % condition trajectories on initial month
     pred_rmsIM  = zeros(12,tLag);
@@ -430,14 +439,18 @@ if predOn == 1
 
         % initial month - predictions start in month initM
         pred_trajM = zeros(mIter,tLag);
+        pred_trajDPM = zeros(mIter,tLag);
         truthM = zeros(mIter,tLag);
 
         for j = 1:mIter-1
             pred_trajM(j,:) = pred_traj(initM + (j-1)*12, :);
+            pred_trajDPM(j,:) = pred_trajDP(initM + (j-1)*12, :);
             truthM(j,:) = truth(initM + (j-1)*12, :);
         end
 
-        [ pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pred_rmsDP_tmp, pred_pcDP_tmp ] = calc_errors_v3( pred_trajM, truthM, ar1coef );
+        [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp] = calc_errors_v2(pred_trajM, truthM);
+        [pred_rmsDP_tmp, pred_pcDP_tmp, pred_rmsP_tmp, pred_pcP_tmp] = calc_errors_v2(pred_trajDPM, truthM);
+        % [ pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pred_rmsDP_tmp, pred_pcDP_tmp ] = calc_errors_v3( pred_trajM, truthM, ar1coef );
 
         pred_rmsIM(initM,:)  = pred_rms_tmp;
         pred_pcIM(initM,:)   = pred_pc_tmp;
@@ -448,16 +461,20 @@ if predOn == 1
 
         % target month - predictions end in month initM
         pred_trajM = zeros(mIter,tLag);
+        pred_trajDPM = zeros(mIter,tLag);
         truthM = zeros(mIter,tLag);
 
         for j = 1:mIter-1
             for i = 1:tLag
                 pred_trajM(j,i) = pred_traj(initM + (i-1) + (j-1)*12, i);
+                pred_trajDPM(j,i) = pred_trajDP(initM + (i-1) + (j-1)*12, i);
                 truthM    (j,i) = truth    (initM + (i-1) + (j-1)*12, i);
             end
         end
 
-        [ pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pred_rmsDP_tmp, pred_pcDP_tmp ] = calc_errors_v3( pred_trajM, truthM, ar1coef );
+        [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp] = calc_errors_v2(pred_trajM, truthM);
+        [pred_rmsDP_tmp, pred_pcDP_tmp, pred_rmsP_tmp, pred_pcP_tmp] = calc_errors_v2(pred_trajDPM, truthM);
+        % [ pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pred_rmsDP_tmp, pred_pcDP_tmp ] = calc_errors_v3( pred_trajM, truthM, ar1coef );
 
         pred_rmsTM(initM,:)  = pred_rms_tmp;
         pred_pcTM(initM,:)   = pred_pc_tmp;
