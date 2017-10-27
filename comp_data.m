@@ -1,6 +1,6 @@
 function comp_data(varsUsed,embedWin,iceVar)
 
-	compDataDir = fullfile(strcat('output/',iceVar,'/',varsUsed,'_q',num2str(embedWin),'/'));
+	compDataDir = fullfile(strcat('output/',iceVar,'/',varsUsed,'_q',num2str(embedWin),'_train_100_499','/'));
 	if exist(compDataDir) == 0
     	mkdir(compDataDir)
 	end
@@ -9,7 +9,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region =  'Arctic';
 	lonLim = [0 360];
 	latLim = [45 90];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)
@@ -31,7 +31,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region = 'ChukchiBeaufort';
 	lonLim = [175 235];
 	latLim = [65 75];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)
@@ -53,7 +53,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region = 'Chukchi';
 	lonLim = [175 205];
 	latLim = [65 75];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)
@@ -75,7 +75,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region = 'Beaufort';
 	lonLim = [205 235];
 	latLim = [65 75];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)
@@ -97,7 +97,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region = 'EastSibLaptev';
 	lonLim = [105 175];
 	latLim = [65 75];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)
@@ -119,7 +119,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region = 'EastSib';
 	lonLim = [140 175];
 	latLim = [65 75];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)
@@ -141,7 +141,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region = 'Laptev';
 	lonLim = [105 140];
 	latLim = [70 80];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)
@@ -163,7 +163,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region = 'BarentsKara';
 	lonLim = [30 95];
 	latLim = [65 80];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)
@@ -185,7 +185,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region = 'Barents';
 	lonLim = [30 60];
 	latLim = [65 80];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)
@@ -207,7 +207,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region = 'Kara';
 	lonLim = [60 95];
 	latLim = [65 80];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)
@@ -229,7 +229,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region = 'Greenland';
 	lonLim = [325 360];
 	latLim = [65 80];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)
@@ -251,7 +251,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region = 'Baffin';
 	lonLim = [280 310];
 	latLim = [70 80];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)
@@ -273,7 +273,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region = 'Labrador';
 	lonLim = [290 310];
 	latLim = [50 70];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)
@@ -295,7 +295,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region = 'Hudson';
 	lonLim = [265 285];
 	latLim = [55 65];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)
@@ -317,7 +317,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region = 'Bering';
 	lonLim = [165 200];
 	latLim = [55 65];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)
@@ -339,7 +339,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	region = 'Okhotsk';
 	lonLim = [135 165];
 	latLim = [45 65];
-	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin));
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
 	load(S)

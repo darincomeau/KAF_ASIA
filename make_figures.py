@@ -122,7 +122,8 @@ region = 'Arctic'
 varUsed = 'SIC_SST_SLP'
 embedWin = 12
 
-dataDir = WORK_DIR + region + '_' + varUsed + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region + '_' + varUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
 
 # concentration anomaly data
 dataPredICA = sio.loadmat(dataDir + 'pred_ica.mat')
@@ -157,8 +158,8 @@ region = 'Arctic'
 varUsed = 'SIC_SST_SLP'
 embedWin = 12
 
-WORK_DIR = '/Users/dcomeau/Projects/KAF/ica/output/'
-dataDir = WORK_DIR + region + '_' + varUsed + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region + '_' + varUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
 
 # concentration anomaly data
 dataPredICA = sio.loadmat(dataDir + 'pred_ica.mat')
@@ -227,8 +228,8 @@ region = 'Arctic'
 varUsed = 'SIC_SST_SLP'
 embedWin = 12
 
-WORK_DIR = '/Users/dcomeau/Projects/KAF/ica/output/'
-dataDir = WORK_DIR + region + '_' + varUsed + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region + '_' + varUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
 
 # concentration anomaly data
 dataPredICA = sio.loadmat(dataDir + 'pred_ica.mat')
@@ -269,8 +270,8 @@ iceVar = 'ica'
 varsUsed = 'SIC_SST_SLP'
 embedWin = 12
 
-WORK_DIR = '/Users/dcomeau/Projects/KAF/ica/output/'
-dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
 
 compData = sio.loadmat(dataDir + 'comp_data.mat')
 
@@ -425,8 +426,8 @@ iceVar = 'ica'
 varsUsed = 'SIC_SST_SLP'
 embedWin = 12
 
-WORK_DIR = '/Users/dcomeau/Projects/KAF/ica/output/'
-dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
 
 compData = sio.loadmat(dataDir + 'comp_data')
 
@@ -582,8 +583,8 @@ iceVar = 'ica'
 varsUsed = 'SIC_SST_SLP'
 embedWin = 12
 
-WORK_DIR = '/Users/dcomeau/Projects/KAF/ica/output/'
-dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
 
 compData = sio.loadmat(dataDir + 'comp_data')
 
@@ -753,8 +754,8 @@ iceVar = 'ica'
 varsUsed = 'SIC_SST_SLP'
 embedWin = 12
 
-WORK_DIR = '/Users/dcomeau/Projects/KAF/ica/output/'
-dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
 
 compData = sio.loadmat(dataDir + 'comp_data')
 
@@ -881,8 +882,8 @@ iceVar = 'ica'
 varsUsed = 'SIC_SST_SLP'
 embedWin = 12
 
-WORK_DIR = '/Users/dcomeau/Projects/KAF/ica/output/'
-dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
 compData = sio.loadmat(dataDir + 'comp_data')
 tLag = compData['tLag']
 
@@ -1016,8 +1017,6 @@ plt.savefig('figures/Fig9.eps', format='eps', dpi=1000)
 
 
 """ Figure 10 """
-WORK_DIR = '/Users/dcomeau/Projects/KAF/ica/output/'
-
 region = []
 region.append('Arctic')
 region.append('Beaufort')
@@ -1037,69 +1036,84 @@ pred_var_rmsP = np.zeros((3, 13))
 pred_var_pcP = np.zeros((3, 13))
 
 # load Arctic data
-dataDir = WORK_DIR + region[0] + '_' + varUsed[0] + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region[0] + '_' + varUsed[0] + '_q' + str(embedWin) + \
+    '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica.mat')
 pred_var_rms[0, 0, :] = data['pred_rms']
 pred_var_pc[0, 0, :] = data['pred_pc']
-dataDir = WORK_DIR + region[0] + '_' + varUsed[1] + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region[0] + '_' + varUsed[1] + '_q' + str(embedWin) + \
+    '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica.mat')
 pred_var_rms[0, 1, :] = data['pred_rms']
 pred_var_pc[0, 1, :] = data['pred_pc']
-dataDir = WORK_DIR + region[0] + '_' + varUsed[2] + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region[0] + '_' + varUsed[2] + '_q' + str(embedWin) + \
+    '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica.mat')
 pred_var_rms[0, 2, :] = data['pred_rms']
 pred_var_pc[0, 2, :] = data['pred_pc']
-dataDir = WORK_DIR + region[0] + '_' + varUsed[3] + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region[0] + '_' + varUsed[3] + '_q' + str(embedWin) + \
+    '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica.mat')
 pred_var_rms[0, 3, :] = data['pred_rms']
 pred_var_pc[0, 3, :] = data['pred_pc']
 
 # load Beaufort data
-dataDir = WORK_DIR + region[1] + '_' + varUsed[0] + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region[1] + '_' + varUsed[0] + '_q' + str(embedWin) + \
+    '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica.mat')
 pred_var_rms[1, 0, :] = data['pred_rms']
 pred_var_pc[1, 0, :] = data['pred_pc']
-dataDir = WORK_DIR + region[1] + '_' + varUsed[1] + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region[1] + '_' + varUsed[1] + '_q' + str(embedWin) + \
+    '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica.mat')
 pred_var_rms[1, 1, :] = data['pred_rms']
 pred_var_pc[1, 1, :] = data['pred_pc']
-dataDir = WORK_DIR + region[1] + '_' + varUsed[2] + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region[1] + '_' + varUsed[2] + '_q' + str(embedWin) + \
+    '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica.mat')
 pred_var_rms[1, 2, :] = data['pred_rms']
 pred_var_pc[1, 2, :] = data['pred_pc']
-dataDir = WORK_DIR + region[1] + '_' + varUsed[3] + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region[1] + '_' + varUsed[3] + '_q' + str(embedWin) + \
+    '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica.mat')
 pred_var_rms[1, 3, :] = data['pred_rms']
 pred_var_pc[1, 3, :] = data['pred_pc']
 
 # load Bering data
-dataDir = WORK_DIR + region[2] + '_' + varUsed[0] + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region[2] + '_' + varUsed[0] + '_q' + str(embedWin) + \
+    '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica.mat')
 pred_var_rms[2, 0, :] = data['pred_rms']
 pred_var_pc[2, 0, :] = data['pred_pc']
-dataDir = WORK_DIR + region[2] + '_' + varUsed[1] + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region[2] + '_' + varUsed[1] + '_q' + str(embedWin) + \
+    '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica.mat')
 pred_var_rms[2, 1, :] = data['pred_rms']
 pred_var_pc[2, 1, :] = data['pred_pc']
-dataDir = WORK_DIR + region[2] + '_' + varUsed[2] + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region[2] + '_' + varUsed[2] + '_q' + str(embedWin) + \
+    '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica.mat')
 pred_var_rms[2, 2, :] = data['pred_rms']
 pred_var_pc[2, 2, :] = data['pred_pc']
-dataDir = WORK_DIR + region[2] + '_' + varUsed[3] + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region[2] + '_' + varUsed[3] + '_q' + str(embedWin) + \
+    '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica.mat')
 pred_var_rms[2, 3, :] = data['pred_rms']
 pred_var_pc[2, 3, :] = data['pred_pc']
 
 # load persistence data
-dataDir = WORK_DIR + region[0] + '_' + varUsed[0] + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region[0] + '_' + varUsed[0] + '_q' + str(embedWin) + \
+    '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica.mat')
 pred_var_rmsP[0, :] = data['pred_rmsP']
 pred_var_pcP[0, :] = data['pred_pcP']
-dataDir = WORK_DIR + region[1] + '_' + varUsed[0] + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region[1] + '_' + varUsed[0] + '_q' + str(embedWin) + \
+    '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica.mat')
 pred_var_rmsP[1, :] = data['pred_rmsP']
 pred_var_pcP[1, :] = data['pred_pcP']
-dataDir = WORK_DIR + region[2] + '_' + varUsed[0] + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + region[2] + '_' + varUsed[0] + '_q' + str(embedWin) + \
+    '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica.mat')
 pred_var_rmsP[2, :] = data['pred_rmsP']
 pred_var_pcP[2, :] = data['pred_pcP']
@@ -1191,8 +1205,8 @@ iceVar = 'iva'
 varsUsed = 'SIC_SST_SLP'
 embedWin = 12
 
-WORK_DIR = '/Users/dcomeau/Projects/KAF/ica/output/'
-dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
 
 compData = sio.loadmat(dataDir + 'comp_data')
 
@@ -1320,10 +1334,10 @@ iceVar = 'iva'
 varsUsed = 'SIC_SST_SLP_SIT'
 embedWin = 12
 
-WORK_DIR = '/Users/dcomeau/Projects/KAF/ica/output/'
-DATA_DIR = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + '/'
+dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
 
-compData = sio.loadmat(DATA_DIR + 'comp_data')
+compData = sio.loadmat(dataDir + 'comp_data')
 
 tLag = compData['tLag']
 
