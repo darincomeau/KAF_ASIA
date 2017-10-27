@@ -347,8 +347,7 @@ end
 %% form predictions
 checkFile = fullfile(strcat(saveDir,'pred_iva',num2str(fullDataOn),'.mat'));
 
-% if exist(checkFile) == 0 | predOn == 1
-if predOn == 1
+if exist(checkFile) == 0 | predOn == 1
 
     S = fullfile(strcat(saveDir,'IVA.mat'));
     load(S)
