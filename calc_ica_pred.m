@@ -333,7 +333,7 @@ if exist(checkFile) == 0
 end
 
 %% form predictions
-checkFile = fullfile(strcat(saveDir,'pred_ica.mat'));
+checkFile = fullfile(strcat(saveDir,'pred_ica',num2str(fullDataOn),'.mat'));
 
 % if exist(checkFile) == 0 | predOn == 1
 if predOn == 1
@@ -438,7 +438,6 @@ if predOn == 1
 
         [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp] = calc_errors_v2(pred_trajM, truthM);
         [pred_rmsDP_tmp, pred_pcDP_tmp, pred_rmsP_tmp, pred_pcP_tmp] = calc_errors_v2(pred_trajDPM, truthM);
-        % [ pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pred_rmsDP_tmp, pred_pcDP_tmp ] = calc_errors_v3( pred_trajM, truthM, ar1coef );
 
         pred_rmsIM(initM,:)  = pred_rms_tmp;
         pred_pcIM(initM,:)   = pred_pc_tmp;
@@ -462,7 +461,6 @@ if predOn == 1
 
         [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp] = calc_errors_v2(pred_trajM, truthM);
         [pred_rmsDP_tmp, pred_pcDP_tmp, pred_rmsP_tmp, pred_pcP_tmp] = calc_errors_v2(pred_trajDPM, truthM);
-        % [ pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pred_rmsDP_tmp, pred_pcDP_tmp ] = calc_errors_v3( pred_trajM, truthM, ar1coef );
 
         pred_rmsTM(initM,:)  = pred_rms_tmp;
         pred_pcTM(initM,:)   = pred_pc_tmp;
