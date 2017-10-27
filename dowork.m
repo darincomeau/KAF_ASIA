@@ -33,6 +33,20 @@ varsUsed = 'SIC_SLP'
 embedWin = 12
 all_regions_work
 
+% aggregate data
+comp_data('SIC',12,'ica')
+comp_data('SIC',12,'iva')
+comp_data('SIC_SST',12,'ica')
+comp_data('SIC_SST',12,'iva')
+comp_data('SIC_SST_SIT',12,'ica')
+comp_data('SIC_SST_SIT',12,'iva')
+comp_data('SIC_SST_SIT_SLP',12,'ica')
+comp_data('SIC_SST_SIT_SLP',12,'iva')
+comp_data('SIC_SIT',12,'ica')
+comp_data('SIC_SIT',12,'iva')
+comp_data('SIC_SLP',12,'ica')
+comp_data('SIC_SLP',12,'iva')
+
 % one test with short training period
 % dcnote - this will break with current manual loading of distances to form P
 % trainLim = [100 139];
