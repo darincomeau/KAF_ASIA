@@ -23,7 +23,7 @@ for i = 1:tLag
     for j = 1:nIter
         pred_rms(i) = pred_rms(i) + (pred_traj(j,i) - truth(j,i))^2;
     end
-    pred_rms(i) = sqrt(pred_rms(i)/nIter);
+    pred_rms(i) = sqrt(pred_rms(i)/nIter) / truth(j,i);
 end
 
 % pattern correlation
@@ -54,7 +54,7 @@ for i = 1:tLag
     for j = 1:nIter
         pred_rmsP(i) = pred_rmsP(i) + (predP(j,i) - truth(j,i))^2;
     end
-    pred_rmsP(i) = sqrt(pred_rmsP(i)/nIter);
+    pred_rmsP(i) = sqrt(pred_rmsP(i)/nIter) / truth(j,i);
 end
 
 % pattern correlation
