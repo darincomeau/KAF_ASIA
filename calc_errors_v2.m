@@ -19,11 +19,15 @@ stdP       = zeros(1,tLag);
 
 %% forecast errors
 % rms
+
 for i = 1:tLag
+    nf = 0
     for j = 1:nIter
         pred_rms(i) = pred_rms(i) + (pred_traj(j,i) - truth(j,i))^2;
+        nf = nf + truth(j,i)^2
     end
-    pred_rms(i) = sqrt(pred_rms(i)/nIter) / truth(j,i);
+    nf = sqrt(nf)
+    pred_rms(i) = sqrt(pred_rms(i)/nIter)/nf;
 end
 
 % pattern correlation
@@ -46,15 +50,18 @@ end
 %% persistence errors
 % note persistence is based on truth
 for j = 1:nIter
-        predP(j,:) = truth(j,1);
+    predP(j,:) = truth(j,1);
 end
 
 % rms
 for i = 1:tLag
+    nf = 0
     for j = 1:nIter
         pred_rmsP(i) = pred_rmsP(i) + (predP(j,i) - truth(j,i))^2;
+        nf = nf + truth(j,i)^2
     end
-    pred_rmsP(i) = sqrt(pred_rmsP(i)/nIter) / truth(j,i);
+    nf = sqrt(nf)
+    pred_rmsP(i) = sqrt(pred_rmsP(i)/nIter)/nf;
 end
 
 % pattern correlation
