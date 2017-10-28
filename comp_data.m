@@ -1,4 +1,4 @@
-function comp_data(varsUsed,embedWin,iceVar)
+function comp_data(varsUsed,embedWin,iceVar, fullDataOn)
 
 	compDataDir = fullfile(strcat('output/',iceVar,'/',varsUsed,'_q',num2str(embedWin),'_train_100_499','/'));
 	if exist(compDataDir) == 0
@@ -11,7 +11,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [45 90];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_1_pcIM     = pred_pcIM;
 	pred_panel_1_pcTM     = pred_pcTM;
@@ -33,7 +33,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [65 75];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_2_pcIM     = pred_pcIM;
 	pred_panel_2_pcTM     = pred_pcTM;
@@ -55,7 +55,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [65 75];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_3_pcIM     = pred_pcIM;
 	pred_panel_3_pcTM     = pred_pcTM;
@@ -77,7 +77,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [65 75];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_4_pcIM     = pred_pcIM;
 	pred_panel_4_pcTM     = pred_pcTM;
@@ -99,7 +99,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [65 75];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_5_pcIM     = pred_pcIM;
 	pred_panel_5_pcTM     = pred_pcTM;
@@ -121,7 +121,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [65 75];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_6_pcIM     = pred_pcIM;
 	pred_panel_6_pcTM     = pred_pcTM;
@@ -143,7 +143,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [70 80];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_7_pcIM     = pred_pcIM;
 	pred_panel_7_pcTM     = pred_pcTM;
@@ -165,7 +165,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [65 80];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_8_pcIM     = pred_pcIM;
 	pred_panel_8_pcTM     = pred_pcTM;
@@ -187,7 +187,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [65 80];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_9_pcIM     = pred_pcIM;
 	pred_panel_9_pcTM     = pred_pcTM;
@@ -209,7 +209,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [65 80];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_10_pcIM     = pred_pcIM;
 	pred_panel_10_pcTM     = pred_pcTM;
@@ -231,7 +231,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [65 80];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_11_pcIM     = pred_pcIM;
 	pred_panel_11_pcTM     = pred_pcTM;
@@ -253,7 +253,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [70 80];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_12_pcIM     = pred_pcIM;
 	pred_panel_12_pcTM     = pred_pcTM;
@@ -275,7 +275,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [50 70];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_13_pcIM     = pred_pcIM;
 	pred_panel_13_pcTM     = pred_pcTM;
@@ -297,7 +297,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [55 65];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_14_pcIM     = pred_pcIM;
 	pred_panel_14_pcTM     = pred_pcTM;
@@ -319,7 +319,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [55 65];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_15_pcIM     = pred_pcIM;
 	pred_panel_15_pcTM     = pred_pcTM;
@@ -341,7 +341,7 @@ function comp_data(varsUsed,embedWin,iceVar)
 	latLim = [45 65];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
 	saveDir = fullfile('output/',saveTag,'/');
-	S = fullfile(strcat(saveDir,'pred_',iceVar,'.mat'));
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_16_pcIM     = pred_pcIM;
 	pred_panel_16_pcTM     = pred_pcTM;
