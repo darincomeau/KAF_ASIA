@@ -21,12 +21,12 @@ stdP       = zeros(1,tLag);
 % rms
 
 for i = 1:tLag
-    nf = 0
+    nf = 0;
     for j = 1:nIter
         pred_rms(i) = pred_rms(i) + (pred_traj(j,i) - truth(j,i))^2;
-        nf = nf + truth(j,i)^2
+        nf = nf + truth(j,i)^2;
     end
-    nf = sqrt(nf)
+    nf = sqrt(nf);
     pred_rms(i) = sqrt(pred_rms(i)/nIter)/nf;
 end
 
@@ -55,12 +55,12 @@ end
 
 % rms
 for i = 1:tLag
-    nf = 0
+    nf = 0;
     for j = 1:nIter
         pred_rmsP(i) = pred_rmsP(i) + (predP(j,i) - truth(j,i))^2;
-        nf = nf + truth(j,i)^2
+        nf = nf + truth(j,i)^2;
     end
-    nf = sqrt(nf)
+    nf = sqrt(nf);
     pred_rmsP(i) = sqrt(pred_rmsP(i)/nIter)/nf;
 end
 
