@@ -18,6 +18,8 @@ SAVE_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/figures/'
 SEA_ICE_FILE = '/Users/dcomeau/Data/ice/CCSM4/piControl/' + \
     'b40.1850.track1.1deg.006.cice.h.aice_nh.000101-130012.nc'
 
+flag = 0
+
 """ Figure 1 """
 # load data
 print 'Reading data'
@@ -119,14 +121,14 @@ plt.savefig('figures/Fig1.eps', format='eps', dpi=1000)
 
 """ Figure 2 """
 region = 'Arctic'
-varUsed = 'SIC_SST_SLP'
+varUsed = 'SIC_SST_SIT'
 embedWin = 12
 
 dataDir = WORK_DIR + region + '_' + varUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
 
 # concentration anomaly data
-dataPredICA = sio.loadmat(dataDir + 'pred_ica.mat')
+dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 truth = dataPredICA['truth']
 pred_traj = dataPredICA['pred_traj']
 tLagL = dataPredICA['tLag']
@@ -155,14 +157,14 @@ plt.savefig('figures/Fig2.eps', format='eps', dpi=1000)
 
 """ Figure 3 """
 region = 'Arctic'
-varUsed = 'SIC_SST_SLP'
+varUsed = 'SIC_SST_SIT'
 embedWin = 12
 
 dataDir = WORK_DIR + region + '_' + varUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
 
 # concentration anomaly data
-dataPredICA = sio.loadmat(dataDir + 'pred_ica.mat')
+dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 data_test = dataPredICA['data_test']
 pred_traj = dataPredICA['pred_traj']
 
@@ -225,14 +227,14 @@ plt.savefig('figures/Fig3.eps', format='eps', dpi=1000)
 
 """ Figure 4 """
 region = 'Arctic'
-varUsed = 'SIC_SST_SLP'
+varUsed = 'SIC_SST_SIT'
 embedWin = 12
 
 dataDir = WORK_DIR + region + '_' + varUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
 
 # concentration anomaly data
-dataPredICA = sio.loadmat(dataDir + 'pred_ica.mat')
+dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_pcTM = dataPredICA['pred_pcTM']
 pred_pcTMP = dataPredICA['pred_pcTMP']
 cTicks = np.linspace(0, 1, 3)
@@ -265,15 +267,16 @@ plt.colorbar(cax=cax, ticks=cTicks)
 fig.set_figwidth(8)
 plt.savefig('figures/Fig4.eps', format='eps', dpi=1000)
 
+
 """ Figure 5 """
 iceVar = 'ica'
-varsUsed = 'SIC_SST_SLP'
+varsUsed = 'SIC_SST_SIT'
 embedWin = 12
 
 dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
 
-compData = sio.loadmat(dataDir + 'comp_data.mat')
+compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
 
 pred_panel_1_truth = compData['pred_panel_1_truth']
 pred_panel_2_truth = compData['pred_panel_2_truth']
@@ -423,13 +426,13 @@ plt.savefig('figures/Fig5.eps', format='eps', dpi=1000)
 
 """ Figure 6 """
 iceVar = 'ica'
-varsUsed = 'SIC_SST_SLP'
+varsUsed = 'SIC_SST_SIT'
 embedWin = 12
 
 dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
 
-compData = sio.loadmat(dataDir + 'comp_data')
+compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
 
 tLag = compData['tLag']
 
@@ -580,13 +583,13 @@ plt.savefig('figures/Fig6.eps', format='eps', dpi=1000)
 
 """ Figure 7 """
 iceVar = 'ica'
-varsUsed = 'SIC_SST_SLP'
+varsUsed = 'SIC_SST_SIT'
 embedWin = 12
 
 dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
 
-compData = sio.loadmat(dataDir + 'comp_data')
+compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
 
 tLag = compData['tLag']
 
@@ -751,13 +754,13 @@ plt.savefig('figures/Fig7.eps', format='eps', dpi=1000)
 
 """ Figure 8 """
 iceVar = 'ica'
-varsUsed = 'SIC_SST_SLP'
+varsUsed = 'SIC_SST_SIT'
 embedWin = 12
 
 dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
 
-compData = sio.loadmat(dataDir + 'comp_data')
+compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
 
 tLag = compData['tLag']
 
@@ -879,12 +882,12 @@ plt.savefig('figures/Fig8.eps', format='eps', dpi=1000)
 
 """ Figure 9 """
 iceVar = 'ica'
-varsUsed = 'SIC_SST_SLP'
+varsUsed = 'SIC_SST_SIT'
 embedWin = 12
 
 dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
-compData = sio.loadmat(dataDir + 'comp_data')
+compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
 tLag = compData['tLag']
 
 pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_1_pcTMdiff']
@@ -903,7 +906,6 @@ pred_panel_shift_13_pcTMdiff = compData['pred_panel_shift_13_pcTMdiff']
 pred_panel_shift_14_pcTMdiff = compData['pred_panel_shift_14_pcTMdiff']
 pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcTMdiff']
 pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcTMdiff']
-
 
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
@@ -1024,8 +1026,8 @@ region.append('Bering')
 varUsed = []
 varUsed.append('SIC')
 varUsed.append('SIC_SST')
-varUsed.append('SIC_SST_SLP')
-varUsed.append('SIC_SST_SLP_SIT')
+varUsed.append('SIC_SST_SIT')
+varUsed.append('SIC_SST_SIT_SLP')
 embedWin = 12
 iceVar = 'ica'
 
@@ -1038,83 +1040,83 @@ pred_var_pcP = np.zeros((3, 13))
 # load Arctic data
 dataDir = WORK_DIR + region[0] + '_' + varUsed[0] + '_q' + str(embedWin) + \
     '_train_100_499/'
-data = sio.loadmat(dataDir + 'pred_ica.mat')
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rms[0, 0, :] = data['pred_rms']
 pred_var_pc[0, 0, :] = data['pred_pc']
 dataDir = WORK_DIR + region[0] + '_' + varUsed[1] + '_q' + str(embedWin) + \
     '_train_100_499/'
-data = sio.loadmat(dataDir + 'pred_ica.mat')
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rms[0, 1, :] = data['pred_rms']
 pred_var_pc[0, 1, :] = data['pred_pc']
 dataDir = WORK_DIR + region[0] + '_' + varUsed[2] + '_q' + str(embedWin) + \
     '_train_100_499/'
-data = sio.loadmat(dataDir + 'pred_ica.mat')
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rms[0, 2, :] = data['pred_rms']
 pred_var_pc[0, 2, :] = data['pred_pc']
 dataDir = WORK_DIR + region[0] + '_' + varUsed[3] + '_q' + str(embedWin) + \
     '_train_100_499/'
-data = sio.loadmat(dataDir + 'pred_ica.mat')
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rms[0, 3, :] = data['pred_rms']
 pred_var_pc[0, 3, :] = data['pred_pc']
 
 # load Beaufort data
 dataDir = WORK_DIR + region[1] + '_' + varUsed[0] + '_q' + str(embedWin) + \
     '_train_100_499/'
-data = sio.loadmat(dataDir + 'pred_ica.mat')
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rms[1, 0, :] = data['pred_rms']
 pred_var_pc[1, 0, :] = data['pred_pc']
 dataDir = WORK_DIR + region[1] + '_' + varUsed[1] + '_q' + str(embedWin) + \
     '_train_100_499/'
-data = sio.loadmat(dataDir + 'pred_ica.mat')
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rms[1, 1, :] = data['pred_rms']
 pred_var_pc[1, 1, :] = data['pred_pc']
 dataDir = WORK_DIR + region[1] + '_' + varUsed[2] + '_q' + str(embedWin) + \
     '_train_100_499/'
-data = sio.loadmat(dataDir + 'pred_ica.mat')
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rms[1, 2, :] = data['pred_rms']
 pred_var_pc[1, 2, :] = data['pred_pc']
 dataDir = WORK_DIR + region[1] + '_' + varUsed[3] + '_q' + str(embedWin) + \
     '_train_100_499/'
-data = sio.loadmat(dataDir + 'pred_ica.mat')
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rms[1, 3, :] = data['pred_rms']
 pred_var_pc[1, 3, :] = data['pred_pc']
 
 # load Bering data
 dataDir = WORK_DIR + region[2] + '_' + varUsed[0] + '_q' + str(embedWin) + \
     '_train_100_499/'
-data = sio.loadmat(dataDir + 'pred_ica.mat')
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rms[2, 0, :] = data['pred_rms']
 pred_var_pc[2, 0, :] = data['pred_pc']
 dataDir = WORK_DIR + region[2] + '_' + varUsed[1] + '_q' + str(embedWin) + \
     '_train_100_499/'
-data = sio.loadmat(dataDir + 'pred_ica.mat')
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rms[2, 1, :] = data['pred_rms']
 pred_var_pc[2, 1, :] = data['pred_pc']
 dataDir = WORK_DIR + region[2] + '_' + varUsed[2] + '_q' + str(embedWin) + \
     '_train_100_499/'
-data = sio.loadmat(dataDir + 'pred_ica.mat')
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rms[2, 2, :] = data['pred_rms']
 pred_var_pc[2, 2, :] = data['pred_pc']
 dataDir = WORK_DIR + region[2] + '_' + varUsed[3] + '_q' + str(embedWin) + \
     '_train_100_499/'
-data = sio.loadmat(dataDir + 'pred_ica.mat')
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rms[2, 3, :] = data['pred_rms']
 pred_var_pc[2, 3, :] = data['pred_pc']
 
 # load persistence data
 dataDir = WORK_DIR + region[0] + '_' + varUsed[0] + '_q' + str(embedWin) + \
     '_train_100_499/'
-data = sio.loadmat(dataDir + 'pred_ica.mat')
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rmsP[0, :] = data['pred_rmsP']
 pred_var_pcP[0, :] = data['pred_pcP']
 dataDir = WORK_DIR + region[1] + '_' + varUsed[0] + '_q' + str(embedWin) + \
     '_train_100_499/'
-data = sio.loadmat(dataDir + 'pred_ica.mat')
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rmsP[1, :] = data['pred_rmsP']
 pred_var_pcP[1, :] = data['pred_pcP']
 dataDir = WORK_DIR + region[2] + '_' + varUsed[0] + '_q' + str(embedWin) + \
     '_train_100_499/'
-data = sio.loadmat(dataDir + 'pred_ica.mat')
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rmsP[2, :] = data['pred_rmsP']
 pred_var_pcP[2, :] = data['pred_pcP']
 
@@ -1202,13 +1204,13 @@ plt.savefig('figures/Fig10.eps', format='eps', dpi=1000)
 
 """ Figure 11 """
 iceVar = 'iva'
-varsUsed = 'SIC_SST_SLP'
+varsUsed = 'SIC_SST_SIT'
 embedWin = 12
 
 dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
 
-compData = sio.loadmat(dataDir + 'comp_data')
+compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
 
 tLag = compData['tLag']
 
@@ -1228,7 +1230,6 @@ pred_panel_shift_13_pcTM = compData['pred_panel_shift_13_pcTM']
 pred_panel_shift_14_pcTM = compData['pred_panel_shift_14_pcTM']
 pred_panel_shift_15_pcTM = compData['pred_panel_shift_15_pcTM']
 pred_panel_shift_16_pcTM = compData['pred_panel_shift_16_pcTM']
-
 
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
@@ -1331,13 +1332,13 @@ plt.savefig('figures/Fig11.eps', format='eps', dpi=1000)
 
 """ Figure 12 """
 iceVar = 'iva'
-varsUsed = 'SIC_SST_SLP_SIT'
+varsUsed = 'SIC_SST_SIT_SLP'
 embedWin = 12
 
 dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
 
-compData = sio.loadmat(dataDir + 'comp_data')
+compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
 
 tLag = compData['tLag']
 
@@ -1357,7 +1358,6 @@ pred_panel_shift_13_pcTM = compData['pred_panel_shift_13_pcTM']
 pred_panel_shift_14_pcTM = compData['pred_panel_shift_14_pcTM']
 pred_panel_shift_15_pcTM = compData['pred_panel_shift_15_pcTM']
 pred_panel_shift_16_pcTM = compData['pred_panel_shift_16_pcTM']
-
 
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
