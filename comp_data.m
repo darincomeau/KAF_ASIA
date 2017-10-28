@@ -1,6 +1,6 @@
-function comp_data(varsUsed,embedWin,iceVar, fullDataOn)
+function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 
-	compDataDir = fullfile(strcat('output/',iceVar,'/',varsUsed,'_q',num2str(embedWin),'_train_100_499','/'));
+	compDataDir = fullfile(strcat('output/',iceVar,'/',varsUsed,'_q',num2str(embedWin),'_train_100_499','/'))
 	if exist(compDataDir) == 0
     	mkdir(compDataDir)
 	end
@@ -430,5 +430,5 @@ function comp_data(varsUsed,embedWin,iceVar, fullDataOn)
 	pred_panel_shift_16_pcIMdiff = pred_panel_16_pcIMdiff(mM,:);
 	pred_panel_shift_16_pcTMdiff = pred_panel_16_pcTMdiff(mM,:);
 
-	S = fullfile(strcat(compDataDir,'comp_data.mat'));
+	S = fullfile(strcat(compDataDir,'comp_data',num2str(fullDataOn),'.mat'));
 	save(S);
