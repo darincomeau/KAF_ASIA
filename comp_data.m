@@ -21,10 +21,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_1_pcTMdiff = pred_pcTM;
 	pred_panel_1_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_1_pcTMdiff = pred_panel_1_pcTMdiff - pred_pcTMP;
+
+	pred_panel_1_pcIMDdiff = pred_pcIM;
+	pred_panel_1_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_1_pcIMDdiff = pred_panel_1_pcIMdiff - pred_pcIMDP;
+	pred_panel_1_pcTMDdiff = pred_pcTM;
+	pred_panel_1_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_1_pcTMDdiff = pred_panel_1_pcTMdiff - pred_pcTMDP;
+
 	pred_panel_1_rms      = pred_rms;
 	pred_panel_1_rmsP     = pred_rmsP;
+	pred_panel_1_rmsP     = pred_rmsDP;	
 	pred_panel_1_pc       = pred_pc;
 	pred_panel_1_pcP      = pred_pcP;
+	pred_panel_1_pcP      = pred_pcDP;	
 	pred_panel_1_truth    = data_test;
 	pred_panel_1_ose      = f_ext;
 	    
@@ -43,10 +53,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_2_pcTMdiff = pred_pcTM;
 	pred_panel_2_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_2_pcTMdiff = pred_panel_2_pcTMdiff - pred_pcTMP;
+
+	pred_panel_2_pcIMDdiff = pred_pcIM;
+	pred_panel_2_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_2_pcIMDdiff = pred_panel_2_pcIMdiff - pred_pcIMDP;
+	pred_panel_2_pcTMDdiff = pred_pcTM;
+	pred_panel_2_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_2_pcTMDdiff = pred_panel_2_pcTMdiff - pred_pcTMDP;
+	
 	pred_panel_2_rms      = pred_rms;
 	pred_panel_2_rmsP     = pred_rmsP;
+	pred_panel_2_rmsP     = pred_rmsDP;	
 	pred_panel_2_pc       = pred_pc;
 	pred_panel_2_pcP      = pred_pcP;
+	pred_panel_2_pcP      = pred_pcDP;	
 	pred_panel_2_truth    = data_test;
 	pred_panel_2_ose      = f_ext;
 	        
@@ -65,10 +85,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_3_pcTMdiff = pred_pcTM;
 	pred_panel_3_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_3_pcTMdiff = pred_panel_3_pcTMdiff - pred_pcTMP;
+
+	pred_panel_3_pcIMDdiff = pred_pcIM;
+	pred_panel_3_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_3_pcIMDdiff = pred_panel_3_pcIMdiff - pred_pcIMDP;
+	pred_panel_3_pcTMDdiff = pred_pcTM;
+	pred_panel_3_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_3_pcTMDdiff = pred_panel_3_pcTMdiff - pred_pcTMDP;
+	
 	pred_panel_3_rms      = pred_rms;
 	pred_panel_3_rmsP     = pred_rmsP;
+	pred_panel_3_rmsP     = pred_rmsDP;	
 	pred_panel_3_pc       = pred_pc;
 	pred_panel_3_pcP      = pred_pcP;
+	pred_panel_3_pcP      = pred_pcDP;	
 	pred_panel_3_truth    = data_test;
 	pred_panel_3_ose      = f_ext;
 	        
@@ -87,10 +117,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_4_pcTMdiff = pred_pcTM;
 	pred_panel_4_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_4_pcTMdiff = pred_panel_4_pcTMdiff - pred_pcTMP;
+
+	pred_panel_4_pcIMDdiff = pred_pcIM;
+	pred_panel_4_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_4_pcIMDdiff = pred_panel_4_pcIMdiff - pred_pcIMDP;
+	pred_panel_4_pcTMDdiff = pred_pcTM;
+	pred_panel_4_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_4_pcTMDdiff = pred_panel_4_pcTMdiff - pred_pcTMDP;
+	
 	pred_panel_4_rms      = pred_rms;
 	pred_panel_4_rmsP     = pred_rmsP;
+	pred_panel_4_rmsP     = pred_rmsDP;	
 	pred_panel_4_pc       = pred_pc;
 	pred_panel_4_pcP      = pred_pcP;
+	pred_panel_4_pcP      = pred_pcDP;	
 	pred_panel_4_truth    = data_test;
 	pred_panel_4_ose      = f_ext;
 
@@ -109,10 +149,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_5_pcTMdiff = pred_pcTM;
 	pred_panel_5_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_5_pcTMdiff = pred_panel_5_pcTMdiff - pred_pcTMP;
+
+	pred_panel_5_pcIMDdiff = pred_pcIM;
+	pred_panel_5_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_5_pcIMDdiff = pred_panel_5_pcIMdiff - pred_pcIMDP;
+	pred_panel_5_pcTMDdiff = pred_pcTM;
+	pred_panel_5_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_5_pcTMDdiff = pred_panel_5_pcTMdiff - pred_pcTMDP;
+	
 	pred_panel_5_rms      = pred_rms;
 	pred_panel_5_rmsP     = pred_rmsP;
+	pred_panel_5_rmsP     = pred_rmsDP;	
 	pred_panel_5_pc       = pred_pc;
 	pred_panel_5_pcP      = pred_pcP;
+	pred_panel_5_pcP      = pred_pcDP;	
 	pred_panel_5_truth    = data_test;
 	pred_panel_5_ose      = f_ext;
 	        
@@ -131,10 +181,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_6_pcTMdiff = pred_pcTM;
 	pred_panel_6_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_6_pcTMdiff = pred_panel_6_pcTMdiff - pred_pcTMP;
+
+	pred_panel_6_pcIMDdiff = pred_pcIM;
+	pred_panel_6_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_6_pcIMDdiff = pred_panel_6_pcIMdiff - pred_pcIMDP;
+	pred_panel_6_pcTMDdiff = pred_pcTM;
+	pred_panel_6_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_6_pcTMDdiff = pred_panel_6_pcTMdiff - pred_pcTMDP;
+	
 	pred_panel_6_rms      = pred_rms;
 	pred_panel_6_rmsP     = pred_rmsP;
+	pred_panel_6_rmsP     = pred_rmsDP;	
 	pred_panel_6_pc       = pred_pc;
 	pred_panel_6_pcP      = pred_pcP;
+	pred_panel_6_pcP      = pred_pcDP;	
 	pred_panel_6_truth    = data_test;
 	pred_panel_6_ose      = f_ext;
 	        
@@ -153,10 +213,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_7_pcTMdiff = pred_pcTM;
 	pred_panel_7_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_7_pcTMdiff = pred_panel_7_pcTMdiff - pred_pcTMP;
+
+	pred_panel_7_pcIMDdiff = pred_pcIM;
+	pred_panel_7_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_7_pcIMDdiff = pred_panel_7_pcIMdiff - pred_pcIMDP;
+	pred_panel_7_pcTMDdiff = pred_pcTM;
+	pred_panel_7_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_7_pcTMDdiff = pred_panel_7_pcTMdiff - pred_pcTMDP;
+	
 	pred_panel_7_rms      = pred_rms;
 	pred_panel_7_rmsP     = pred_rmsP;
+	pred_panel_7_rmsP     = pred_rmsDP;	
 	pred_panel_7_pc       = pred_pc;
 	pred_panel_7_pcP      = pred_pcP;
+	pred_panel_7_pcP      = pred_pcDP;	
 	pred_panel_7_truth    = data_test;
 	pred_panel_7_ose      = f_ext;
 
@@ -175,10 +245,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_8_pcTMdiff = pred_pcTM;
 	pred_panel_8_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_8_pcTMdiff = pred_panel_8_pcTMdiff - pred_pcTMP;
+
+	pred_panel_8_pcIMDdiff = pred_pcIM;
+	pred_panel_8_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_8_pcIMDdiff = pred_panel_8_pcIMdiff - pred_pcIMDP;
+	pred_panel_8_pcTMDdiff = pred_pcTM;
+	pred_panel_8_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_8_pcTMDdiff = pred_panel_8_pcTMdiff - pred_pcTMDP;
+	
 	pred_panel_8_rms      = pred_rms;
 	pred_panel_8_rmsP     = pred_rmsP;
+	pred_panel_8_rmsP     = pred_rmsDP;	
 	pred_panel_8_pc       = pred_pc;
 	pred_panel_8_pcP      = pred_pcP;
+	pred_panel_8_pcP      = pred_pcDP;	
 	pred_panel_8_truth    = data_test;
 	pred_panel_8_ose      = f_ext;
 	        
@@ -197,10 +277,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_9_pcTMdiff = pred_pcTM;
 	pred_panel_9_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_9_pcTMdiff = pred_panel_9_pcTMdiff - pred_pcTMP;
+
+	pred_panel_9_pcIMDdiff = pred_pcIM;
+	pred_panel_9_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_9_pcIMDdiff = pred_panel_9_pcIMdiff - pred_pcIMDP;
+	pred_panel_9_pcTMDdiff = pred_pcTM;
+	pred_panel_9_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_9_pcTMDdiff = pred_panel_9_pcTMdiff - pred_pcTMDP;
+	
 	pred_panel_9_rms      = pred_rms;
 	pred_panel_9_rmsP     = pred_rmsP;
+	pred_panel_9_rmsP     = pred_rmsDP;	
 	pred_panel_9_pc       = pred_pc;
 	pred_panel_9_pcP      = pred_pcP;
+	pred_panel_9_pcP      = pred_pcDP;	
 	pred_panel_9_truth    = data_test;
 	pred_panel_9_ose      = f_ext;
 	        
@@ -219,10 +309,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_10_pcTMdiff = pred_pcTM;
 	pred_panel_10_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_10_pcTMdiff = pred_panel_10_pcTMdiff - pred_pcTMP;
+
+	pred_panel_10_pcIMDdiff = pred_pcIM;
+	pred_panel_10_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_10_pcIMDdiff = pred_panel_10_pcIMdiff - pred_pcIMDP;
+	pred_panel_10_pcTMDdiff = pred_pcTM;
+	pred_panel_10_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_10_pcTMDdiff = pred_panel_10_pcTMdiff - pred_pcTMDP;
+	
 	pred_panel_10_rms      = pred_rms;
 	pred_panel_10_rmsP     = pred_rmsP;
+	pred_panel_10_rmsP     = pred_rmsDP;	
 	pred_panel_10_pc       = pred_pc;
 	pred_panel_10_pcP      = pred_pcP;
+	pred_panel_10_pcP      = pred_pcDP;	
 	pred_panel_10_truth    = data_test;
 	pred_panel_10_ose      = f_ext;
 
@@ -241,10 +341,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_11_pcTMdiff = pred_pcTM;
 	pred_panel_11_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_11_pcTMdiff = pred_panel_11_pcTMdiff - pred_pcTMP;
+
+	pred_panel_11_pcIMDdiff = pred_pcIM;
+	pred_panel_11_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_11_pcIMDdiff = pred_panel_11_pcIMdiff - pred_pcIMDP;
+	pred_panel_11_pcTMDdiff = pred_pcTM;
+	pred_panel_11_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_11_pcTMDdiff = pred_panel_11_pcTMdiff - pred_pcTMDP;
+	
 	pred_panel_11_rms      = pred_rms;
 	pred_panel_11_rmsP     = pred_rmsP;
+	pred_panel_11_rmsP     = pred_rmsDP;	
 	pred_panel_11_pc       = pred_pc;
 	pred_panel_11_pcP      = pred_pcP;
+	pred_panel_11_pcP      = pred_pcDP;	
 	pred_panel_11_truth    = data_test;
 	pred_panel_11_ose      = f_ext;
 
@@ -263,10 +373,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_12_pcTMdiff = pred_pcTM;
 	pred_panel_12_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_12_pcTMdiff = pred_panel_12_pcTMdiff - pred_pcTMP;
+
+	pred_panel_12_pcIMDdiff = pred_pcIM;
+	pred_panel_12_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_12_pcIMDdiff = pred_panel_12_pcIMdiff - pred_pcIMDP;
+	pred_panel_12_pcTMDdiff = pred_pcTM;
+	pred_panel_12_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_12_pcTMDdiff = pred_panel_12_pcTMdiff - pred_pcTMDP;
+	
 	pred_panel_12_rms      = pred_rms;
 	pred_panel_12_rmsP     = pred_rmsP;
+	pred_panel_12_rmsP     = pred_rmsDP;	
 	pred_panel_12_pc       = pred_pc;
 	pred_panel_12_pcP      = pred_pcP;
+	pred_panel_12_pcP      = pred_pcDP;	
 	pred_panel_12_truth    = data_test;
 	pred_panel_12_ose      = f_ext;
 
@@ -285,10 +405,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_13_pcTMdiff = pred_pcTM;
 	pred_panel_13_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_13_pcTMdiff = pred_panel_13_pcTMdiff - pred_pcTMP;
+
+	pred_panel_13_pcIMDdiff = pred_pcIM;
+	pred_panel_13_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_13_pcIMDdiff = pred_panel_13_pcIMdiff - pred_pcIMDP;
+	pred_panel_13_pcTMDdiff = pred_pcTM;
+	pred_panel_13_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_13_pcTMDdiff = pred_panel_13_pcTMdiff - pred_pcTMDP;
+	
 	pred_panel_13_rms      = pred_rms;
 	pred_panel_13_rmsP     = pred_rmsP;
+	pred_panel_13_rmsP     = pred_rmsDP;	
 	pred_panel_13_pc       = pred_pc;
 	pred_panel_13_pcP      = pred_pcP;
+	pred_panel_13_pcP      = pred_pcDP;	
 	pred_panel_13_truth    = data_test;
 	pred_panel_13_ose      = f_ext;
 
@@ -307,10 +437,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_14_pcTMdiff = pred_pcTM;
 	pred_panel_14_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_14_pcTMdiff = pred_panel_14_pcTMdiff - pred_pcTMP;
+
+	pred_panel_14_pcIMDdiff = pred_pcIM;
+	pred_panel_14_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_14_pcIMDdiff = pred_panel_14_pcIMdiff - pred_pcIMDP;
+	pred_panel_14_pcTMDdiff = pred_pcTM;
+	pred_panel_14_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_14_pcTMDdiff = pred_panel_14_pcTMdiff - pred_pcTMDP;
+	
 	pred_panel_14_rms      = pred_rms;
 	pred_panel_14_rmsP     = pred_rmsP;
+	pred_panel_14_rmsP     = pred_rmsDP;	
 	pred_panel_14_pc       = pred_pc;
 	pred_panel_14_pcP      = pred_pcP;
+	pred_panel_14_pcP      = pred_pcDP;	
 	pred_panel_14_truth    = data_test;
 	pred_panel_14_ose      = f_ext;
 	    
@@ -329,10 +469,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_15_pcTMdiff = pred_pcTM;
 	pred_panel_15_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_15_pcTMdiff = pred_panel_15_pcTMdiff - pred_pcTMP;
+
+	pred_panel_15_pcIMDdiff = pred_pcIM;
+	pred_panel_15_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_15_pcIMDdiff = pred_panel_15_pcIMdiff - pred_pcIMDP;
+	pred_panel_15_pcTMDdiff = pred_pcTM;
+	pred_panel_15_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_15_pcTMDdiff = pred_panel_15_pcTMdiff - pred_pcTMDP;
+	
 	pred_panel_15_rms      = pred_rms;
 	pred_panel_15_rmsP     = pred_rmsP;
+	pred_panel_15_rmsP     = pred_rmsDP;	
 	pred_panel_15_pc       = pred_pc;
 	pred_panel_15_pcP      = pred_pcP;
+	pred_panel_15_pcP      = pred_pcDP;	
 	pred_panel_15_truth    = data_test;
 	pred_panel_15_ose      = f_ext;
 	        
@@ -351,10 +501,20 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_16_pcTMdiff = pred_pcTM;
 	pred_panel_16_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
 	pred_panel_16_pcTMdiff = pred_panel_16_pcTMdiff - pred_pcTMP;
+
+	pred_panel_16_pcIMDdiff = pred_pcIM;
+	pred_panel_16_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_16_pcIMDdiff = pred_panel_16_pcIMdiff - pred_pcIMDP;
+	pred_panel_16_pcTMDdiff = pred_pcTM;
+	pred_panel_16_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_16_pcTMDdiff = pred_panel_16_pcTMdiff - pred_pcTMDP;
+	
 	pred_panel_16_rms      = pred_rms;
 	pred_panel_16_rmsP     = pred_rmsP;
+	pred_panel_16_rmsP     = pred_rmsDP;	
 	pred_panel_16_pc       = pred_pc;
 	pred_panel_16_pcP      = pred_pcP;
+	pred_panel_16_pcP      = pred_pcDP;	
 	pred_panel_16_truth    = data_test;
 	pred_panel_16_ose      = f_ext;
 
@@ -429,6 +589,40 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_shift_16_pcTM     = pred_panel_16_pcTM(mM,:);
 	pred_panel_shift_16_pcIMdiff = pred_panel_16_pcIMdiff(mM,:);
 	pred_panel_shift_16_pcTMdiff = pred_panel_16_pcTMdiff(mM,:);
+
+	% damped persistence
+	pred_panel_shift_1_pcIMDdiff = pred_panel_1_pcIMDdiff(mM,:);
+	pred_panel_shift_1_pcTMDdiff = pred_panel_1_pcTMDdiff(mM,:);
+	pred_panel_shift_2_pcIMDdiff = pred_panel_2_pcIMDdiff(mM,:);
+	pred_panel_shift_2_pcTMDdiff = pred_panel_2_pcTMDdiff(mM,:);
+	pred_panel_shift_3_pcIMDdiff = pred_panel_3_pcIMDdiff(mM,:);
+	pred_panel_shift_3_pcTMDdiff = pred_panel_3_pcTMDdiff(mM,:);
+	pred_panel_shift_4_pcIMDdiff = pred_panel_4_pcIMDdiff(mM,:);
+	pred_panel_shift_4_pcTMDdiff = pred_panel_4_pcTMDdiff(mM,:);
+	pred_panel_shift_5_pcIMDdiff = pred_panel_5_pcIMDdiff(mM,:);
+	pred_panel_shift_5_pcTMDdiff = pred_panel_5_pcTMDdiff(mM,:);
+	pred_panel_shift_6_pcIMDdiff = pred_panel_6_pcIMDdiff(mM,:);
+	pred_panel_shift_6_pcTMDdiff = pred_panel_6_pcTMDdiff(mM,:);
+	pred_panel_shift_7_pcIMDdiff = pred_panel_7_pcIMDdiff(mM,:);
+	pred_panel_shift_7_pcTMDdiff = pred_panel_7_pcTMDdiff(mM,:);
+	pred_panel_shift_8_pcIMDdiff = pred_panel_8_pcIMDdiff(mM,:);
+	pred_panel_shift_8_pcTMDdiff = pred_panel_8_pcTMDdiff(mM,:);
+	pred_panel_shift_9_pcIMDdiff = pred_panel_9_pcIMDdiff(mM,:);
+	pred_panel_shift_9_pcTMDdiff = pred_panel_9_pcTMDdiff(mM,:);
+	pred_panel_shift_10_pcIMDdiff = pred_panel_10_pcIMDdiff(mM,:);
+	pred_panel_shift_10_pcTMDdiff = pred_panel_10_pcTMDdiff(mM,:);
+	pred_panel_shift_11_pcIMDdiff = pred_panel_11_pcIMDdiff(mM,:);
+	pred_panel_shift_11_pcTMDdiff = pred_panel_11_pcTMDdiff(mM,:);
+	pred_panel_shift_12_pcIMDdiff = pred_panel_12_pcIMDdiff(mM,:);
+	pred_panel_shift_12_pcTMDdiff = pred_panel_12_pcTMDdiff(mM,:);
+	pred_panel_shift_13_pcIMDdiff = pred_panel_13_pcIMDdiff(mM,:);
+	pred_panel_shift_13_pcTMDdiff = pred_panel_13_pcTMDdiff(mM,:);
+	pred_panel_shift_14_pcIMDdiff = pred_panel_14_pcIMDdiff(mM,:);
+	pred_panel_shift_14_pcTMDdiff = pred_panel_14_pcTMDdiff(mM,:);
+	pred_panel_shift_15_pcIMDdiff = pred_panel_15_pcIMDdiff(mM,:);
+	pred_panel_shift_15_pcTMDdiff = pred_panel_15_pcTMDdiff(mM,:);
+	pred_panel_shift_16_pcIMDdiff = pred_panel_16_pcIMDdiff(mM,:);
+	pred_panel_shift_16_pcTMDdiff = pred_panel_16_pcTMDdiff(mM,:);	
 
 	S = fullfile(strcat(compDataDir,'comp_data',num2str(fullDataOn),'.mat'));
 	save(S);
