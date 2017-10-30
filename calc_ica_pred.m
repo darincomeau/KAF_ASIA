@@ -141,6 +141,10 @@ if exist(saveDir) == 0
     mkdir(saveDir)
 end
 
+if exist(predDir) == 0
+    mkdir(predDir)
+end
+
 trainTag = sprintf( 'x%i-%i_y%i-%i_yr%i-%i', lonLim( 1 ), ...
                                              lonLim( 2 ), ...
                                              latLim( 1 ), ...
