@@ -133,6 +133,7 @@ end
 
 saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_',num2str(trainLim(1)),'_',num2str(trainLim(2)));
 saveDir = fullfile('output/',saveTag,'/');
+predDir = fullfile('output/predictions/',saveTag,'/');
 arcticTag = strcat('Arctic_',varsUsed,'_q',num2str(embedWin),'_train_',num2str(trainLim(1)),'_',num2str(trainLim(2)));
 arcticDir = fullfile('output/',arcticTag,'/');
 
@@ -405,7 +406,6 @@ if exist(checkFile) == 0 | predOn == 1
 
     [pred_rms, pred_pc, pred_rmsP, pred_pcP] = calc_errors_v2(pred_traj, truth);
     [pred_rmsDP, pred_pcDP, pred_rmsP, pred_pcP] = calc_errors_v2(pred_trajDP, truth);
-    % [ pred_rms, pred_pc, pred_rmsP, pred_pcP, pred_rmsDP, pred_pcDP ] = calc_errors_v3( pred_traj, truth, ar1coef );
 
     % condition trajectories on initial month
     pred_rmsIM  = zeros(12,tLag);
@@ -474,7 +474,7 @@ if exist(checkFile) == 0 | predOn == 1
     end
 
     % S = fullfile(strcat(saveDir,'pred_ica.mat'));
-    S = fullfile(strcat(saveDir,'pred_ica',num2str(fullDataOn),'.mat'));
+    S = fullfile(strcat(predDir,'pred_ica',num2str(fullDataOn),'.mat'));
     save(S,'pred_traj','pred_rms','pred_pc','pred_rmsIM','pred_pcIM','pred_rmsTM','pred_pcTM', ...
         'pred_rmsP','pred_pcP','pred_rmsIMP','pred_pcIMP','pred_rmsTMP','pred_pcTMP', ...
         'pred_rmsDP','pred_pcDP','pred_rmsIMDP','pred_pcIMDP','pred_rmsTMDP','pred_pcTMDP', 'ar1coef', ...

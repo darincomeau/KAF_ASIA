@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 import cmocean
 
-WORK_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/output/'
+WORK_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/output/predictions/'
 SAVE_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/figures/'
 SEA_ICE_FILE = '/Users/dcomeau/Data/ice/CCSM4/piControl/' + \
     'b40.1850.track1.1deg.006.cice.h.aice_nh.000101-130012.nc'
@@ -1244,10 +1244,10 @@ plt.plot(tt, pred_var_rms[0, 3, :], label='SIC, SST, SLP, SIT')
 plt.plot(tt, pred_var_rmsP[0, :], '--', label='pers.')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlabel('lead time (months)')
-plt.yticks([0, 2.5e7, 5e7])
+plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
 plt.ylabel(r'km$^2$')
 plt.legend(loc='lower right', prop={'size': 8})
-plt.title('Arctic RMSE')
+plt.title('Arctic NRMSE')
 
 plt.subplot(3, 2, 2)
 plt.plot(tt, pred_var_pc[0, 0, :], label='SIC')
@@ -1267,8 +1267,8 @@ plt.plot(tt, pred_var_rms[1, 2, :], label='SIC, SST, SLP')
 plt.plot(tt, pred_var_rms[1, 3, :], label='SIC, SST, SLP, SIT')
 plt.plot(tt, pred_var_rmsP[1, :], '--', label='pers.')
 plt.xticks([0, 3, 6, 9, 12])
-plt.yticks([0, 0.6e7, 1.2e7])
-plt.title('Beaufort RMSE')
+plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.title('Beaufort NRMSE')
 
 plt.subplot(3, 2, 4)
 plt.plot(tt, pred_var_pc[1, 0, :], label='SIC')
@@ -1288,8 +1288,8 @@ plt.plot(tt, pred_var_rms[2, 2, :], label='SIC, SST, SLP')
 plt.plot(tt, pred_var_rms[2, 3, :], label='SIC, SST, SLP, SIT')
 plt.plot(tt, pred_var_rmsP[2, :], '--', label='pers.')
 plt.xticks([0, 3, 6, 9, 12])
-plt.yticks([0, 1e7, 2e7])
-plt.title('Bering RMSE')
+plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.title('Bering NRMSE')
 
 plt.subplot(3, 2, 6)
 plt.plot(tt, pred_var_pc[2, 0, :], label='SIC')

@@ -1,6 +1,6 @@
 function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 
-	compDataDir = fullfile(strcat('output/',iceVar,'/',varsUsed,'_q',num2str(embedWin),'_train_100_499','/'))
+	compDataDir = fullfile(strcat('output/predictions/',iceVar,'/',varsUsed,'_q',num2str(embedWin),'_train_100_499','/'))
 	if exist(compDataDir) == 0
     	mkdir(compDataDir)
 	end
@@ -10,7 +10,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [0 360];
 	latLim = [45 90];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_1_pcIM     = pred_pcIM;
@@ -42,7 +42,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [175 235];
 	latLim = [65 75];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_2_pcIM     = pred_pcIM;
@@ -74,7 +74,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [175 205];
 	latLim = [65 75];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_3_pcIM     = pred_pcIM;
@@ -106,7 +106,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [205 235];
 	latLim = [65 75];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_4_pcIM     = pred_pcIM;
@@ -138,7 +138,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [105 175];
 	latLim = [65 75];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_5_pcIM     = pred_pcIM;
@@ -170,7 +170,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [140 175];
 	latLim = [65 75];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_6_pcIM     = pred_pcIM;
@@ -202,7 +202,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [105 140];
 	latLim = [70 80];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_7_pcIM     = pred_pcIM;
@@ -234,7 +234,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [30 95];
 	latLim = [65 80];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_8_pcIM     = pred_pcIM;
@@ -266,7 +266,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [30 60];
 	latLim = [65 80];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_9_pcIM     = pred_pcIM;
@@ -298,7 +298,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [60 95];
 	latLim = [65 80];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_10_pcIM     = pred_pcIM;
@@ -330,7 +330,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [325 360];
 	latLim = [65 80];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_11_pcIM     = pred_pcIM;
@@ -362,7 +362,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [280 310];
 	latLim = [70 80];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_12_pcIM     = pred_pcIM;
@@ -394,7 +394,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [290 310];
 	latLim = [50 70];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_13_pcIM     = pred_pcIM;
@@ -426,7 +426,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [265 285];
 	latLim = [55 65];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_14_pcIM     = pred_pcIM;
@@ -458,7 +458,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [165 200];
 	latLim = [55 65];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_15_pcIM     = pred_pcIM;
@@ -490,7 +490,7 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	lonLim = [135 165];
 	latLim = [45 65];
 	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
-	saveDir = fullfile('output/',saveTag,'/');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
 	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
 	load(S)
 	pred_panel_16_pcIM     = pred_pcIM;
