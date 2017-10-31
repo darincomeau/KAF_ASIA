@@ -37,6 +37,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_1_pcDP     = pred_pcDP;	
 	pred_panel_1_truth    = data_test;
 	pred_panel_1_ose      = f_ext;
+
+	pred_panel_1_pcIMP    = pred_pcIMP
+	pred_panel_1_pcTMP    = pred_pcTMP
+	pred_panel_1_pcIMDP   = pred_pcIMDP
+	pred_panel_1_pcTMDP   = pred_pcTMDP			
 	    
 	region = 'ChukchiBeaufort';
 	lonLim = [175 235];
@@ -69,6 +74,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_2_pcDP     = pred_pcDP;	
 	pred_panel_2_truth    = data_test;
 	pred_panel_2_ose      = f_ext;
+
+	pred_panel_2_pcIMP    = pred_pcIMP
+	pred_panel_2_pcTMP    = pred_pcTMP
+	pred_panel_2_pcIMDP   = pred_pcIMDP
+	pred_panel_2_pcTMDP   = pred_pcTMDP	
 	        
 	region = 'Chukchi';
 	lonLim = [175 205];
@@ -101,6 +111,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_3_pcDP     = pred_pcDP;	
 	pred_panel_3_truth    = data_test;
 	pred_panel_3_ose      = f_ext;
+
+	pred_panel_3_pcIMP    = pred_pcIMP
+	pred_panel_3_pcTMP    = pred_pcTMP
+	pred_panel_3_pcIMDP   = pred_pcIMDP
+	pred_panel_3_pcTMDP   = pred_pcTMDP	
 	        
 	region = 'Beaufort';
 	lonLim = [205 235];
@@ -134,6 +149,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_4_truth    = data_test;
 	pred_panel_4_ose      = f_ext;
 
+	pred_panel_4_pcIMP    = pred_pcIMP
+	pred_panel_4_pcTMP    = pred_pcTMP
+	pred_panel_4_pcIMDP   = pred_pcIMDP
+	pred_panel_4_pcTMDP   = pred_pcTMDP	
+
 	region = 'EastSibLaptev';
 	lonLim = [105 175];
 	latLim = [65 75];
@@ -165,6 +185,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_5_pcDP     = pred_pcDP;	
 	pred_panel_5_truth    = data_test;
 	pred_panel_5_ose      = f_ext;
+
+	pred_panel_5_pcIMP    = pred_pcIMP
+	pred_panel_5_pcTMP    = pred_pcTMP
+	pred_panel_5_pcIMDP   = pred_pcIMDP
+	pred_panel_5_pcTMDP   = pred_pcTMDP	
 	        
 	region = 'EastSib';
 	lonLim = [140 175];
@@ -197,6 +222,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_6_pcDP     = pred_pcDP;	
 	pred_panel_6_truth    = data_test;
 	pred_panel_6_ose      = f_ext;
+
+	pred_panel_6_pcIMP    = pred_pcIMP
+	pred_panel_6_pcTMP    = pred_pcTMP
+	pred_panel_6_pcIMDP   = pred_pcIMDP
+	pred_panel_6_pcTMDP   = pred_pcTMDP	
 	        
 	region = 'Laptev';
 	lonLim = [105 140];
@@ -230,6 +260,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_7_truth    = data_test;
 	pred_panel_7_ose      = f_ext;
 
+	pred_panel_7_pcIMP    = pred_pcIMP
+	pred_panel_7_pcTMP    = pred_pcTMP
+	pred_panel_7_pcIMDP   = pred_pcIMDP
+	pred_panel_7_pcTMDP   = pred_pcTMDP	
+
 	region = 'BarentsKara';
 	lonLim = [30 95];
 	latLim = [65 80];
@@ -261,6 +296,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_8_pcDP     = pred_pcDP;	
 	pred_panel_8_truth    = data_test;
 	pred_panel_8_ose      = f_ext;
+
+	pred_panel_8_pcIMP    = pred_pcIMP
+	pred_panel_8_pcTMP    = pred_pcTMP
+	pred_panel_8_pcIMDP   = pred_pcIMDP
+	pred_panel_8_pcTMDP   = pred_pcTMDP	
 	        
 	region = 'Barents';
 	lonLim = [30 60];
@@ -293,6 +333,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_9_pcDP     = pred_pcDP;	
 	pred_panel_9_truth    = data_test;
 	pred_panel_9_ose      = f_ext;
+
+	pred_panel_9_pcIMP    = pred_pcIMP
+	pred_panel_9_pcTMP    = pred_pcTMP
+	pred_panel_9_pcIMDP   = pred_pcIMDP
+	pred_panel_9_pcTMDP   = pred_pcTMDP	
 	        
 	region = 'Kara';
 	lonLim = [60 95];
@@ -326,6 +371,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_10_truth    = data_test;
 	pred_panel_10_ose      = f_ext;
 
+	pred_panel_10_pcIMP    = pred_pcIMP
+	pred_panel_10_pcTMP    = pred_pcTMP
+	pred_panel_10_pcIMDP   = pred_pcIMDP
+	pred_panel_10_pcTMDP   = pred_pcTMDP	
+
 	region = 'Greenland';
 	lonLim = [325 360];
 	latLim = [65 80];
@@ -357,6 +407,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_11_pcDP     = pred_pcDP;	
 	pred_panel_11_truth    = data_test;
 	pred_panel_11_ose      = f_ext;
+
+	pred_panel_11_pcIMP    = pred_pcIMP
+	pred_panel_11_pcTMP    = pred_pcTMP
+	pred_panel_11_pcIMDP   = pred_pcIMDP
+	pred_panel_11_pcTMDP   = pred_pcTMDP	
 
 	region = 'Baffin';
 	lonLim = [280 310];
@@ -390,6 +445,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_12_truth    = data_test;
 	pred_panel_12_ose      = f_ext;
 
+	pred_panel_12_pcIMP    = pred_pcIMP
+	pred_panel_12_pcTMP    = pred_pcTMP
+	pred_panel_12_pcIMDP   = pred_pcIMDP
+	pred_panel_12_pcTMDP   = pred_pcTMDP	
+
 	region = 'Labrador';
 	lonLim = [290 310];
 	latLim = [50 70];
@@ -422,6 +482,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_13_truth    = data_test;
 	pred_panel_13_ose      = f_ext;
 
+	pred_panel_13_pcIMP    = pred_pcIMP
+	pred_panel_13_pcTMP    = pred_pcTMP
+	pred_panel_13_pcIMDP   = pred_pcIMDP
+	pred_panel_13_pcTMDP   = pred_pcTMDP	
+
 	region = 'Hudson';
 	lonLim = [265 285];
 	latLim = [55 65];
@@ -453,6 +518,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_14_pcDP     = pred_pcDP;	
 	pred_panel_14_truth    = data_test;
 	pred_panel_14_ose      = f_ext;
+
+	pred_panel_14_pcIMP    = pred_pcIMP
+	pred_panel_14_pcTMP    = pred_pcTMP
+	pred_panel_14_pcIMDP   = pred_pcIMDP
+	pred_panel_14_pcTMDP   = pred_pcTMDP	
 	    
 	region = 'Bering';
 	lonLim = [165 200];
@@ -485,6 +555,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_15_pcDP     = pred_pcDP;	
 	pred_panel_15_truth    = data_test;
 	pred_panel_15_ose      = f_ext;
+
+	pred_panel_15_pcIMP    = pred_pcIMP
+	pred_panel_15_pcTMP    = pred_pcTMP
+	pred_panel_15_pcIMDP   = pred_pcIMDP
+	pred_panel_15_pcTMDP   = pred_pcTMDP	
 	        
 	region = 'Okhotsk';
 	lonLim = [135 165];
@@ -517,6 +592,11 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_16_pcDP     = pred_pcDP;	
 	pred_panel_16_truth    = data_test;
 	pred_panel_16_ose      = f_ext;
+
+	pred_panel_16_pcIMP    = pred_pcIMP
+	pred_panel_16_pcTMP    = pred_pcTMP
+	pred_panel_16_pcIMDP   = pred_pcIMDP
+	pred_panel_16_pcTMDP   = pred_pcTMDP	
 
 
 	if embedWin == 6
@@ -622,7 +702,40 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_shift_15_pcIMDdiff = pred_panel_15_pcIMDdiff(mM,:);
 	pred_panel_shift_15_pcTMDdiff = pred_panel_15_pcTMDdiff(mM,:);
 	pred_panel_shift_16_pcIMDdiff = pred_panel_16_pcIMDdiff(mM,:);
-	pred_panel_shift_16_pcTMDdiff = pred_panel_16_pcTMDdiff(mM,:);	
+	pred_panel_shift_16_pcTMDdiff = pred_panel_16_pcTMDdiff(mM,:);
+
+	pred_panel_shift_1_pcIMDP = pred_panel_1_pcIMDP(mM,:);
+	pred_panel_shift_1_pcTMDP = pred_panel_1_pcTMDP(mM,:);
+	pred_panel_shift_2_pcIMDP = pred_panel_2_pcIMDP(mM,:);
+	pred_panel_shift_2_pcTMDP = pred_panel_2_pcTMDP(mM,:);
+	pred_panel_shift_3_pcIMDP = pred_panel_3_pcIMDP(mM,:);
+	pred_panel_shift_3_pcTMDP = pred_panel_3_pcTMDP(mM,:);
+	pred_panel_shift_4_pcIMDP = pred_panel_4_pcIMDP(mM,:);
+	pred_panel_shift_4_pcTMDP = pred_panel_4_pcTMDP(mM,:);
+	pred_panel_shift_5_pcIMDP = pred_panel_5_pcIMDP(mM,:);
+	pred_panel_shift_5_pcTMDP = pred_panel_5_pcTMDP(mM,:);
+	pred_panel_shift_6_pcIMDP = pred_panel_6_pcIMDP(mM,:);
+	pred_panel_shift_6_pcTMDP = pred_panel_6_pcTMDP(mM,:);
+	pred_panel_shift_7_pcIMDP = pred_panel_7_pcIMDP(mM,:);
+	pred_panel_shift_7_pcTMDP = pred_panel_7_pcTMDP(mM,:);
+	pred_panel_shift_8_pcIMDP = pred_panel_8_pcIMDP(mM,:);
+	pred_panel_shift_8_pcTMDP = pred_panel_8_pcTMDP(mM,:);
+	pred_panel_shift_9_pcIMDP = pred_panel_9_pcIMDP(mM,:);
+	pred_panel_shift_9_pcTMDP = pred_panel_9_pcTMDP(mM,:);
+	pred_panel_shift_10_pcIMDP = pred_panel_10_pcIMDP(mM,:);
+	pred_panel_shift_10_pcTMDP = pred_panel_10_pcTMDP(mM,:);
+	pred_panel_shift_11_pcIMDP = pred_panel_11_pcIMDP(mM,:);
+	pred_panel_shift_11_pcTMDP = pred_panel_11_pcTMDP(mM,:);
+	pred_panel_shift_12_pcIMDP = pred_panel_12_pcIMDP(mM,:);
+	pred_panel_shift_12_pcTMDP = pred_panel_12_pcTMDP(mM,:);
+	pred_panel_shift_13_pcIMDP = pred_panel_13_pcIMDP(mM,:);
+	pred_panel_shift_13_pcTMDP = pred_panel_13_pcTMDP(mM,:);
+	pred_panel_shift_14_pcIMDP = pred_panel_14_pcIMDP(mM,:);
+	pred_panel_shift_14_pcTMDP = pred_panel_14_pcTMDP(mM,:);
+	pred_panel_shift_15_pcIMDP = pred_panel_15_pcIMDP(mM,:);
+	pred_panel_shift_15_pcTMDP = pred_panel_15_pcTMDP(mM,:);
+	pred_panel_shift_16_pcIMDP = pred_panel_16_pcIMDP(mM,:);
+	pred_panel_shift_16_pcTMDP = pred_panel_16_pcTMDP(mM,:);	
 
 	S = fullfile(strcat(compDataDir,'comp_data',num2str(fullDataOn),'.mat'));
 	save(S);

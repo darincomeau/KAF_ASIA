@@ -4,7 +4,7 @@ clear all
 close all
 
 predOn = 1;
-fullDataOn = 1;
+fullDataOn = 0;
 
 trainLim = [100 499];
 testLim  = [500 899];
