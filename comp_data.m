@@ -31,10 +31,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 
 	pred_panel_1_rms      = pred_rms;
 	pred_panel_1_rmsP     = pred_rmsP;
-	pred_panel_1_rmsP     = pred_rmsDP;	
+	pred_panel_1_rmsDP    = pred_rmsDP;	
 	pred_panel_1_pc       = pred_pc;
 	pred_panel_1_pcP      = pred_pcP;
-	pred_panel_1_pcP      = pred_pcDP;	
+	pred_panel_1_pcDP     = pred_pcDP;	
 	pred_panel_1_truth    = data_test;
 	pred_panel_1_ose      = f_ext;
 	    
@@ -63,10 +63,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	
 	pred_panel_2_rms      = pred_rms;
 	pred_panel_2_rmsP     = pred_rmsP;
-	pred_panel_2_rmsP     = pred_rmsDP;	
+	pred_panel_2_rmsDP    = pred_rmsDP;	
 	pred_panel_2_pc       = pred_pc;
 	pred_panel_2_pcP      = pred_pcP;
-	pred_panel_2_pcP      = pred_pcDP;	
+	pred_panel_2_pcDP     = pred_pcDP;	
 	pred_panel_2_truth    = data_test;
 	pred_panel_2_ose      = f_ext;
 	        
@@ -95,10 +95,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	
 	pred_panel_3_rms      = pred_rms;
 	pred_panel_3_rmsP     = pred_rmsP;
-	pred_panel_3_rmsP     = pred_rmsDP;	
+	pred_panel_3_rmsDP    = pred_rmsDP;	
 	pred_panel_3_pc       = pred_pc;
 	pred_panel_3_pcP      = pred_pcP;
-	pred_panel_3_pcP      = pred_pcDP;	
+	pred_panel_3_pcDP     = pred_pcDP;	
 	pred_panel_3_truth    = data_test;
 	pred_panel_3_ose      = f_ext;
 	        
@@ -127,10 +127,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	
 	pred_panel_4_rms      = pred_rms;
 	pred_panel_4_rmsP     = pred_rmsP;
-	pred_panel_4_rmsP     = pred_rmsDP;	
+	pred_panel_4_rmsDP    = pred_rmsDP;	
 	pred_panel_4_pc       = pred_pc;
 	pred_panel_4_pcP      = pred_pcP;
-	pred_panel_4_pcP      = pred_pcDP;	
+	pred_panel_4_pcDP     = pred_pcDP;	
 	pred_panel_4_truth    = data_test;
 	pred_panel_4_ose      = f_ext;
 
@@ -159,10 +159,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	
 	pred_panel_5_rms      = pred_rms;
 	pred_panel_5_rmsP     = pred_rmsP;
-	pred_panel_5_rmsP     = pred_rmsDP;	
+	pred_panel_5_rmsDP    = pred_rmsDP;	
 	pred_panel_5_pc       = pred_pc;
 	pred_panel_5_pcP      = pred_pcP;
-	pred_panel_5_pcP      = pred_pcDP;	
+	pred_panel_5_pcDP     = pred_pcDP;	
 	pred_panel_5_truth    = data_test;
 	pred_panel_5_ose      = f_ext;
 	        
@@ -191,10 +191,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	
 	pred_panel_6_rms      = pred_rms;
 	pred_panel_6_rmsP     = pred_rmsP;
-	pred_panel_6_rmsP     = pred_rmsDP;	
+	pred_panel_6_rmsDP    = pred_rmsDP;	
 	pred_panel_6_pc       = pred_pc;
 	pred_panel_6_pcP      = pred_pcP;
-	pred_panel_6_pcP      = pred_pcDP;	
+	pred_panel_6_pcDP     = pred_pcDP;	
 	pred_panel_6_truth    = data_test;
 	pred_panel_6_ose      = f_ext;
 	        
@@ -223,10 +223,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	
 	pred_panel_7_rms      = pred_rms;
 	pred_panel_7_rmsP     = pred_rmsP;
-	pred_panel_7_rmsP     = pred_rmsDP;	
+	pred_panel_7_rmsDP    = pred_rmsDP;	
 	pred_panel_7_pc       = pred_pc;
 	pred_panel_7_pcP      = pred_pcP;
-	pred_panel_7_pcP      = pred_pcDP;	
+	pred_panel_7_pcDP     = pred_pcDP;	
 	pred_panel_7_truth    = data_test;
 	pred_panel_7_ose      = f_ext;
 
@@ -255,10 +255,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	
 	pred_panel_8_rms      = pred_rms;
 	pred_panel_8_rmsP     = pred_rmsP;
-	pred_panel_8_rmsP     = pred_rmsDP;	
+	pred_panel_8_rmsDP    = pred_rmsDP;	
 	pred_panel_8_pc       = pred_pc;
 	pred_panel_8_pcP      = pred_pcP;
-	pred_panel_8_pcP      = pred_pcDP;	
+	pred_panel_8_pcDP     = pred_pcDP;	
 	pred_panel_8_truth    = data_test;
 	pred_panel_8_ose      = f_ext;
 	        
@@ -287,10 +287,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	
 	pred_panel_9_rms      = pred_rms;
 	pred_panel_9_rmsP     = pred_rmsP;
-	pred_panel_9_rmsP     = pred_rmsDP;	
+	pred_panel_9_rmsDP    = pred_rmsDP;	
 	pred_panel_9_pc       = pred_pc;
 	pred_panel_9_pcP      = pred_pcP;
-	pred_panel_9_pcP      = pred_pcDP;	
+	pred_panel_9_pcDP     = pred_pcDP;	
 	pred_panel_9_truth    = data_test;
 	pred_panel_9_ose      = f_ext;
 	        
@@ -319,10 +319,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	
 	pred_panel_10_rms      = pred_rms;
 	pred_panel_10_rmsP     = pred_rmsP;
-	pred_panel_10_rmsP     = pred_rmsDP;	
+	pred_panel_10_rmsDP    = pred_rmsDP;	
 	pred_panel_10_pc       = pred_pc;
 	pred_panel_10_pcP      = pred_pcP;
-	pred_panel_10_pcP      = pred_pcDP;	
+	pred_panel_10_pcDP     = pred_pcDP;	
 	pred_panel_10_truth    = data_test;
 	pred_panel_10_ose      = f_ext;
 
@@ -351,10 +351,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	
 	pred_panel_11_rms      = pred_rms;
 	pred_panel_11_rmsP     = pred_rmsP;
-	pred_panel_11_rmsP     = pred_rmsDP;	
+	pred_panel_11_rmsDP    = pred_rmsDP;	
 	pred_panel_11_pc       = pred_pc;
 	pred_panel_11_pcP      = pred_pcP;
-	pred_panel_11_pcP      = pred_pcDP;	
+	pred_panel_11_pcDP     = pred_pcDP;	
 	pred_panel_11_truth    = data_test;
 	pred_panel_11_ose      = f_ext;
 
@@ -383,10 +383,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	
 	pred_panel_12_rms      = pred_rms;
 	pred_panel_12_rmsP     = pred_rmsP;
-	pred_panel_12_rmsP     = pred_rmsDP;	
+	pred_panel_12_rmsDP    = pred_rmsDP;	
 	pred_panel_12_pc       = pred_pc;
 	pred_panel_12_pcP      = pred_pcP;
-	pred_panel_12_pcP      = pred_pcDP;	
+	pred_panel_12_pcDP     = pred_pcDP;	
 	pred_panel_12_truth    = data_test;
 	pred_panel_12_ose      = f_ext;
 
@@ -415,10 +415,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	
 	pred_panel_13_rms      = pred_rms;
 	pred_panel_13_rmsP     = pred_rmsP;
-	pred_panel_13_rmsP     = pred_rmsDP;	
+	pred_panel_13_rmsDP    = pred_rmsDP;	
 	pred_panel_13_pc       = pred_pc;
 	pred_panel_13_pcP      = pred_pcP;
-	pred_panel_13_pcP      = pred_pcDP;	
+	pred_panel_13_pcDP     = pred_pcDP;	
 	pred_panel_13_truth    = data_test;
 	pred_panel_13_ose      = f_ext;
 
@@ -447,10 +447,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	
 	pred_panel_14_rms      = pred_rms;
 	pred_panel_14_rmsP     = pred_rmsP;
-	pred_panel_14_rmsP     = pred_rmsDP;	
+	pred_panel_14_rmsDP    = pred_rmsDP;	
 	pred_panel_14_pc       = pred_pc;
 	pred_panel_14_pcP      = pred_pcP;
-	pred_panel_14_pcP      = pred_pcDP;	
+	pred_panel_14_pcDP     = pred_pcDP;	
 	pred_panel_14_truth    = data_test;
 	pred_panel_14_ose      = f_ext;
 	    
@@ -479,10 +479,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	
 	pred_panel_15_rms      = pred_rms;
 	pred_panel_15_rmsP     = pred_rmsP;
-	pred_panel_15_rmsP     = pred_rmsDP;	
+	pred_panel_15_rmsDP    = pred_rmsDP;	
 	pred_panel_15_pc       = pred_pc;
 	pred_panel_15_pcP      = pred_pcP;
-	pred_panel_15_pcP      = pred_pcDP;	
+	pred_panel_15_pcDP     = pred_pcDP;	
 	pred_panel_15_truth    = data_test;
 	pred_panel_15_ose      = f_ext;
 	        
@@ -511,10 +511,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	
 	pred_panel_16_rms      = pred_rms;
 	pred_panel_16_rmsP     = pred_rmsP;
-	pred_panel_16_rmsP     = pred_rmsDP;	
+	pred_panel_16_rmsDP    = pred_rmsDP;	
 	pred_panel_16_pc       = pred_pc;
 	pred_panel_16_pcP      = pred_pcP;
-	pred_panel_16_pcP      = pred_pcDP;	
+	pred_panel_16_pcDP     = pred_pcDP;	
 	pred_panel_16_truth    = data_test;
 	pred_panel_16_ose      = f_ext;
 

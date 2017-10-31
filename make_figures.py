@@ -14,7 +14,8 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 import cmocean
 
-WORK_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/output/predictions/'
+WORK_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/output/\
+    predictions/'
 SAVE_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/figures/'
 SEA_ICE_FILE = '/Users/dcomeau/Data/ice/CCSM4/piControl/' + \
     'b40.1850.track1.1deg.006.cice.h.aice_nh.000101-130012.nc'
@@ -269,7 +270,7 @@ dataDir = WORK_DIR + region + '_' + varUsed + '_q' + str(embedWin) + \
 dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 
 pred_pcTM = dataPredICA['pred_pcTM']
-pred_pcTMP = dataPredICA['pred_pcTMP']
+pred_pcTMP = dataPredICA['pred_pcTMDP']
 cTicks = np.linspace(0, 1, 3)
 
 plt.rcParams.update({'font.size': 14})
@@ -698,39 +699,22 @@ pred_panel_14_pc = np.squeeze(compData['pred_panel_14_pc'])
 pred_panel_15_pc = np.squeeze(compData['pred_panel_15_pc'])
 pred_panel_16_pc = np.squeeze(compData['pred_panel_16_pc'])
 
-pred_panel_1_pcP = np.squeeze(compData['pred_panel_1_pcP'])
-pred_panel_2_pcP = np.squeeze(compData['pred_panel_2_pcP'])
-pred_panel_3_pcP = np.squeeze(compData['pred_panel_3_pcP'])
-pred_panel_4_pcP = np.squeeze(compData['pred_panel_4_pcP'])
-pred_panel_5_pcP = np.squeeze(compData['pred_panel_5_pcP'])
-pred_panel_6_pcP = np.squeeze(compData['pred_panel_6_pcP'])
-pred_panel_7_pcP = np.squeeze(compData['pred_panel_7_pcP'])
-pred_panel_8_pcP = np.squeeze(compData['pred_panel_8_pcP'])
-pred_panel_9_pcP = np.squeeze(compData['pred_panel_9_pcP'])
-pred_panel_10_pcP = np.squeeze(compData['pred_panel_10_pcP'])
-pred_panel_11_pcP = np.squeeze(compData['pred_panel_11_pcP'])
-pred_panel_12_pcP = np.squeeze(compData['pred_panel_12_pcP'])
-pred_panel_13_pcP = np.squeeze(compData['pred_panel_13_pcP'])
-pred_panel_14_pcP = np.squeeze(compData['pred_panel_14_pcP'])
-pred_panel_15_pcP = np.squeeze(compData['pred_panel_15_pcP'])
-pred_panel_16_pcP = np.squeeze(compData['pred_panel_16_pcP'])
-
-# pred_panel_1_pcP = np.squeeze(compData['pred_panel_1_pcDP'])
-# pred_panel_2_pcP = np.squeeze(compData['pred_panel_2_pcDP'])
-# pred_panel_3_pcP = np.squeeze(compData['pred_panel_3_pcDP'])
-# pred_panel_4_pcP = np.squeeze(compData['pred_panel_4_pcDP'])
-# pred_panel_5_pcP = np.squeeze(compData['pred_panel_5_pcDP'])
-# pred_panel_6_pcP = np.squeeze(compData['pred_panel_6_pcDP'])
-# pred_panel_7_pcP = np.squeeze(compData['pred_panel_7_pcDP'])
-# pred_panel_8_pcP = np.squeeze(compData['pred_panel_8_pcDP'])
-# pred_panel_9_pcP = np.squeeze(compData['pred_panel_9_pcDP'])
-# pred_panel_10_pcP = np.squeeze(compData['pred_panel_10_pcDP'])
-# pred_panel_11_pcP = np.squeeze(compData['pred_panel_11_pcDP'])
-# pred_panel_12_pcP = np.squeeze(compData['pred_panel_12_pcDP'])
-# pred_panel_13_pcP = np.squeeze(compData['pred_panel_13_pcDP'])
-# pred_panel_14_pcP = np.squeeze(compData['pred_panel_14_pcDP'])
-# pred_panel_15_pcP = np.squeeze(compData['pred_panel_15_pcDP'])
-# pred_panel_16_pcP = np.squeeze(compData['pred_panel_16_pcDP'])
+pred_panel_1_pcP = np.squeeze(compData['pred_panel_1_pcDP'])
+pred_panel_2_pcP = np.squeeze(compData['pred_panel_2_pcDP'])
+pred_panel_3_pcP = np.squeeze(compData['pred_panel_3_pcDP'])
+pred_panel_4_pcP = np.squeeze(compData['pred_panel_4_pcDP'])
+pred_panel_5_pcP = np.squeeze(compData['pred_panel_5_pcDP'])
+pred_panel_6_pcP = np.squeeze(compData['pred_panel_6_pcDP'])
+pred_panel_7_pcP = np.squeeze(compData['pred_panel_7_pcDP'])
+pred_panel_8_pcP = np.squeeze(compData['pred_panel_8_pcDP'])
+pred_panel_9_pcP = np.squeeze(compData['pred_panel_9_pcDP'])
+pred_panel_10_pcP = np.squeeze(compData['pred_panel_10_pcDP'])
+pred_panel_11_pcP = np.squeeze(compData['pred_panel_11_pcDP'])
+pred_panel_12_pcP = np.squeeze(compData['pred_panel_12_pcDP'])
+pred_panel_13_pcP = np.squeeze(compData['pred_panel_13_pcDP'])
+pred_panel_14_pcP = np.squeeze(compData['pred_panel_14_pcDP'])
+pred_panel_15_pcP = np.squeeze(compData['pred_panel_15_pcDP'])
+pred_panel_16_pcP = np.squeeze(compData['pred_panel_16_pcDP'])
 
 tt = np.linspace(0, int(tLag) - 1, int(tLag))
 
@@ -1213,18 +1197,18 @@ pred_var_pc[2, 3, :] = data['pred_pc']
 dataDir = WORK_DIR + region[0] + '_' + varUsed[0] + '_q' + str(embedWin) + \
     '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
-pred_var_rmsP[0, :] = data['pred_rmsP']
-pred_var_pcP[0, :] = data['pred_pcP']
+pred_var_rmsP[0, :] = data['pred_rmsDP']
+pred_var_pcP[0, :] = data['pred_pcDP']
 dataDir = WORK_DIR + region[1] + '_' + varUsed[0] + '_q' + str(embedWin) + \
     '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
-pred_var_rmsP[1, :] = data['pred_rmsP']
-pred_var_pcP[1, :] = data['pred_pcP']
+pred_var_rmsP[1, :] = data['pred_rmsDP']
+pred_var_pcP[1, :] = data['pred_pcDP']
 dataDir = WORK_DIR + region[2] + '_' + varUsed[0] + '_q' + str(embedWin) + \
     '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
-pred_var_rmsP[2, :] = data['pred_rmsP']
-pred_var_pcP[2, :] = data['pred_pcP']
+pred_var_rmsP[2, :] = data['pred_rmsDP']
+pred_var_pcP[2, :] = data['pred_pcDP']
 
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
