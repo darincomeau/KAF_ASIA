@@ -132,6 +132,9 @@ switch varsUsed
     case 'SIC_SST_SLP'
         varsFlag = 7;
 
+    case 'SIC_SST_SITq48'
+        varsFlag = 8;        
+
 end
 
 

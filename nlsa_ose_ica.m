@@ -103,7 +103,24 @@ function model = nlsa_ose_ica( lonLim, latLim, trainLim, testLim, embedWin, vars
             In.Src( 3 ).xLim  = [ 0 360 ];
             In.Src( 3 ).yLim  = [ 45  90 ];
             In.Src( 3 ).idxE  = 1 : embedWin;
-        end        
+        end
+
+        if varsFlag == 8
+            In.Src( 1 ).field = 'SIC';
+            In.Src( 1 ).xLim  = [ lonLim(1) lonLim(2) ];
+            In.Src( 1 ).yLim  = [ latLim(1) latLim(2) ];
+            In.Src( 1 ).idxE  = 1 : embedWin;
+
+            In.Src( 2 ).field = 'SST';
+            In.Src( 2 ).xLim  = [ lonLim(1) lonLim(2) ];
+            In.Src( 2 ).yLim  = [ latLim(1) latLim(2) ];
+            In.Src( 2 ).idxE  = 1 : embedWin;
+
+            In.Src( 3 ).field = 'SIT';
+            In.Src( 3 ).xLim  = [ lonLim(1) lonLim(2) ];
+            In.Src( 3 ).yLim  = [ latLim(1) latLim(2) ];
+            In.Src( 3 ).idxE  = 1 : 48;
+        end                
 
         In.trgExperiment  = In.experiment;
         In.Trg            = In.Src;
@@ -210,7 +227,24 @@ function model = nlsa_ose_ica( lonLim, latLim, trainLim, testLim, embedWin, vars
             Out.Src( 3 ).xLim  = [ 0 360 ];
             Out.Src( 3 ).yLim  = [ 45  90 ];
             Out.Src( 3 ).idxE  = 1 : embedWin;
-        end        
+        end
+
+        if varsFlag == 8
+            Out.Src( 1 ).field = 'SIC';
+            Out.Src( 1 ).xLim  = [ lonLim(1) lonLim(2) ];
+            Out.Src( 1 ).yLim  = [ latLim(1) latLim(2) ];
+            Out.Src( 1 ).idxE  = 1 : embedWin;
+
+            Out.Src( 2 ).field = 'SST';
+            Out.Src( 2 ).xLim  = [ lonLim(1) lonLim(2) ];
+            Out.Src( 2 ).yLim  = [ latLim(1) latLim(2) ];
+            Out.Src( 2 ).idxE  = 1 : embedWin;
+
+            Out.Src( 3 ).field = 'SIT';
+            Out.Src( 3 ).xLim  = [ lonLim(1) lonLim(2) ];
+            Out.Src( 3 ).yLim  = [ latLim(1) latLim(2) ];
+            Out.Src( 3 ).idxE  = 1 : 48;
+        end              
 
         Out.trgExperiment  = Out.experiment;
         Out.Trg            = Out.Src;

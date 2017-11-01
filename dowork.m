@@ -76,3 +76,10 @@ comp_data('SIC_SST_SLP',12,'iva',fullDataOn)
 % region = 'Arctic'
 % calc_ica_pred
 % calc_iva_pred
+
+% one test with longer embedding window for SIT
+varsUsed = 'SIC_SST_SLPq48'
+embedWin = 12
+region = 'Arctic'
+calc_ica_pred
+calc_iva_pred
