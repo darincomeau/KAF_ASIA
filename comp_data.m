@@ -596,7 +596,44 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_16_pcIMP    = pred_pcIMP;
 	pred_panel_16_pcTMP    = pred_pcTMP;
 	pred_panel_16_pcIMDP   = pred_pcIMDP;
-	pred_panel_16_pcTMDP   = pred_pcTMDP;	
+	pred_panel_16_pcTMDP   = pred_pcTMDP;
+
+	region =  'CentralArctic';
+	lonLim = [0 360];
+	latLim = [70 90];
+	saveTag = strcat(region,'_',varsUsed,'_q',num2str(embedWin),'_train_100_499');
+	saveDir = fullfile('output/predictions/',saveTag,'/');
+	S = fullfile(strcat(saveDir,'pred_',iceVar,num2str(fullDataOn),'.mat'));
+	load(S)
+	pred_panel_17_pcIM     = pred_pcIM;
+	pred_panel_17_pcTM     = pred_pcTM;
+	pred_panel_17_pcIMdiff = pred_pcIM;
+	pred_panel_17_pcIMdiff((pred_pcIM<0.5) & (pred_pcIMP<0.5)) = nan;
+	pred_panel_17_pcIMdiff = pred_panel_17_pcIMdiff - pred_pcIMP;
+	pred_panel_17_pcTMdiff = pred_pcTM;
+	pred_panel_17_pcTMdiff((pred_pcTM<0.5) & (pred_pcTMP<0.5)) = nan;
+	pred_panel_17_pcTMdiff = pred_panel_17_pcTMdiff - pred_pcTMP;
+
+	pred_panel_17_pcIMDdiff = pred_pcIM;
+	pred_panel_17_pcIMDdiff((pred_pcIM<0.5) & (pred_pcIMDP<0.5)) = nan;
+	pred_panel_17_pcIMDdiff = pred_panel_17_pcIMDdiff - pred_pcIMDP;
+	pred_panel_17_pcTMDdiff = pred_pcTM;
+	pred_panel_17_pcTMDdiff((pred_pcTM<0.5) & (pred_pcTMDP<0.5)) = nan;
+	pred_panel_17_pcTMDdiff = pred_panel_17_pcTMDdiff - pred_pcTMDP;
+
+	pred_panel_17_rms      = pred_rms;
+	pred_panel_17_rmsP     = pred_rmsP;
+	pred_panel_17_rmsDP    = pred_rmsDP;	
+	pred_panel_17_pc       = pred_pc;
+	pred_panel_17_pcP      = pred_pcP;
+	pred_panel_17_pcDP     = pred_pcDP;	
+	pred_panel_17_truth    = data_test;
+	pred_panel_17_ose      = f_ext;
+
+	pred_panel_17_pcIMP    = pred_pcIMP;
+	pred_panel_17_pcTMP    = pred_pcTMP;
+	pred_panel_17_pcIMDP   = pred_pcIMDP;
+	pred_panel_17_pcTMDP   = pred_pcTMDP;	
 
 
 	if embedWin == 6
@@ -669,6 +706,10 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_shift_16_pcTM     = pred_panel_16_pcTM(mM,:);
 	pred_panel_shift_16_pcIMdiff = pred_panel_16_pcIMdiff(mM,:);
 	pred_panel_shift_16_pcTMdiff = pred_panel_16_pcTMdiff(mM,:);
+	pred_panel_shift_17_pcIM     = pred_panel_17_pcIM(mM,:);
+	pred_panel_shift_17_pcTM     = pred_panel_17_pcTM(mM,:);
+	pred_panel_shift_17_pcIMdiff = pred_panel_17_pcIMdiff(mM,:);
+	pred_panel_shift_17_pcTMdiff = pred_panel_17_pcTMdiff(mM,:);	
 
 	% damped persistence
 	pred_panel_shift_1_pcIMDdiff = pred_panel_1_pcIMDdiff(mM,:);
@@ -703,6 +744,8 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_shift_15_pcTMDdiff = pred_panel_15_pcTMDdiff(mM,:);
 	pred_panel_shift_16_pcIMDdiff = pred_panel_16_pcIMDdiff(mM,:);
 	pred_panel_shift_16_pcTMDdiff = pred_panel_16_pcTMDdiff(mM,:);
+	pred_panel_shift_17_pcIMDdiff = pred_panel_17_pcIMDdiff(mM,:);
+	pred_panel_shift_17_pcTMDdiff = pred_panel_17_pcTMDdiff(mM,:);	
 
 	pred_panel_shift_1_pcIMDP = pred_panel_1_pcIMDP(mM,:);
 	pred_panel_shift_1_pcTMDP = pred_panel_1_pcTMDP(mM,:);
@@ -735,7 +778,9 @@ function comp_data(varsUsed,embedWin,iceVar,fullDataOn)
 	pred_panel_shift_15_pcIMDP = pred_panel_15_pcIMDP(mM,:);
 	pred_panel_shift_15_pcTMDP = pred_panel_15_pcTMDP(mM,:);
 	pred_panel_shift_16_pcIMDP = pred_panel_16_pcIMDP(mM,:);
-	pred_panel_shift_16_pcTMDP = pred_panel_16_pcTMDP(mM,:);	
+	pred_panel_shift_16_pcTMDP = pred_panel_16_pcTMDP(mM,:);
+	pred_panel_shift_17_pcIMDP = pred_panel_17_pcIMDP(mM,:);
+	pred_panel_shift_17_pcTMDP = pred_panel_17_pcTMDP(mM,:);	
 
 	S = fullfile(strcat(compDataDir,'comp_data',num2str(fullDataOn),'.mat'));
 	save(S);
