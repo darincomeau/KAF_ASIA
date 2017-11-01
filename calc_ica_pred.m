@@ -103,6 +103,10 @@ switch region
         lonLim = [135 165];
         latLim = [45 65];
 
+    case 'CentralArctic'
+        lonLim = [0 360];
+        latLim = [70 90];  
+
 end
 
 switch varsUsed
