@@ -310,9 +310,9 @@ if exist(checkFile) == 0
         clear yVal yInd;
 
     elseif embedWin == 12
-        % load ( fullfile( oseDistPath, 'dataY_1_1-4785.mat' ) );
+        load ( fullfile( oseDistPath, 'dataY_1_1-4785.mat' ) );
         % load ( fullfile( oseDistPath, 'dataY_1_1-4749.mat' ) ); 
-        load ( fullfile( oseDistPath, 'dataY_1_1-465.mat' ) );        
+        % load ( fullfile( oseDistPath, 'dataY_1_1-465.mat' ) );        
         p1 = yVal;
         y1 = yInd;
         clear yVal yInd;  
