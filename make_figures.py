@@ -19,6 +19,7 @@ WORK_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/output/\
 SAVE_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/figures/'
 SEA_ICE_FILE = '/Users/dcomeau/Data/ice/CCSM4/piControl/' + \
     'b40.1850.track1.1deg.006.cice.h.aice_nh.000101-130012.nc'
+SAVE_DIR = '/Users/dcomeau/Projects/KAF/CD_STAPIS/Revision/'
 
 flag = 0
 
