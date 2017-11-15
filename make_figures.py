@@ -7,21 +7,23 @@ sea ice anomalies with kernel analog forecasting' manuscript.
 
 import numpy as np
 import numpy.ma as ma
-from netCDF4 import Dataset
 import scipy.stats as stats
+from netCDF4 import Dataset
 import scipy.io as sio
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 import cmocean
+# %matplotlib inline
 
 WORK_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/output/\
-    predictions/'
+            predictions/'
 SAVE_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/figures/'
 SEA_ICE_FILE = '/Users/dcomeau/Data/ice/CCSM4/piControl/' + \
     'b40.1850.track1.1deg.006.cice.h.aice_nh.000101-130012.nc'
+SIC_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/output/'
 SAVE_DIR = '/Users/dcomeau/Projects/KAF/CD_STAPIS/Revision/'
-
 flag = 0
+dampedP = 1
 
 """ Figure 1 """
 # load data
@@ -119,15 +121,15 @@ cbar = m.colorbar(cs, location='right')
 cbar.set_label('standard deviation', fontsize='20')
 cbar.set_ticks(cTicks)
 plt.title('CCSM4 sea ice concentration variability', fontsize=20)
-plt.savefig('figures/Fig1.eps', format='eps', dpi=1000)
+plt.savefig('Fig1.eps', format='eps', dpi=1000)
 
 
 """ Figure 2 """
-region = 'Arctic'
-varUsed = 'SIC_SST_SIT'
 embedWin = 12
+region = 'Arctic'
+varsUsed = 'SIC_SST_SLP'
 
-dataDir = WORK_DIR + region + '_' + varUsed + '_q' + str(embedWin) + \
+dataDir = WORK_DIR + region + '_' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
 
 # concentration anomaly data
@@ -137,43 +139,56 @@ pred_traj = dataPredICA['pred_traj']
 tLagL = dataPredICA['tLag']
 tLag = tLagL[0][0]
 
+truthSTD = np.std(truth)
+
 tt = np.linspace(0, tLag - 1, tLag)
 thresh = np.ones(tLag) * 0.5
 
-ts = 160
+# ts = 160
+
+ts = 150
 # ts = 56
 # ts = 48
 # ts = 26
+x = truth[ts, :]
+y = pred_traj[ts, :]
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
 
 plt.rcParams.update({'font.size': 14})
 plt.rcParams.update({'figure.autolayout': True})
 # plt.rcParams.update({'font.family': 'serif'})
 plt.figure()
-plt.plot(tt, truth[ts, :], 'k', linewidth=2, label='truth')
-plt.plot(tt, pred_traj[ts, :], linewidth=2, label='KAF')
+plt.plot(tt, x, 'k', linewidth=2, label='truth')
+plt.plot(tt, x + truthSTD, 'k--', linewidth=0.5)
+plt.plot(tt, x - truthSTD, 'k--', linewidth=0.5)
+plt.plot(tt, y, linewidth=2, label='KAF')
 plt.xlim(0, tLag - 1)
 plt.xlabel('time (months)')
 plt.yticks((-10e7, -5e7, 0, 5e7, 10e7))
 plt.ylim(-10e7, 10e7)
 plt.ylabel(r'km$^2$')
-plt.title('Sea Ice Area Anomaly Prediction')
+# plt.title('Sea Ice Area Anomaly Prediction')
+plt.title('SIA Anomaly Prediction, r = %.2f' % (r_value))
 plt.legend(loc='upper right', prop={'size': 12})
-plt.savefig('figures/Fig2.eps', format='eps', dpi=1200)
+plt.savefig(SAVE_DIR + 'Fig2.eps', format='eps', dpi=1200)
 
 
 """ Figure 3 """
-region = 'Arctic'
-varUsed = 'SIC_SST_SIT'
 embedWin = 12
+region = 'Arctic'
+varsUsed = 'SIC_SST_SLP'
 
-dataDir = WORK_DIR + region + '_' + varUsed + '_q' + str(embedWin) + \
+dataDir = WORK_DIR + region + '_' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
 
 # concentration anomaly data
 dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 data_testF = dataPredICA['data_test']  # 4785
 pred_trajF = dataPredICA['pred_traj']  # 4773 x 13
+
 ts = 120
+# ts = 150
+
 data_test = data_testF[ts:]
 pred_traj = pred_trajF[ts:, :]
 
@@ -256,22 +271,25 @@ plt.xlabel('time (months)')
 plt.title('r = %.2f' % (r_value))
 # plt.tight_layout()
 fig.set_figheight(10)
-plt.savefig('figures/Fig3.eps', format='eps', dpi=1000)
+plt.savefig(SAVE_DIR + 'Fig3.eps', format='eps', dpi=1000)
 
 
 """ Figure 4 """
-region = 'Arctic'
-varUsed = 'SIC_SST_SIT'
 embedWin = 12
+region = 'Arctic'
+varsUsed = 'SIC_SST_SLP'
 
-dataDir = WORK_DIR + region + '_' + varUsed + '_q' + str(embedWin) + \
+dataDir = WORK_DIR + region + '_' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
 
 # concentration anomaly data
 dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 
 pred_pcTM = dataPredICA['pred_pcTM']
-pred_pcTMP = dataPredICA['pred_pcTMDP']
+if dampedP == 1:
+    pred_pcTMP = dataPredICA['pred_pcTMDP']
+else:
+    pred_pcTMP = dataPredICA['pred_pcTMP']
 cTicks = np.linspace(0, 1, 3)
 
 plt.rcParams.update({'font.size': 14})
@@ -293,7 +311,7 @@ plt.imshow(pred_pcTMP, cmap=cmocean.cm.balance, clim=(0, 1))
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (month)')
 plt.yticks((2, 5, 8, 11), yLabels)
-plt.title('PC (pers.)')
+plt.title('PC (damped pers.)')
 
 plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
 # cax = plt.axes([0.85, 0.3, 0.03, 0.4])
@@ -302,13 +320,13 @@ cax = plt.axes([0.85, 0.21, 0.04, 0.57])
 
 plt.colorbar(cax=cax, ticks=cTicks)
 fig.set_figwidth(8)
-plt.savefig('figures/Fig4.eps', format='eps', dpi=1200)
+plt.savefig(SAVE_DIR + 'Fig4.eps', format='eps', dpi=1200)
 
 
 """ Figure 5 """
-iceVar = 'ica'
-varsUsed = 'SIC_SST_SIT'
 embedWin = 12
+iceVar = 'ica'
+varsUsed = 'SIC_SST_SLP'
 
 dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
@@ -509,13 +527,13 @@ plt.yticks([-3e7, 0, 3e7])
 
 fig.set_figheight(10)
 fig.set_figwidth(15)
-plt.savefig('figures/Fig5.eps', format='eps', dpi=1200)
+plt.savefig(SAVE_DIR + 'Fig5.eps', format='eps', dpi=1200)
 
 
 """ Figure 6 """
-iceVar = 'ica'
-varsUsed = 'SIC_SST_SIT'
 embedWin = 12
+iceVar = 'ica'
+varsUsed = 'SIC_SST_SLP'
 
 dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
@@ -541,22 +559,40 @@ pred_panel_14_rms = np.squeeze(compData['pred_panel_14_rms'])
 pred_panel_15_rms = np.squeeze(compData['pred_panel_15_rms'])
 pred_panel_16_rms = np.squeeze(compData['pred_panel_16_rms'])
 
-pred_panel_1_rmsP = np.squeeze(compData['pred_panel_1_rmsDP'])
-pred_panel_2_rmsP = np.squeeze(compData['pred_panel_2_rmsDP'])
-pred_panel_3_rmsP = np.squeeze(compData['pred_panel_3_rmsDP'])
-pred_panel_4_rmsP = np.squeeze(compData['pred_panel_4_rmsDP'])
-pred_panel_5_rmsP = np.squeeze(compData['pred_panel_5_rmsDP'])
-pred_panel_6_rmsP = np.squeeze(compData['pred_panel_6_rmsDP'])
-pred_panel_7_rmsP = np.squeeze(compData['pred_panel_7_rmsDP'])
-pred_panel_8_rmsP = np.squeeze(compData['pred_panel_8_rmsDP'])
-pred_panel_9_rmsP = np.squeeze(compData['pred_panel_9_rmsDP'])
-pred_panel_10_rmsP = np.squeeze(compData['pred_panel_10_rmsDP'])
-pred_panel_11_rmsP = np.squeeze(compData['pred_panel_11_rmsDP'])
-pred_panel_12_rmsP = np.squeeze(compData['pred_panel_12_rmsDP'])
-pred_panel_13_rmsP = np.squeeze(compData['pred_panel_13_rmsDP'])
-pred_panel_14_rmsP = np.squeeze(compData['pred_panel_14_rmsDP'])
-pred_panel_15_rmsP = np.squeeze(compData['pred_panel_15_rmsDP'])
-pred_panel_16_rmsP = np.squeeze(compData['pred_panel_16_rmsDP'])
+if dampedP == 1:
+    pred_panel_1_rmsP = np.squeeze(compData['pred_panel_1_rmsDP'])
+    pred_panel_2_rmsP = np.squeeze(compData['pred_panel_2_rmsDP'])
+    pred_panel_3_rmsP = np.squeeze(compData['pred_panel_3_rmsDP'])
+    pred_panel_4_rmsP = np.squeeze(compData['pred_panel_4_rmsDP'])
+    pred_panel_5_rmsP = np.squeeze(compData['pred_panel_5_rmsDP'])
+    pred_panel_6_rmsP = np.squeeze(compData['pred_panel_6_rmsDP'])
+    pred_panel_7_rmsP = np.squeeze(compData['pred_panel_7_rmsDP'])
+    pred_panel_8_rmsP = np.squeeze(compData['pred_panel_8_rmsDP'])
+    pred_panel_9_rmsP = np.squeeze(compData['pred_panel_9_rmsDP'])
+    pred_panel_10_rmsP = np.squeeze(compData['pred_panel_10_rmsDP'])
+    pred_panel_11_rmsP = np.squeeze(compData['pred_panel_11_rmsDP'])
+    pred_panel_12_rmsP = np.squeeze(compData['pred_panel_12_rmsDP'])
+    pred_panel_13_rmsP = np.squeeze(compData['pred_panel_13_rmsDP'])
+    pred_panel_14_rmsP = np.squeeze(compData['pred_panel_14_rmsDP'])
+    pred_panel_15_rmsP = np.squeeze(compData['pred_panel_15_rmsDP'])
+    pred_panel_16_rmsP = np.squeeze(compData['pred_panel_16_rmsDP'])
+else:
+    pred_panel_1_rmsP = np.squeeze(compData['pred_panel_1_rmsP'])
+    pred_panel_2_rmsP = np.squeeze(compData['pred_panel_2_rmsP'])
+    pred_panel_3_rmsP = np.squeeze(compData['pred_panel_3_rmsP'])
+    pred_panel_4_rmsP = np.squeeze(compData['pred_panel_4_rmsP'])
+    pred_panel_5_rmsP = np.squeeze(compData['pred_panel_5_rmsP'])
+    pred_panel_6_rmsP = np.squeeze(compData['pred_panel_6_rmsP'])
+    pred_panel_7_rmsP = np.squeeze(compData['pred_panel_7_rmsP'])
+    pred_panel_8_rmsP = np.squeeze(compData['pred_panel_8_rmsP'])
+    pred_panel_9_rmsP = np.squeeze(compData['pred_panel_9_rmsP'])
+    pred_panel_10_rmsP = np.squeeze(compData['pred_panel_10_rmsP'])
+    pred_panel_11_rmsP = np.squeeze(compData['pred_panel_11_rmsP'])
+    pred_panel_12_rmsP = np.squeeze(compData['pred_panel_12_rmsP'])
+    pred_panel_13_rmsP = np.squeeze(compData['pred_panel_13_rmsP'])
+    pred_panel_14_rmsP = np.squeeze(compData['pred_panel_14_rmsP'])
+    pred_panel_15_rmsP = np.squeeze(compData['pred_panel_15_rmsP'])
+    pred_panel_16_rmsP = np.squeeze(compData['pred_panel_16_rmsP'])
 
 tt = np.linspace(0, int(tLag) - 1, int(tLag))
 
@@ -668,13 +704,13 @@ plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
 
 fig.set_figheight(10)
 fig.set_figwidth(15)
-plt.savefig('figures/Fig6.eps', format='eps', dpi=1200)
+plt.savefig(SAVE_DIR + 'Fig6.eps', format='eps', dpi=1200)
 
 
 """ Figure 7 """
-iceVar = 'ica'
-varsUsed = 'SIC_SST_SIT'
 embedWin = 12
+iceVar = 'ica'
+varsUsed = 'SIC_SST_SLP'
 
 dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
@@ -700,22 +736,40 @@ pred_panel_14_pc = np.squeeze(compData['pred_panel_14_pc'])
 pred_panel_15_pc = np.squeeze(compData['pred_panel_15_pc'])
 pred_panel_16_pc = np.squeeze(compData['pred_panel_16_pc'])
 
-pred_panel_1_pcP = np.squeeze(compData['pred_panel_1_pcDP'])
-pred_panel_2_pcP = np.squeeze(compData['pred_panel_2_pcDP'])
-pred_panel_3_pcP = np.squeeze(compData['pred_panel_3_pcDP'])
-pred_panel_4_pcP = np.squeeze(compData['pred_panel_4_pcDP'])
-pred_panel_5_pcP = np.squeeze(compData['pred_panel_5_pcDP'])
-pred_panel_6_pcP = np.squeeze(compData['pred_panel_6_pcDP'])
-pred_panel_7_pcP = np.squeeze(compData['pred_panel_7_pcDP'])
-pred_panel_8_pcP = np.squeeze(compData['pred_panel_8_pcDP'])
-pred_panel_9_pcP = np.squeeze(compData['pred_panel_9_pcDP'])
-pred_panel_10_pcP = np.squeeze(compData['pred_panel_10_pcDP'])
-pred_panel_11_pcP = np.squeeze(compData['pred_panel_11_pcDP'])
-pred_panel_12_pcP = np.squeeze(compData['pred_panel_12_pcDP'])
-pred_panel_13_pcP = np.squeeze(compData['pred_panel_13_pcDP'])
-pred_panel_14_pcP = np.squeeze(compData['pred_panel_14_pcDP'])
-pred_panel_15_pcP = np.squeeze(compData['pred_panel_15_pcDP'])
-pred_panel_16_pcP = np.squeeze(compData['pred_panel_16_pcDP'])
+if dampedP == 1:
+    pred_panel_1_pcP = np.squeeze(compData['pred_panel_1_pcDP'])
+    pred_panel_2_pcP = np.squeeze(compData['pred_panel_2_pcDP'])
+    pred_panel_3_pcP = np.squeeze(compData['pred_panel_3_pcDP'])
+    pred_panel_4_pcP = np.squeeze(compData['pred_panel_4_pcDP'])
+    pred_panel_5_pcP = np.squeeze(compData['pred_panel_5_pcDP'])
+    pred_panel_6_pcP = np.squeeze(compData['pred_panel_6_pcDP'])
+    pred_panel_7_pcP = np.squeeze(compData['pred_panel_7_pcDP'])
+    pred_panel_8_pcP = np.squeeze(compData['pred_panel_8_pcDP'])
+    pred_panel_9_pcP = np.squeeze(compData['pred_panel_9_pcDP'])
+    pred_panel_10_pcP = np.squeeze(compData['pred_panel_10_pcDP'])
+    pred_panel_11_pcP = np.squeeze(compData['pred_panel_11_pcDP'])
+    pred_panel_12_pcP = np.squeeze(compData['pred_panel_12_pcDP'])
+    pred_panel_13_pcP = np.squeeze(compData['pred_panel_13_pcDP'])
+    pred_panel_14_pcP = np.squeeze(compData['pred_panel_14_pcDP'])
+    pred_panel_15_pcP = np.squeeze(compData['pred_panel_15_pcDP'])
+    pred_panel_16_pcP = np.squeeze(compData['pred_panel_16_pcDP'])
+else:
+    pred_panel_1_pcP = np.squeeze(compData['pred_panel_1_pcP'])
+    pred_panel_2_pcP = np.squeeze(compData['pred_panel_2_pcP'])
+    pred_panel_3_pcP = np.squeeze(compData['pred_panel_3_pcP'])
+    pred_panel_4_pcP = np.squeeze(compData['pred_panel_4_pcP'])
+    pred_panel_5_pcP = np.squeeze(compData['pred_panel_5_pcP'])
+    pred_panel_6_pcP = np.squeeze(compData['pred_panel_6_pcP'])
+    pred_panel_7_pcP = np.squeeze(compData['pred_panel_7_pcP'])
+    pred_panel_8_pcP = np.squeeze(compData['pred_panel_8_pcP'])
+    pred_panel_9_pcP = np.squeeze(compData['pred_panel_9_pcP'])
+    pred_panel_10_pcP = np.squeeze(compData['pred_panel_10_pcP'])
+    pred_panel_11_pcP = np.squeeze(compData['pred_panel_11_pcP'])
+    pred_panel_12_pcP = np.squeeze(compData['pred_panel_12_pcP'])
+    pred_panel_13_pcP = np.squeeze(compData['pred_panel_13_pcP'])
+    pred_panel_14_pcP = np.squeeze(compData['pred_panel_14_pcP'])
+    pred_panel_15_pcP = np.squeeze(compData['pred_panel_15_pcP'])
+    pred_panel_16_pcP = np.squeeze(compData['pred_panel_16_pcP'])
 
 tt = np.linspace(0, int(tLag) - 1, int(tLag))
 
@@ -840,13 +894,13 @@ plt.yticks([0, 0.25, 0.5, 0.75, 1])
 
 fig.set_figheight(10)
 fig.set_figwidth(15)
-plt.savefig('figures/Fig7.eps', format='eps', dpi=1200)
+plt.savefig(SAVE_DIR + 'Fig7.eps', format='eps', dpi=1200)
 
 
 """ Figure 8 """
-iceVar = 'ica'
-varsUsed = 'SIC_SST_SIT'
 embedWin = 12
+iceVar = 'ica'
+varsUsed = 'SIC_SST_SLP'
 
 dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
@@ -856,6 +910,7 @@ compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
 tLag = compData['tLag']
 
 pred_panel_shift_1_pcTM = compData['pred_panel_shift_1_pcTM']
+# pred_panel_shift_1_pcTM = compData['pred_panel_shift_17_pcTM']
 pred_panel_shift_2_pcTM = compData['pred_panel_shift_2_pcTM']
 pred_panel_shift_3_pcTM = compData['pred_panel_shift_3_pcTM']
 pred_panel_shift_4_pcTM = compData['pred_panel_shift_4_pcTM']
@@ -879,18 +934,20 @@ cTicks = np.linspace(0, 1, 3)
 yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 
 fig = plt.figure()
-plt.subplot(4, 3, 1)
-plt.imshow(pred_panel_shift_1_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
-plt.xticks((0, 3, 6, 9, 12))
-plt.xlabel('lead time (months)')
-plt.yticks((2, 5, 8, 11), yLabels)
-plt.ylabel('Target month')
-plt.title('Arctic')
-plt.colorbar().set_ticks(cTicks)
+# plt.subplot(4, 3, 1)
+# plt.imshow(pred_panel_shift_1_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+# plt.xticks((0, 3, 6, 9, 12))
+# plt.xlabel('lead time (months)')
+# plt.yticks((2, 5, 8, 11), yLabels)
+# plt.ylabel('Target month')
+# plt.title('Arctic')
+# # plt.title('Central Arctic')
+# plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 2)
 plt.imshow(pred_panel_shift_4_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
 plt.xticks((0, 3, 6, 9, 12))
+plt.xlabel('lead time (months)')
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Beaufort')
 plt.colorbar().set_ticks(cTicks)
@@ -968,35 +1025,55 @@ plt.colorbar().set_ticks(cTicks)
 fig.set_figheight(14)
 fig.set_figwidth(14)
 plt.tight_layout()
-plt.savefig('figures/Fig8.eps', format='eps', dpi=500)
+plt.savefig(SAVE_DIR + 'Fig8.eps', format='eps', dpi=500)
 
 
 """ Figure 9 """
-iceVar = 'ica'
-varsUsed = 'SIC_SST_SIT'
 embedWin = 12
+iceVar = 'ica'
+varsUsed = 'SIC_SST_SLP'
 
 dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
 compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
 tLag = compData['tLag']
 
-pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_1_pcTMDdiff']
-pred_panel_shift_2_pcTMdiff = compData['pred_panel_shift_2_pcTMDdiff']
-pred_panel_shift_3_pcTMdiff = compData['pred_panel_shift_3_pcTMDdiff']
-pred_panel_shift_4_pcTMdiff = compData['pred_panel_shift_4_pcTMDdiff']
-pred_panel_shift_5_pcTMdiff = compData['pred_panel_shift_5_pcTMDdiff']
-pred_panel_shift_6_pcTMdiff = compData['pred_panel_shift_6_pcTMDdiff']
-pred_panel_shift_7_pcTMdiff = compData['pred_panel_shift_7_pcTMDdiff']
-pred_panel_shift_8_pcTMdiff = compData['pred_panel_shift_8_pcTMDdiff']
-pred_panel_shift_9_pcTMdiff = compData['pred_panel_shift_9_pcTMDdiff']
-pred_panel_shift_10_pcTMdiff = compData['pred_panel_shift_10_pcTMDdiff']
-pred_panel_shift_11_pcTMdiff = compData['pred_panel_shift_11_pcTMDdiff']
-pred_panel_shift_12_pcTMdiff = compData['pred_panel_shift_12_pcTMDdiff']
-pred_panel_shift_13_pcTMdiff = compData['pred_panel_shift_13_pcTMDdiff']
-pred_panel_shift_14_pcTMdiff = compData['pred_panel_shift_14_pcTMDdiff']
-pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcTMDdiff']
-pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcTMDdiff']
+if dampedP == 1:
+    pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_1_pcTMDdiff']
+#     pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_17_pcTMDdiff']
+    pred_panel_shift_2_pcTMdiff = compData['pred_panel_shift_2_pcTMDdiff']
+    pred_panel_shift_3_pcTMdiff = compData['pred_panel_shift_3_pcTMDdiff']
+    pred_panel_shift_4_pcTMdiff = compData['pred_panel_shift_4_pcTMDdiff']
+    pred_panel_shift_5_pcTMdiff = compData['pred_panel_shift_5_pcTMDdiff']
+    pred_panel_shift_6_pcTMdiff = compData['pred_panel_shift_6_pcTMDdiff']
+    pred_panel_shift_7_pcTMdiff = compData['pred_panel_shift_7_pcTMDdiff']
+    pred_panel_shift_8_pcTMdiff = compData['pred_panel_shift_8_pcTMDdiff']
+    pred_panel_shift_9_pcTMdiff = compData['pred_panel_shift_9_pcTMDdiff']
+    pred_panel_shift_10_pcTMdiff = compData['pred_panel_shift_10_pcTMDdiff']
+    pred_panel_shift_11_pcTMdiff = compData['pred_panel_shift_11_pcTMDdiff']
+    pred_panel_shift_12_pcTMdiff = compData['pred_panel_shift_12_pcTMDdiff']
+    pred_panel_shift_13_pcTMdiff = compData['pred_panel_shift_13_pcTMDdiff']
+    pred_panel_shift_14_pcTMdiff = compData['pred_panel_shift_14_pcTMDdiff']
+    pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcTMDdiff']
+    pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcTMDdiff']
+else:
+    pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_1_pcTMdiff']
+#     pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_17_pcTMdiff']
+    pred_panel_shift_2_pcTMdiff = compData['pred_panel_shift_2_pcTMdiff']
+    pred_panel_shift_3_pcTMdiff = compData['pred_panel_shift_3_pcTMdiff']
+    pred_panel_shift_4_pcTMdiff = compData['pred_panel_shift_4_pcTMdiff']
+    pred_panel_shift_5_pcTMdiff = compData['pred_panel_shift_5_pcTMdiff']
+    pred_panel_shift_6_pcTMdiff = compData['pred_panel_shift_6_pcTMdiff']
+    pred_panel_shift_7_pcTMdiff = compData['pred_panel_shift_7_pcTMdiff']
+    pred_panel_shift_8_pcTMdiff = compData['pred_panel_shift_8_pcTMdiff']
+    pred_panel_shift_9_pcTMdiff = compData['pred_panel_shift_9_pcTMdiff']
+    pred_panel_shift_10_pcTMdiff = compData['pred_panel_shift_10_pcTMdiff']
+    pred_panel_shift_11_pcTMdiff = compData['pred_panel_shift_11_pcTMdiff']
+    pred_panel_shift_12_pcTMdiff = compData['pred_panel_shift_12_pcTMdiff']
+    pred_panel_shift_13_pcTMdiff = compData['pred_panel_shift_13_pcTMdiff']
+    pred_panel_shift_14_pcTMdiff = compData['pred_panel_shift_14_pcTMdiff']
+    pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcTMdiff']
+    pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcTMdiff']
 
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
@@ -1013,6 +1090,7 @@ plt.xlabel('lead time (months)')
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.ylabel('Target month')
 plt.title('Arctic')
+# plt.title('Central Arctic')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 2)
@@ -1106,7 +1184,7 @@ plt.colorbar().set_ticks(cTicks)
 fig.set_figheight(14)
 fig.set_figwidth(14)
 plt.tight_layout()
-plt.savefig('figures/Fig9.eps', format='eps', dpi=500)
+plt.savefig(SAVE_DIR + 'Fig9.eps', format='eps', dpi=500)
 
 
 """ Figure 10 """
@@ -1117,8 +1195,8 @@ region.append('Bering')
 varUsed = []
 varUsed.append('SIC')
 varUsed.append('SIC_SST')
-varUsed.append('SIC_SST_SIT')
-varUsed.append('SIC_SST_SIT_SLP')
+varUsed.append('SIC_SIT')
+varUsed.append('SIC_SLP')
 embedWin = 12
 iceVar = 'ica'
 
@@ -1198,18 +1276,31 @@ pred_var_pc[2, 3, :] = data['pred_pc']
 dataDir = WORK_DIR + region[0] + '_' + varUsed[0] + '_q' + str(embedWin) + \
     '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
-pred_var_rmsP[0, :] = data['pred_rmsDP']
-pred_var_pcP[0, :] = data['pred_pcDP']
+if dampedP == 1:
+    pred_var_rmsP[0, :] = data['pred_rmsDP']
+    pred_var_pcP[0, :] = data['pred_pcDP']
+else:
+    pred_var_rmsP[0, :] = data['pred_rmsP']
+    pred_var_pcP[0, :] = data['pred_pcP']
+
 dataDir = WORK_DIR + region[1] + '_' + varUsed[0] + '_q' + str(embedWin) + \
     '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
-pred_var_rmsP[1, :] = data['pred_rmsDP']
-pred_var_pcP[1, :] = data['pred_pcDP']
+if dampedP == 1:
+    pred_var_rmsP[1, :] = data['pred_rmsDP']
+    pred_var_pcP[1, :] = data['pred_pcDP']
+else:
+    pred_var_rmsP[1, :] = data['pred_rmsP']
+    pred_var_pcP[1, :] = data['pred_pcP']
 dataDir = WORK_DIR + region[2] + '_' + varUsed[0] + '_q' + str(embedWin) + \
     '_train_100_499/'
 data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
-pred_var_rmsP[2, :] = data['pred_rmsDP']
-pred_var_pcP[2, :] = data['pred_pcDP']
+if dampedP == 1:
+    pred_var_rmsP[2, :] = data['pred_rmsDP']
+    pred_var_pcP[2, :] = data['pred_pcDP']
+else:
+    pred_var_rmsP[2, :] = data['pred_rmsP']
+    pred_var_pcP[2, :] = data['pred_pcP']
 
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
@@ -1224,8 +1315,8 @@ fig = plt.figure()
 plt.subplot(3, 2, 1)
 plt.plot(tt, pred_var_rms[0, 0, :], label='SIC')
 plt.plot(tt, pred_var_rms[0, 1, :], label='SIC, SST')
-plt.plot(tt, pred_var_rms[0, 2, :], label='SIC, SST, SLP')
-plt.plot(tt, pred_var_rms[0, 3, :], label='SIC, SST, SLP, SIT')
+plt.plot(tt, pred_var_rms[0, 2, :], label='SIC, SIT')
+plt.plot(tt, pred_var_rms[0, 3, :], label='SIC, SLP')
 plt.plot(tt, pred_var_rmsP[0, :], '--', label='pers.')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlabel('lead time (months)')
@@ -1237,8 +1328,8 @@ plt.title('Arctic NRMSE')
 plt.subplot(3, 2, 2)
 plt.plot(tt, pred_var_pc[0, 0, :], label='SIC')
 plt.plot(tt, pred_var_pc[0, 1, :], label='SIC, SST')
-plt.plot(tt, pred_var_pc[0, 2, :], label='SIC, SST, SLP')
-plt.plot(tt, pred_var_pc[0, 3, :], label='SIC, SST, SLP, SIT')
+plt.plot(tt, pred_var_pc[0, 2, :], label='SIC, SIT')
+plt.plot(tt, pred_var_pc[0, 3, :], label='SIC, SLP')
 plt.plot(tt, pred_var_pcP[0, :], '--', label='pers.')
 plt.plot(tt, thresh, 'k--')
 plt.xticks([0, 3, 6, 9, 12])
@@ -1248,8 +1339,8 @@ plt.title('Arctic PC')
 plt.subplot(3, 2, 3)
 plt.plot(tt, pred_var_rms[1, 0, :], label='SIC')
 plt.plot(tt, pred_var_rms[1, 1, :], label='SIC, SST')
-plt.plot(tt, pred_var_rms[1, 2, :], label='SIC, SST, SLP')
-plt.plot(tt, pred_var_rms[1, 3, :], label='SIC, SST, SLP, SIT')
+plt.plot(tt, pred_var_rms[1, 2, :], label='SIC, SIT')
+plt.plot(tt, pred_var_rms[1, 3, :], label='SIC, SLP')
 plt.plot(tt, pred_var_rmsP[1, :], '--', label='pers.')
 plt.xticks([0, 3, 6, 9, 12])
 plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
@@ -1258,8 +1349,8 @@ plt.title('Beaufort NRMSE')
 plt.subplot(3, 2, 4)
 plt.plot(tt, pred_var_pc[1, 0, :], label='SIC')
 plt.plot(tt, pred_var_pc[1, 1, :], label='SIC, SST')
-plt.plot(tt, pred_var_pc[1, 2, :], label='SIC, SST, SLP')
-plt.plot(tt, pred_var_pc[1, 3, :], label='SIC, SST, SLP, SIT')
+plt.plot(tt, pred_var_pc[1, 2, :], label='SIC, SIT')
+plt.plot(tt, pred_var_pc[1, 3, :], label='SIC, SLP')
 plt.plot(tt, pred_var_pcP[1, :], '--', label='pers.')
 plt.plot(tt, thresh, 'k--')
 plt.xticks([0, 3, 6, 9, 12])
@@ -1269,8 +1360,8 @@ plt.title('Beaufort PC')
 plt.subplot(3, 2, 5)
 plt.plot(tt, pred_var_rms[2, 0, :], label='SIC')
 plt.plot(tt, pred_var_rms[2, 1, :], label='SIC, SST')
-plt.plot(tt, pred_var_rms[2, 2, :], label='SIC, SST, SLP')
-plt.plot(tt, pred_var_rms[2, 3, :], label='SIC, SST, SLP, SIT')
+plt.plot(tt, pred_var_rms[2, 2, :], label='SIC, SIT')
+plt.plot(tt, pred_var_rms[2, 3, :], label='SIC, SLP')
 plt.plot(tt, pred_var_rmsP[2, :], '--', label='pers.')
 plt.xticks([0, 3, 6, 9, 12])
 plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
@@ -1279,8 +1370,8 @@ plt.title('Bering NRMSE')
 plt.subplot(3, 2, 6)
 plt.plot(tt, pred_var_pc[2, 0, :], label='SIC')
 plt.plot(tt, pred_var_pc[2, 1, :], label='SIC, SST')
-plt.plot(tt, pred_var_pc[2, 2, :], label='SIC, SST, SLP')
-plt.plot(tt, pred_var_pc[2, 3, :], label='SIC, SST, SLP, SIT')
+plt.plot(tt, pred_var_pc[2, 2, :], label='SIC, SIT')
+plt.plot(tt, pred_var_pc[2, 3, :], label='SIC, SLP')
 plt.plot(tt, pred_var_pcP[2, :], '--', label='pers.')
 plt.plot(tt, thresh, 'k--')
 plt.xticks([0, 3, 6, 9, 12])
@@ -1290,13 +1381,13 @@ plt.title('Bering PC')
 fig.set_figheight(10)
 fig.set_figwidth(8)
 plt.tight_layout()
-plt.savefig('figures/Fig10.eps', format='eps', dpi=1200)
+plt.savefig(SAVE_DIR + 'Fig10.eps', format='eps', dpi=1200)
 
 
 """ Figure 11 """
-iceVar = 'iva'
-varsUsed = 'SIC_SST_SIT'
 embedWin = 12
+iceVar = 'iva'
+varsUsed = 'SIC_SST_SLP'
 
 dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
@@ -1306,6 +1397,7 @@ compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
 tLag = compData['tLag']
 
 pred_panel_shift_1_pcTM = compData['pred_panel_shift_1_pcTM']
+# pred_panel_shift_1_pcTM = compData['pred_panel_shift_17_pcTM']
 pred_panel_shift_2_pcTM = compData['pred_panel_shift_2_pcTM']
 pred_panel_shift_3_pcTM = compData['pred_panel_shift_3_pcTM']
 pred_panel_shift_4_pcTM = compData['pred_panel_shift_4_pcTM']
@@ -1336,6 +1428,7 @@ plt.xlabel('lead time (months)')
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.ylabel('Target month')
 plt.title('Arctic')
+# plt.title('Central Arctic')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 2)
@@ -1418,126 +1511,157 @@ plt.colorbar().set_ticks(cTicks)
 fig.set_figheight(14)
 fig.set_figwidth(14)
 plt.tight_layout()
-plt.savefig('figures/Fig11.eps', format='eps', dpi=500)
+plt.savefig(SAVE_DIR + 'Fig11.eps', format='eps', dpi=500)
 
 
 """ Figure 12 """
-iceVar = 'iva'
-varsUsed = 'SIC_SST_SIT_SLP'
 embedWin = 12
+iceVar = 'iva'
+varsUsed = 'SIC_SST_SITq48'
 
 dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
-
 compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
-
 tLag = compData['tLag']
 
-pred_panel_shift_1_pcTM = compData['pred_panel_shift_1_pcTM']
-pred_panel_shift_2_pcTM = compData['pred_panel_shift_2_pcTM']
-pred_panel_shift_3_pcTM = compData['pred_panel_shift_3_pcTM']
-pred_panel_shift_4_pcTM = compData['pred_panel_shift_4_pcTM']
-pred_panel_shift_5_pcTM = compData['pred_panel_shift_5_pcTM']
-pred_panel_shift_6_pcTM = compData['pred_panel_shift_6_pcTM']
-pred_panel_shift_7_pcTM = compData['pred_panel_shift_7_pcTM']
-pred_panel_shift_8_pcTM = compData['pred_panel_shift_8_pcTM']
-pred_panel_shift_9_pcTM = compData['pred_panel_shift_9_pcTM']
-pred_panel_shift_10_pcTM = compData['pred_panel_shift_10_pcTM']
-pred_panel_shift_11_pcTM = compData['pred_panel_shift_11_pcTM']
-pred_panel_shift_12_pcTM = compData['pred_panel_shift_12_pcTM']
-pred_panel_shift_13_pcTM = compData['pred_panel_shift_13_pcTM']
-pred_panel_shift_14_pcTM = compData['pred_panel_shift_14_pcTM']
-pred_panel_shift_15_pcTM = compData['pred_panel_shift_15_pcTM']
-pred_panel_shift_16_pcTM = compData['pred_panel_shift_16_pcTM']
+if dampedP == 1:
+    pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_1_pcTMDdiff']
+#     pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_17_pcTMDdiff']
+    pred_panel_shift_2_pcTMdiff = compData['pred_panel_shift_2_pcTMDdiff']
+    pred_panel_shift_3_pcTMdiff = compData['pred_panel_shift_3_pcTMDdiff']
+    pred_panel_shift_4_pcTMdiff = compData['pred_panel_shift_4_pcTMDdiff']
+    pred_panel_shift_5_pcTMdiff = compData['pred_panel_shift_5_pcTMDdiff']
+    pred_panel_shift_6_pcTMdiff = compData['pred_panel_shift_6_pcTMDdiff']
+    pred_panel_shift_7_pcTMdiff = compData['pred_panel_shift_7_pcTMDdiff']
+    pred_panel_shift_8_pcTMdiff = compData['pred_panel_shift_8_pcTMDdiff']
+    pred_panel_shift_9_pcTMdiff = compData['pred_panel_shift_9_pcTMDdiff']
+    pred_panel_shift_10_pcTMdiff = compData['pred_panel_shift_10_pcTMDdiff']
+    pred_panel_shift_11_pcTMdiff = compData['pred_panel_shift_11_pcTMDdiff']
+    pred_panel_shift_12_pcTMdiff = compData['pred_panel_shift_12_pcTMDdiff']
+    pred_panel_shift_13_pcTMdiff = compData['pred_panel_shift_13_pcTMDdiff']
+    pred_panel_shift_14_pcTMdiff = compData['pred_panel_shift_14_pcTMDdiff']
+    pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcTMDdiff']
+    pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcTMDdiff']
+else:
+    pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_1_pcTMdiff']
+#     pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_17_pcTMdiff']
+    pred_panel_shift_2_pcTMdiff = compData['pred_panel_shift_2_pcTMdiff']
+    pred_panel_shift_3_pcTMdiff = compData['pred_panel_shift_3_pcTMdiff']
+    pred_panel_shift_4_pcTMdiff = compData['pred_panel_shift_4_pcTMdiff']
+    pred_panel_shift_5_pcTMdiff = compData['pred_panel_shift_5_pcTMdiff']
+    pred_panel_shift_6_pcTMdiff = compData['pred_panel_shift_6_pcTMdiff']
+    pred_panel_shift_7_pcTMdiff = compData['pred_panel_shift_7_pcTMdiff']
+    pred_panel_shift_8_pcTMdiff = compData['pred_panel_shift_8_pcTMdiff']
+    pred_panel_shift_9_pcTMdiff = compData['pred_panel_shift_9_pcTMdiff']
+    pred_panel_shift_10_pcTMdiff = compData['pred_panel_shift_10_pcTMdiff']
+    pred_panel_shift_11_pcTMdiff = compData['pred_panel_shift_11_pcTMdiff']
+    pred_panel_shift_12_pcTMdiff = compData['pred_panel_shift_12_pcTMdiff']
+    pred_panel_shift_13_pcTMdiff = compData['pred_panel_shift_13_pcTMdiff']
+    pred_panel_shift_14_pcTMdiff = compData['pred_panel_shift_14_pcTMdiff']
+    pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcTMdiff']
+    pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcTMdiff']
 
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
 
-cTicks = np.linspace(0, 1, 3)
+cTicks = np.linspace(-0.5, 0.5, 3)
 yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 
 fig = plt.figure()
 plt.subplot(4, 3, 1)
-plt.imshow(pred_panel_shift_1_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_1_pcTMdiff,
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (months)')
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.ylabel('Target month')
 plt.title('Arctic')
+# plt.title('Central Arctic')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 2)
-plt.imshow(pred_panel_shift_4_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_4_pcTMdiff,
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Beaufort')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 3)
-plt.imshow(pred_panel_shift_3_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_3_pcTMdiff,
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Chukchi')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 4)
-plt.imshow(pred_panel_shift_6_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_6_pcTMdiff,
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('E Siberian')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 5)
-plt.imshow(pred_panel_shift_7_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_7_pcTMdiff,
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Laptev')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 6)
-plt.imshow(pred_panel_shift_10_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_10_pcTMdiff,
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Kara')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 7)
-plt.imshow(pred_panel_shift_9_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_9_pcTMdiff,
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Barents')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 8)
-plt.imshow(pred_panel_shift_11_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_11_pcTMdiff,
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Greenland')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 9)
-plt.imshow(pred_panel_shift_13_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_13_pcTMdiff,
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Labrador')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 10)
-plt.imshow(pred_panel_shift_12_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_12_pcTMdiff,
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Baffin')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 11)
-plt.imshow(pred_panel_shift_15_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_15_pcTMdiff,
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Bering')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 12)
-plt.imshow(pred_panel_shift_16_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_16_pcTMdiff,
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Okhotsk')
@@ -1546,4 +1670,97 @@ plt.colorbar().set_ticks(cTicks)
 fig.set_figheight(14)
 fig.set_figwidth(14)
 plt.tight_layout()
-plt.savefig('figures/Fig12.eps', format='eps', dpi=500)
+plt.savefig(SAVE_DIR + 'Fig12.eps', format='eps', dpi=500)
+
+""" Figure Scratch 1 """
+region = 'Arctic'
+embedWin = 12
+varsUsed = 'SIC_SST_SIT'
+
+dataDir = WORK_DIR + region + '_SIC_SST_SIT_q' + str(embedWin) + \
+    '_train_100_499/'
+dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
+pred_pcTM = dataPredICA['pred_pcTM']
+
+dataDir = WORK_DIR + region + '_SIC_SST_SITq48_q' + str(embedWin) + \
+    '_train_100_499/'
+
+dataPredICAS = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
+pred_pcTMS = dataPredICAS['pred_pcTM']
+
+cTicks = np.linspace(0, 1, 3)
+
+plt.rcParams.update({'font.size': 14})
+plt.rcParams.update({'figure.autolayout': False})
+# plt.rcParams.update({'font.family': 'serif'})
+
+fig = plt.figure()
+plt.subplot(121)
+plt.imshow(pred_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
+yLabelsN = ['M', 'J', 'S', 'D']
+plt.yticks((2, 5, 8, 11), yLabels)
+plt.ylabel('Target month')
+plt.xticks((0, 3, 6, 9, 12))
+plt.xlabel('lead time (month)')
+plt.title('SIT q=12')
+plt.subplot(122)
+plt.imshow(pred_pcTMS, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.xticks((0, 3, 6, 9, 12))
+plt.xlabel('lead time (month)')
+plt.yticks((2, 5, 8, 11), yLabels)
+plt.title('SIT q=48')
+
+plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+
+cax = plt.axes([0.85, 0.21, 0.04, 0.57])
+
+plt.colorbar(cax=cax, ticks=cTicks)
+fig.set_figwidth(8)
+plt.savefig(SAVE_DIR + 'Figalt1.eps', format='eps', dpi=1200)
+
+""" Figure Scratch 2 """
+region = 'Arctic'
+embedWin = 12
+varsUsed = 'SIC_SST_SIT'
+
+# full training data
+dataDir = WORK_DIR + region + '_' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
+dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
+pred_pcTM = dataPredICA['pred_pcTM']
+
+
+# short training data
+dataDir = WORK_DIR + region + '_' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_139/'
+dataPredICAS = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
+pred_pcTMS = dataPredICAS['pred_pcTM']
+
+cTicks = np.linspace(0, 1, 3)
+plt.rcParams.update({'font.size': 14})
+plt.rcParams.update({'figure.autolayout': False})
+
+fig = plt.figure()
+plt.subplot(121)
+plt.imshow(pred_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
+yLabelsN = ['M', 'J', 'S', 'D']
+plt.yticks((2, 5, 8, 11), yLabels)
+plt.ylabel('Target month')
+plt.xticks((0, 3, 6, 9, 12))
+plt.xlabel('lead time (month)')
+plt.title('Full Training')
+plt.subplot(122)
+plt.imshow(pred_pcTMS, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.xticks((0, 3, 6, 9, 12))
+plt.xlabel('lead time (month)')
+plt.yticks((2, 5, 8, 11), yLabels)
+plt.title('Short Training')
+
+plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+cax = plt.axes([0.85, 0.21, 0.04, 0.57])
+
+plt.colorbar(cax=cax, ticks=cTicks)
+fig.set_figwidth(8)
+plt.savefig(SAVE_DIR + 'Figalt2.eps', format='eps', dpi=1200)
