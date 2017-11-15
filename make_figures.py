@@ -144,12 +144,9 @@ truthSTD = np.std(truth)
 tt = np.linspace(0, tLag - 1, tLag)
 thresh = np.ones(tLag) * 0.5
 
+ts = 150
 # ts = 160
 
-ts = 150
-# ts = 56
-# ts = 48
-# ts = 26
 x = truth[ts, :]
 y = pred_traj[ts, :]
 slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
@@ -934,15 +931,15 @@ cTicks = np.linspace(0, 1, 3)
 yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 
 fig = plt.figure()
-# plt.subplot(4, 3, 1)
-# plt.imshow(pred_panel_shift_1_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
-# plt.xticks((0, 3, 6, 9, 12))
-# plt.xlabel('lead time (months)')
-# plt.yticks((2, 5, 8, 11), yLabels)
-# plt.ylabel('Target month')
-# plt.title('Arctic')
-# # plt.title('Central Arctic')
-# plt.colorbar().set_ticks(cTicks)
+plt.subplot(4, 3, 1)
+plt.imshow(pred_panel_shift_1_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.xticks((0, 3, 6, 9, 12))
+plt.xlabel('lead time (months)')
+plt.yticks((2, 5, 8, 11), yLabels)
+plt.ylabel('Target month')
+plt.title('Arctic')
+# plt.title('Central Arctic')
+plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 2)
 plt.imshow(pred_panel_shift_4_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
@@ -1385,6 +1382,54 @@ plt.savefig(SAVE_DIR + 'Fig10.eps', format='eps', dpi=1200)
 
 
 """ Figure 11 """
+region = 'Arctic'
+embedWin = 12
+varsUsed = 'SIC_SST_SIT'
+
+dataDir = WORK_DIR + region + '_SIC_SST_SIT_q' + str(embedWin) + \
+    '_train_100_499/'
+dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
+pred_pcTM = dataPredICA['pred_pcTM']
+
+dataDir = WORK_DIR + region + '_SIC_SST_SITq48_q' + str(embedWin) + \
+    '_train_100_499/'
+
+dataPredICAS = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
+pred_pcTMS = dataPredICAS['pred_pcTM']
+
+cTicks = np.linspace(0, 1, 3)
+
+plt.rcParams.update({'font.size': 14})
+plt.rcParams.update({'figure.autolayout': False})
+# plt.rcParams.update({'font.family': 'serif'})
+
+fig = plt.figure()
+plt.subplot(121)
+plt.imshow(pred_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
+yLabelsN = ['M', 'J', 'S', 'D']
+plt.yticks((2, 5, 8, 11), yLabels)
+plt.ylabel('Target month')
+plt.xticks((0, 3, 6, 9, 12))
+plt.xlabel('lead time (month)')
+plt.title('SIT q=12')
+plt.subplot(122)
+plt.imshow(pred_pcTMS, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.xticks((0, 3, 6, 9, 12))
+plt.xlabel('lead time (month)')
+plt.yticks((2, 5, 8, 11), yLabels)
+plt.title('SIT q=48')
+
+plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+
+cax = plt.axes([0.85, 0.21, 0.04, 0.57])
+
+plt.colorbar(cax=cax, ticks=cTicks)
+fig.set_figwidth(8)
+plt.savefig(SAVE_DIR + 'Fig11.eps', format='eps', dpi=1200)
+
+
+""" Figure 12 """
 embedWin = 12
 iceVar = 'iva'
 varsUsed = 'SIC_SST_SLP'
@@ -1511,10 +1556,10 @@ plt.colorbar().set_ticks(cTicks)
 fig.set_figheight(14)
 fig.set_figwidth(14)
 plt.tight_layout()
-plt.savefig(SAVE_DIR + 'Fig11.eps', format='eps', dpi=500)
+plt.savefig(SAVE_DIR + 'Fig12.eps', format='eps', dpi=500)
 
 
-""" Figure 12 """
+""" Figure 13 """
 embedWin = 12
 iceVar = 'iva'
 varsUsed = 'SIC_SST_SITq48'
@@ -1670,56 +1715,10 @@ plt.colorbar().set_ticks(cTicks)
 fig.set_figheight(14)
 fig.set_figwidth(14)
 plt.tight_layout()
-plt.savefig(SAVE_DIR + 'Fig12.eps', format='eps', dpi=500)
+plt.savefig(SAVE_DIR + 'Fig13.eps', format='eps', dpi=500)
 
-""" Figure Scratch 1 """
-region = 'Arctic'
-embedWin = 12
-varsUsed = 'SIC_SST_SIT'
 
-dataDir = WORK_DIR + region + '_SIC_SST_SIT_q' + str(embedWin) + \
-    '_train_100_499/'
-dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
-pred_pcTM = dataPredICA['pred_pcTM']
-
-dataDir = WORK_DIR + region + '_SIC_SST_SITq48_q' + str(embedWin) + \
-    '_train_100_499/'
-
-dataPredICAS = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
-pred_pcTMS = dataPredICAS['pred_pcTM']
-
-cTicks = np.linspace(0, 1, 3)
-
-plt.rcParams.update({'font.size': 14})
-plt.rcParams.update({'figure.autolayout': False})
-# plt.rcParams.update({'font.family': 'serif'})
-
-fig = plt.figure()
-plt.subplot(121)
-plt.imshow(pred_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
-yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
-yLabelsN = ['M', 'J', 'S', 'D']
-plt.yticks((2, 5, 8, 11), yLabels)
-plt.ylabel('Target month')
-plt.xticks((0, 3, 6, 9, 12))
-plt.xlabel('lead time (month)')
-plt.title('SIT q=12')
-plt.subplot(122)
-plt.imshow(pred_pcTMS, cmap=cmocean.cm.balance, clim=(0, 1))
-plt.xticks((0, 3, 6, 9, 12))
-plt.xlabel('lead time (month)')
-plt.yticks((2, 5, 8, 11), yLabels)
-plt.title('SIT q=48')
-
-plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-
-cax = plt.axes([0.85, 0.21, 0.04, 0.57])
-
-plt.colorbar(cax=cax, ticks=cTicks)
-fig.set_figwidth(8)
-plt.savefig(SAVE_DIR + 'Figalt1.eps', format='eps', dpi=1200)
-
-""" Figure Scratch 2 """
+""" Figure 14 """
 region = 'Arctic'
 embedWin = 12
 varsUsed = 'SIC_SST_SIT'
@@ -1763,4 +1762,4 @@ cax = plt.axes([0.85, 0.21, 0.04, 0.57])
 
 plt.colorbar(cax=cax, ticks=cTicks)
 fig.set_figwidth(8)
-plt.savefig(SAVE_DIR + 'Figalt2.eps', format='eps', dpi=1200)
+plt.savefig(SAVE_DIR + 'Fig14.eps', format='eps', dpi=1200)
