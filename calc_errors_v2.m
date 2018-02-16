@@ -19,17 +19,22 @@ stdP       = zeros(1,tLag);
 
 pValues = zeros(1,tLag);
 
+
+std_thresh = 0.1;
+
 %% forecast errors
 % rms
 
 for i = 1:tLag
     nf = 0;
+    counter = 0
     for j = 1:nIter
         pred_rms(i) = pred_rms(i) + (pred_traj(j,i) - truth(j,i))^2;
-        nf = nf + truth(j,i)^2;
+        nf
     end
-    nf = sqrt(nf);
-    pred_rms(i) = sqrt(pred_rms(i)/nIter)/nf;
+    nf(counter) = truth(j,i);
+    nfactor = std(nf)
+    pred_rms(i) = sqrt(pred_rms(i)/nIter)/nfactor;
 end
 
 % pattern correlation
@@ -46,6 +51,8 @@ for i = 1:tLag
                     (pred_traj(j,i)-mean_pred(i))*(truth(j,i)-mean_truth(i));
     end
     pred_pc(i) = pred_pc(i)/(std_pred(i)*std_truth(i)*nIter);
+    if std_truth(i)/mean_truth(i) < std_thresh
+        pred_pc(i) = nan;
     c = pred_pc(i);
     tStat = abs(c) * sqrt(nIter) / sqrt(1 - c^2);
     pValues(i) = 2*(1-tcdf(tStat,nIter));
@@ -79,6 +86,8 @@ for i = 1:tLag
                     (predP(j,i)-meanP(i))*(truth(j,i)-mean_truth(i));
     end
     pred_pcP(i) = pred_pcP(i)/(stdP(i)*std_truth(i)*nIter);
+    if std_truth(i)/mean_truth(i) < std_thresh
+        pred_pcP(i) = nan
 end
 
 end

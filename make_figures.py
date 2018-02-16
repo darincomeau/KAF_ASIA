@@ -25,103 +25,103 @@ SAVE_DIR = '/Users/dcomeau/Projects/KAF/CD_STAPIS/Revision/'
 flag = 0
 dampedP = 1
 
-""" Figure 1 """
-# load data
-print 'Reading data'
-fIn = Dataset(SEA_ICE_FILE, mode='r')
-gArea = fIn.variables['tarea'][:]  # cm^2: nlat, nlon
-gLats = fIn.variables['TLAT'][:]   # degrees north: nlat, nlon
-gLons = fIn.variables['TLON'][:]   # degrees east: nlat, nlon
-oVar = fIn.variables['aice'][:]    # time(120), z_t (60), nlat(384), nlon(320)
-oVar *= 0.01                       # convert % to fraction
-[tNum, latNum, lonNum] = np.shape(oVar)
-fIn.close()
+# """ Figure 1 """
+# # load data
+# print 'Reading data'
+# fIn = Dataset(SEA_ICE_FILE, mode='r')
+# gArea = fIn.variables['tarea'][:]  # cm^2: nlat, nlon
+# gLats = fIn.variables['TLAT'][:]   # degrees north: nlat, nlon
+# gLons = fIn.variables['TLON'][:]   # degrees east: nlat, nlon
+# oVar = fIn.variables['aice'][:]    # time(120), z_t (60), nlat(384), nlon(320)
+# oVar *= 0.01                       # convert % to fraction
+# [tNum, latNum, lonNum] = np.shape(oVar)
+# fIn.close()
 
-# get mask
-maskInd = ma.nonzero(oVar[0, :, :])
-(tmp, nD) = np.shape(maskInd)
-maskInd = np.transpose(maskInd)
+# # get mask
+# maskInd = ma.nonzero(oVar[0, :, :])
+# (tmp, nD) = np.shape(maskInd)
+# maskInd = np.transpose(maskInd)
 
-# map to single unmasked array
-dataRaw = np.zeros((tNum, nD))
-for i in range(nD):
-    dataRaw[:, i] = oVar[:, maskInd[i][0], maskInd[i][1]]
+# # map to single unmasked array
+# dataRaw = np.zeros((tNum, nD))
+# for i in range(nD):
+#     dataRaw[:, i] = oVar[:, maskInd[i][0], maskInd[i][1]]
 
-# flip so that columns are time
-dataRaw = np.transpose(dataRaw)
+# # flip so that columns are time
+# dataRaw = np.transpose(dataRaw)
 
-dataSD = np.zeros(np.shape(gLats))
-for i in range(nD):
-    dataSD[maskInd[i][0], maskInd[i][1]] = np.std(dataRaw[i, :])
+# dataSD = np.zeros(np.shape(gLats))
+# for i in range(nD):
+#     dataSD[maskInd[i][0], maskInd[i][1]] = np.std(dataRaw[i, :])
 
-# draw region boundaries
-bLons = np.zeros((11, 2))
-bLats = np.zeros((11, 2))
+# # draw region boundaries
+# bLons = np.zeros((11, 2))
+# bLats = np.zeros((11, 2))
 
-# Beaufort
-bLons[0] = [-125, -155]
-bLats[0] = [65, 75]
-# Chukchi
-bLons[1] = [-155, 175]
-bLats[1] = [65, 75]
-# East Siberian
-bLons[2] = [175, 140]
-bLats[2] = [65, 75]
-# Laptev
-bLons[3] = [140, 105]
-bLats[3] = [70, 80]
-# Kara
-bLons[4] = [60, 90]
-bLats[4] = [65, 80]
-# Barents
-bLons[5] = [30, 60]
-bLats[5] = [65, 80]
-# Greenland
-bLons[6] = [0, -35]
-bLats[6] = [65, 80]
-# Baffin
-bLons[7] = [-80, -50]
-bLats[7] = [70, 80]
-# Labrador
-bLons[8] = [-70, -50]
-bLats[8] = [50, 70]
-# Bering
-bLons[9] = [165, -160]
-bLats[9] = [55, 65]
-# Okhotsk
-bLons[10] = [135, 165]
-bLats[10] = [45, 65]
+# # Beaufort
+# bLons[0] = [-125, -155]
+# bLats[0] = [65, 75]
+# # Chukchi
+# bLons[1] = [-155, 175]
+# bLats[1] = [65, 75]
+# # East Siberian
+# bLons[2] = [175, 140]
+# bLats[2] = [65, 75]
+# # Laptev
+# bLons[3] = [140, 105]
+# bLats[3] = [70, 80]
+# # Kara
+# bLons[4] = [60, 90]
+# bLats[4] = [65, 80]
+# # Barents
+# bLons[5] = [30, 60]
+# bLats[5] = [65, 80]
+# # Greenland
+# bLons[6] = [0, -35]
+# bLats[6] = [65, 80]
+# # Baffin
+# bLons[7] = [-80, -50]
+# bLats[7] = [70, 80]
+# # Labrador
+# bLons[8] = [-70, -50]
+# bLats[8] = [50, 70]
+# # Bering
+# bLons[9] = [165, -160]
+# bLats[9] = [55, 65]
+# # Okhotsk
+# bLons[10] = [135, 165]
+# bLats[10] = [45, 65]
 
-plt.rcParams.update({'font.size': 14})
-# plt.rcParams.update({'font.family': 'serif'})
-fig = plt.figure(figsize=(8, 8))
-ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
-m = Basemap(projection='npstere', lon_0=0.0, boundinglat=45.)
-m.drawcoastlines()
-m.fillcontinents(color='0.8')
-# m.fillcontinents(color = 'coral')
-m.drawmeridians(np.arange(0, 360, 30), labels=[1, 0, 0, 1], fontsize=18)
-m.drawparallels((66, 80))
-for i in range(11):
-    m.drawgreatcircle(bLons[i][0], bLats[i][0], bLons[i][1], bLats[i][0],
-                      linewidth=2, color='r')
-    m.drawgreatcircle(bLons[i][0], bLats[i][0], bLons[i][0], bLats[i][1],
-                      linewidth=2, color='r')
-    m.drawgreatcircle(bLons[i][1], bLats[i][1], bLons[i][1], bLats[i][0],
-                      linewidth=2, color='r')
-    m.drawgreatcircle(bLons[i][1], bLats[i][1], bLons[i][0], bLats[i][1],
-                      linewidth=2, color='r')
+# plt.rcParams.update({'font.size': 14})
+# # plt.rcParams.update({'font.family': 'serif'})
+# fig = plt.figure(figsize=(8, 8))
+# ax = fig.add_axes([0.1, 0.1, 0.8, 0.8])
+# m = Basemap(projection='npstere', lon_0=0.0, boundinglat=45.)
+# m.drawcoastlines()
+# m.fillcontinents(color='0.8')
+# # m.fillcontinents(color = 'coral')
+# m.drawmeridians(np.arange(0, 360, 30), labels=[1, 0, 0, 1], fontsize=18)
+# m.drawparallels((66, 80))
+# for i in range(11):
+#     m.drawgreatcircle(bLons[i][0], bLats[i][0], bLons[i][1], bLats[i][0],
+#                       linewidth=2, color='r')
+#     m.drawgreatcircle(bLons[i][0], bLats[i][0], bLons[i][0], bLats[i][1],
+#                       linewidth=2, color='r')
+#     m.drawgreatcircle(bLons[i][1], bLats[i][1], bLons[i][1], bLats[i][0],
+#                       linewidth=2, color='r')
+#     m.drawgreatcircle(bLons[i][1], bLats[i][1], bLons[i][0], bLats[i][1],
+#                       linewidth=2, color='r')
 
-data = dataSD - 1e-10
-cLevs = np.linspace(0, 0.5, 6)
-cTicks = np.linspace(0, 0.5, 6)
-lx, ly = m(gLons, gLats)
-cs = m.contourf(lx, ly, data, cLevs, cmap=cmocean.cm.ice, extend='max')
-cbar = m.colorbar(cs, location='right')
-cbar.set_label('standard deviation', fontsize='20')
-cbar.set_ticks(cTicks)
-plt.title('CCSM4 sea ice concentration variability', fontsize=20)
-plt.savefig('Fig1.eps', format='eps', dpi=1000)
+# data = dataSD - 1e-10
+# cLevs = np.linspace(0, 0.5, 6)
+# cTicks = np.linspace(0, 0.5, 6)
+# lx, ly = m(gLons, gLats)
+# cs = m.contourf(lx, ly, data, cLevs, cmap=cmocean.cm.ice, extend='max')
+# cbar = m.colorbar(cs, location='right')
+# cbar.set_label('standard deviation', fontsize='20')
+# cbar.set_ticks(cTicks)
+# plt.title('CCSM4 sea ice concentration variability', fontsize=20)
+# plt.savefig('Fig1.eps', format='eps', dpi=1000)
 
 
 """ Figure 2 """
@@ -295,7 +295,7 @@ plt.rcParams.update({'figure.autolayout': False})
 
 fig = plt.figure()
 plt.subplot(121)
-plt.imshow(pred_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 yLabelsN = ['M', 'J', 'S', 'D']
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -304,7 +304,7 @@ plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (month)')
 plt.title('PC (KAF)')
 plt.subplot(122)
-plt.imshow(pred_pcTMP, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_pcTMP, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (month)')
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -601,7 +601,7 @@ plt.rcParams.update({'figure.autolayout': True})
 fig = plt.figure()
 plt.subplot(4, 3, 1)
 plt.plot(tt, pred_panel_1_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_1_rmsP, 'r', label='pers.')
+plt.plot(tt, pred_panel_1_rmsP, 'r', label='damped pers.')
 plt.title('Arctic')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
@@ -613,7 +613,7 @@ plt.legend(loc='lower right', prop={'size': 10})
 
 plt.subplot(4, 3, 2)
 plt.plot(tt, pred_panel_4_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_4_rmsP, 'r', label='pers.')
+plt.plot(tt, pred_panel_4_rmsP, 'r', label='damped pers.')
 plt.title('Beaufort')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
@@ -621,7 +621,7 @@ plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
 
 plt.subplot(4, 3, 3)
 plt.plot(tt, pred_panel_3_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_3_rmsP, 'r', label='pers.')
+plt.plot(tt, pred_panel_3_rmsP, 'r', label='damped pers.')
 plt.title('Chukchi')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
@@ -629,7 +629,7 @@ plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
 
 plt.subplot(4, 3, 4)
 plt.plot(tt, pred_panel_6_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_6_rmsP, 'r', label='pers.')
+plt.plot(tt, pred_panel_6_rmsP, 'r', label='damped pers.')
 plt.title('E Siberian')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
@@ -637,7 +637,7 @@ plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
 
 plt.subplot(4, 3, 5)
 plt.plot(tt, pred_panel_7_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_7_rmsP, 'r', label='pers.')
+plt.plot(tt, pred_panel_7_rmsP, 'r', label='damped pers.')
 plt.title('Laptev')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
@@ -645,7 +645,7 @@ plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
 
 plt.subplot(4, 3, 6)
 plt.plot(tt, pred_panel_10_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_10_rmsP, 'r', label='pers.')
+plt.plot(tt, pred_panel_10_rmsP, 'r', label='damped pers.')
 plt.title('Kara')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
@@ -653,7 +653,7 @@ plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
 
 plt.subplot(4, 3, 7)
 plt.plot(tt, pred_panel_9_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_9_rmsP, 'r', label='pers.')
+plt.plot(tt, pred_panel_9_rmsP, 'r', label='damped pers.')
 plt.title('Barents')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
@@ -661,7 +661,7 @@ plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
 
 plt.subplot(4, 3, 8)
 plt.plot(tt, pred_panel_11_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_11_rmsP, 'r', label='pers.')
+plt.plot(tt, pred_panel_11_rmsP, 'r', label='damped pers.')
 plt.title('Greenland')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
@@ -669,7 +669,7 @@ plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
 
 plt.subplot(4, 3, 9)
 plt.plot(tt, pred_panel_13_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_13_rmsP, 'r', label='pers.')
+plt.plot(tt, pred_panel_13_rmsP, 'r', label='damped pers.')
 plt.title('Labrador')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
@@ -677,7 +677,7 @@ plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
 
 plt.subplot(4, 3, 10)
 plt.plot(tt, pred_panel_12_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_12_rmsP, 'r', label='pers.')
+plt.plot(tt, pred_panel_12_rmsP, 'r', label='damped pers.')
 plt.title('Baffin')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
@@ -685,7 +685,7 @@ plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
 
 plt.subplot(4, 3, 11)
 plt.plot(tt, pred_panel_15_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_15_rmsP, 'r', label='pers.')
+plt.plot(tt, pred_panel_15_rmsP, 'r', label='damped pers.')
 plt.title('Bering')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
@@ -693,7 +693,7 @@ plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
 
 plt.subplot(4, 3, 12)
 plt.plot(tt, pred_panel_16_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_16_rmsP, 'r', label='pers.')
+plt.plot(tt, pred_panel_16_rmsP, 'r', label='damped pers.')
 plt.title('Okhotsk')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
@@ -780,7 +780,7 @@ plt.rcParams.update({'figure.autolayout': True})
 fig = plt.figure()
 plt.subplot(4, 3, 1)
 plt.plot(tt, pred_panel_1_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_1_pcP, 'r', label='pers.')
+plt.plot(tt, pred_panel_1_pcP, 'r', label='damped pers.')
 plt.plot(tt, thresh, 'k--')
 plt.title('Arctic')
 plt.xticks([0, 3, 6, 9, 12])
@@ -792,7 +792,7 @@ plt.legend(loc='upper right', prop={'size': 10})
 
 plt.subplot(4, 3, 2)
 plt.plot(tt, pred_panel_4_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_4_pcP, 'r', label='pers.')
+plt.plot(tt, pred_panel_4_pcP, 'r', label='damped pers.')
 plt.plot(tt, thresh, 'k--')
 plt.title('Beaufort')
 plt.xticks([0, 3, 6, 9, 12])
@@ -801,7 +801,7 @@ plt.yticks([0, 0.25, 0.5, 0.75, 1])
 
 plt.subplot(4, 3, 3)
 plt.plot(tt, pred_panel_3_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_3_pcP, 'r', label='pers.')
+plt.plot(tt, pred_panel_3_pcP, 'r', label='damped pers.')
 plt.plot(tt, thresh, 'k--')
 plt.title('Chukchi')
 plt.xticks([0, 3, 6, 9, 12])
@@ -810,7 +810,7 @@ plt.yticks([0, 0.25, 0.5, 0.75, 1])
 
 plt.subplot(4, 3, 4)
 plt.plot(tt, pred_panel_6_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_6_pcP, 'r', label='pers.')
+plt.plot(tt, pred_panel_6_pcP, 'r', label='damped pers.')
 plt.plot(tt, thresh, 'k--')
 plt.title('E Siberian')
 plt.xticks([0, 3, 6, 9, 12])
@@ -819,7 +819,7 @@ plt.yticks([0, 0.25, 0.5, 0.75, 1])
 
 plt.subplot(4, 3, 5)
 plt.plot(tt, pred_panel_7_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_7_pcP, 'r', label='pers.')
+plt.plot(tt, pred_panel_7_pcP, 'r', label='damped pers.')
 plt.plot(tt, thresh, 'k--')
 plt.title('Laptev')
 plt.xticks([0, 3, 6, 9, 12])
@@ -828,7 +828,7 @@ plt.yticks([0, 0.25, 0.5, 0.75, 1])
 
 plt.subplot(4, 3, 6)
 plt.plot(tt, pred_panel_10_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_10_pcP, 'r', label='pers.')
+plt.plot(tt, pred_panel_10_pcP, 'r', label='damped pers.')
 plt.plot(tt, thresh, 'k--')
 plt.title('Kara')
 plt.xticks([0, 3, 6, 9, 12])
@@ -837,7 +837,7 @@ plt.yticks([0, 0.25, 0.5, 0.75, 1])
 
 plt.subplot(4, 3, 7)
 plt.plot(tt, pred_panel_9_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_9_pcP, 'r', label='pers.')
+plt.plot(tt, pred_panel_9_pcP, 'r', label='damped pers.')
 plt.plot(tt, thresh, 'k--')
 plt.title('Barents')
 plt.xticks([0, 3, 6, 9, 12])
@@ -846,7 +846,7 @@ plt.yticks([0, 0.25, 0.5, 0.75, 1])
 
 plt.subplot(4, 3, 8)
 plt.plot(tt, pred_panel_11_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_11_pcP, 'r', label='pers.')
+plt.plot(tt, pred_panel_11_pcP, 'r', label='damped pers.')
 plt.plot(tt, thresh, 'k--')
 plt.title('Greenland')
 plt.xticks([0, 3, 6, 9, 12])
@@ -855,7 +855,7 @@ plt.yticks([0, 0.25, 0.5, 0.75, 1])
 
 plt.subplot(4, 3, 9)
 plt.plot(tt, pred_panel_13_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_13_pcP, 'r', label='pers.')
+plt.plot(tt, pred_panel_13_pcP, 'r', label='damped pers.')
 plt.plot(tt, thresh, 'k--')
 plt.title('Labrador')
 plt.xticks([0, 3, 6, 9, 12])
@@ -864,7 +864,7 @@ plt.yticks([0, 0.25, 0.5, 0.75, 1])
 
 plt.subplot(4, 3, 10)
 plt.plot(tt, pred_panel_12_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_12_pcP, 'r', label='pers.')
+plt.plot(tt, pred_panel_12_pcP, 'r', label='damped pers.')
 plt.plot(tt, thresh, 'k--')
 plt.title('Baffin')
 plt.xticks([0, 3, 6, 9, 12])
@@ -873,7 +873,7 @@ plt.yticks([0, 0.25, 0.5, 0.75, 1])
 
 plt.subplot(4, 3, 11)
 plt.plot(tt, pred_panel_15_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_15_pcP, 'r', label='pers.')
+plt.plot(tt, pred_panel_15_pcP, 'r', label='damped pers.')
 plt.plot(tt, thresh, 'k--')
 plt.title('Bering')
 plt.xticks([0, 3, 6, 9, 12])
@@ -882,7 +882,7 @@ plt.yticks([0, 0.25, 0.5, 0.75, 1])
 
 plt.subplot(4, 3, 12)
 plt.plot(tt, pred_panel_16_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_16_pcP, 'r', label='pers.')
+plt.plot(tt, pred_panel_16_pcP, 'r', label='damped pers.')
 plt.plot(tt, thresh, 'k--')
 plt.title('Okhotsk')
 plt.xticks([0, 3, 6, 9, 12])
@@ -932,7 +932,7 @@ yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 
 fig = plt.figure()
 plt.subplot(4, 3, 1)
-plt.imshow(pred_panel_shift_1_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_1_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (months)')
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -942,7 +942,7 @@ plt.title('Arctic')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 2)
-plt.imshow(pred_panel_shift_4_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_4_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (months)')
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -950,70 +950,70 @@ plt.title('Beaufort')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 3)
-plt.imshow(pred_panel_shift_3_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_3_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Chukchi')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 4)
-plt.imshow(pred_panel_shift_6_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_6_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('E Siberian')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 5)
-plt.imshow(pred_panel_shift_7_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_7_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Laptev')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 6)
-plt.imshow(pred_panel_shift_10_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_10_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Kara')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 7)
-plt.imshow(pred_panel_shift_9_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_9_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Barents')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 8)
-plt.imshow(pred_panel_shift_11_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_11_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Greenland')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 9)
-plt.imshow(pred_panel_shift_13_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_13_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Labrador')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 10)
-plt.imshow(pred_panel_shift_12_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_12_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Baffin')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 11)
-plt.imshow(pred_panel_shift_15_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_15_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Bering')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 12)
-plt.imshow(pred_panel_shift_16_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_16_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Okhotsk')
@@ -1081,7 +1081,7 @@ yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 fig = plt.figure()
 plt.subplot(4, 3, 1)
 plt.imshow(pred_panel_shift_1_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (months)')
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -1092,7 +1092,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 2)
 plt.imshow(pred_panel_shift_4_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Beaufort')
@@ -1100,7 +1100,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 3)
 plt.imshow(pred_panel_shift_3_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Chukchi')
@@ -1108,7 +1108,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 4)
 plt.imshow(pred_panel_shift_6_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('E Siberian')
@@ -1116,7 +1116,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 5)
 plt.imshow(pred_panel_shift_7_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Laptev')
@@ -1124,7 +1124,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 6)
 plt.imshow(pred_panel_shift_10_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Kara')
@@ -1132,7 +1132,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 7)
 plt.imshow(pred_panel_shift_9_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Barents')
@@ -1140,7 +1140,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 8)
 plt.imshow(pred_panel_shift_11_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Greenland')
@@ -1148,7 +1148,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 9)
 plt.imshow(pred_panel_shift_13_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Labrador')
@@ -1156,7 +1156,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 10)
 plt.imshow(pred_panel_shift_12_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Baffin')
@@ -1164,7 +1164,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 11)
 plt.imshow(pred_panel_shift_15_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Bering')
@@ -1172,7 +1172,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 12)
 plt.imshow(pred_panel_shift_16_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Okhotsk')
@@ -1314,7 +1314,7 @@ plt.plot(tt, pred_var_rms[0, 0, :], label='SIC')
 plt.plot(tt, pred_var_rms[0, 1, :], label='SIC, SST')
 plt.plot(tt, pred_var_rms[0, 2, :], label='SIC, SIT')
 plt.plot(tt, pred_var_rms[0, 3, :], label='SIC, SLP')
-plt.plot(tt, pred_var_rmsP[0, :], '--', label='pers.')
+plt.plot(tt, pred_var_rmsP[0, :], '--', label='damped pers.')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlabel('lead time (months)')
 plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
@@ -1327,7 +1327,7 @@ plt.plot(tt, pred_var_pc[0, 0, :], label='SIC')
 plt.plot(tt, pred_var_pc[0, 1, :], label='SIC, SST')
 plt.plot(tt, pred_var_pc[0, 2, :], label='SIC, SIT')
 plt.plot(tt, pred_var_pc[0, 3, :], label='SIC, SLP')
-plt.plot(tt, pred_var_pcP[0, :], '--', label='pers.')
+plt.plot(tt, pred_var_pcP[0, :], '--', label='damped pers.')
 plt.plot(tt, thresh, 'k--')
 plt.xticks([0, 3, 6, 9, 12])
 plt.yticks([0, 0.5, 1])
@@ -1338,7 +1338,7 @@ plt.plot(tt, pred_var_rms[1, 0, :], label='SIC')
 plt.plot(tt, pred_var_rms[1, 1, :], label='SIC, SST')
 plt.plot(tt, pred_var_rms[1, 2, :], label='SIC, SIT')
 plt.plot(tt, pred_var_rms[1, 3, :], label='SIC, SLP')
-plt.plot(tt, pred_var_rmsP[1, :], '--', label='pers.')
+plt.plot(tt, pred_var_rmsP[1, :], '--', label='damped pers.')
 plt.xticks([0, 3, 6, 9, 12])
 plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
 plt.title('Beaufort NRMSE')
@@ -1348,7 +1348,7 @@ plt.plot(tt, pred_var_pc[1, 0, :], label='SIC')
 plt.plot(tt, pred_var_pc[1, 1, :], label='SIC, SST')
 plt.plot(tt, pred_var_pc[1, 2, :], label='SIC, SIT')
 plt.plot(tt, pred_var_pc[1, 3, :], label='SIC, SLP')
-plt.plot(tt, pred_var_pcP[1, :], '--', label='pers.')
+plt.plot(tt, pred_var_pcP[1, :], '--', label='damped pers.')
 plt.plot(tt, thresh, 'k--')
 plt.xticks([0, 3, 6, 9, 12])
 plt.yticks([0, 0.5, 1])
@@ -1359,7 +1359,7 @@ plt.plot(tt, pred_var_rms[2, 0, :], label='SIC')
 plt.plot(tt, pred_var_rms[2, 1, :], label='SIC, SST')
 plt.plot(tt, pred_var_rms[2, 2, :], label='SIC, SIT')
 plt.plot(tt, pred_var_rms[2, 3, :], label='SIC, SLP')
-plt.plot(tt, pred_var_rmsP[2, :], '--', label='pers.')
+plt.plot(tt, pred_var_rmsP[2, :], '--', label='damped pers.')
 plt.xticks([0, 3, 6, 9, 12])
 plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
 plt.title('Bering NRMSE')
@@ -1369,7 +1369,7 @@ plt.plot(tt, pred_var_pc[2, 0, :], label='SIC')
 plt.plot(tt, pred_var_pc[2, 1, :], label='SIC, SST')
 plt.plot(tt, pred_var_pc[2, 2, :], label='SIC, SIT')
 plt.plot(tt, pred_var_pc[2, 3, :], label='SIC, SLP')
-plt.plot(tt, pred_var_pcP[2, :], '--', label='pers.')
+plt.plot(tt, pred_var_pcP[2, :], '--', label='damped pers.')
 plt.plot(tt, thresh, 'k--')
 plt.xticks([0, 3, 6, 9, 12])
 plt.yticks([0, 0.5, 1])
@@ -1405,7 +1405,7 @@ plt.rcParams.update({'figure.autolayout': False})
 
 fig = plt.figure()
 plt.subplot(121)
-plt.imshow(pred_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 yLabelsN = ['M', 'J', 'S', 'D']
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -1414,7 +1414,7 @@ plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (month)')
 plt.title('SIT q=12')
 plt.subplot(122)
-plt.imshow(pred_pcTMS, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_pcTMS, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (month)')
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -1467,7 +1467,7 @@ yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 
 fig = plt.figure()
 plt.subplot(4, 3, 1)
-plt.imshow(pred_panel_shift_1_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_1_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (months)')
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -1477,77 +1477,77 @@ plt.title('Arctic')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 2)
-plt.imshow(pred_panel_shift_4_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_4_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Beaufort')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 3)
-plt.imshow(pred_panel_shift_3_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_3_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Chukchi')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 4)
-plt.imshow(pred_panel_shift_6_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_6_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('E Siberian')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 5)
-plt.imshow(pred_panel_shift_7_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_7_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Laptev')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 6)
-plt.imshow(pred_panel_shift_10_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_10_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Kara')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 7)
-plt.imshow(pred_panel_shift_9_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_9_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Barents')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 8)
-plt.imshow(pred_panel_shift_11_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_11_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Greenland')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 9)
-plt.imshow(pred_panel_shift_13_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_13_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Labrador')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 10)
-plt.imshow(pred_panel_shift_12_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_12_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Baffin')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 11)
-plt.imshow(pred_panel_shift_15_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_15_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Bering')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 12)
-plt.imshow(pred_panel_shift_16_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_panel_shift_16_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Okhotsk')
@@ -1615,7 +1615,7 @@ yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 fig = plt.figure()
 plt.subplot(4, 3, 1)
 plt.imshow(pred_panel_shift_1_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (months)')
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -1626,7 +1626,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 2)
 plt.imshow(pred_panel_shift_4_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Beaufort')
@@ -1634,7 +1634,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 3)
 plt.imshow(pred_panel_shift_3_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Chukchi')
@@ -1642,7 +1642,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 4)
 plt.imshow(pred_panel_shift_6_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('E Siberian')
@@ -1650,7 +1650,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 5)
 plt.imshow(pred_panel_shift_7_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Laptev')
@@ -1658,7 +1658,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 6)
 plt.imshow(pred_panel_shift_10_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Kara')
@@ -1666,7 +1666,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 7)
 plt.imshow(pred_panel_shift_9_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Barents')
@@ -1674,7 +1674,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 8)
 plt.imshow(pred_panel_shift_11_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Greenland')
@@ -1682,7 +1682,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 9)
 plt.imshow(pred_panel_shift_13_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Labrador')
@@ -1690,7 +1690,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 10)
 plt.imshow(pred_panel_shift_12_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Baffin')
@@ -1698,7 +1698,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 11)
 plt.imshow(pred_panel_shift_15_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Bering')
@@ -1706,7 +1706,7 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 12)
 plt.imshow(pred_panel_shift_16_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5))
+           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Okhotsk')
@@ -1742,7 +1742,7 @@ plt.rcParams.update({'figure.autolayout': False})
 
 fig = plt.figure()
 plt.subplot(121)
-plt.imshow(pred_pcTM, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 yLabelsN = ['M', 'J', 'S', 'D']
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -1751,7 +1751,7 @@ plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (month)')
 plt.title('Full Training')
 plt.subplot(122)
-plt.imshow(pred_pcTMS, cmap=cmocean.cm.balance, clim=(0, 1))
+plt.imshow(pred_pcTMS, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (month)')
 plt.yticks((2, 5, 8, 11), yLabels)
