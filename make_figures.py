@@ -33,7 +33,7 @@ std_thresh = 0.1
 # gArea = fIn.variables['tarea'][:]  # cm^2: nlat, nlon
 # gLats = fIn.variables['TLAT'][:]   # degrees north: nlat, nlon
 # gLons = fIn.variables['TLON'][:]   # degrees east: nlat, nlon
-# oVar = fIn.variables['aice'][:]    # time(120), z_t (60), nlat(384), nlon(320)
+# oVar = fIn.variables['aice'][:]    # time(120), z_t (60), lat(384), lon(320)
 # oVar *= 0.01                       # convert % to fraction
 # [tNum, latNum, lonNum] = np.shape(oVar)
 # fIn.close()
@@ -289,6 +289,11 @@ if dampedP == 1:
 else:
     pred_pcTMP = dataPredICA['pred_pcTMP']
 std_truthTM = dataPredICA['std_truthTM']
+
+# mask out small variances
+pred_pcTM[std_truthTM < std_thresh] = np.nan
+pred_pcTMP[std_truthTM < std_thresh] = np.nan
+
 cTicks = np.linspace(0, 1, 3)
 
 plt.rcParams.update({'font.size': 14})
@@ -944,6 +949,42 @@ pred_panel_shift_14_pcTM = compData['pred_panel_shift_14_pcTM']
 pred_panel_shift_15_pcTM = compData['pred_panel_shift_15_pcTM']
 pred_panel_shift_16_pcTM = compData['pred_panel_shift_16_pcTM']
 
+# mask out small variances
+pred_panel_shift_1_stdTM = compData['pred_panel_shift_1_stdTM']
+# pred_panel_shift_1_stdTM = compData['pred_panel_shift_17_stdTM']
+pred_panel_shift_2_stdTM = compData['pred_panel_shift_2_stdTM']
+pred_panel_shift_3_stdTM = compData['pred_panel_shift_3_stdTM']
+pred_panel_shift_4_stdTM = compData['pred_panel_shift_4_stdTM']
+pred_panel_shift_5_stdTM = compData['pred_panel_shift_5_stdTM']
+pred_panel_shift_6_stdTM = compData['pred_panel_shift_6_stdTM']
+pred_panel_shift_7_stdTM = compData['pred_panel_shift_7_stdTM']
+pred_panel_shift_8_stdTM = compData['pred_panel_shift_8_stdTM']
+pred_panel_shift_9_stdTM = compData['pred_panel_shift_9_stdTM']
+pred_panel_shift_10_stdTM = compData['pred_panel_shift_10_stdTM']
+pred_panel_shift_11_stdTM = compData['pred_panel_shift_11_stdTM']
+pred_panel_shift_12_stdTM = compData['pred_panel_shift_12_stdTM']
+pred_panel_shift_13_stdTM = compData['pred_panel_shift_13_stdTM']
+pred_panel_shift_14_stdTM = compData['pred_panel_shift_14_stdTM']
+pred_panel_shift_15_stdTM = compData['pred_panel_shift_15_stdTM']
+pred_panel_shift_16_stdTM = compData['pred_panel_shift_16_stdTM']
+
+pred_panel_shift_1_pcTM[pred_panel_shift_1_stdTM < std_thresh] = np.nan
+pred_panel_shift_2_pcTM[pred_panel_shift_2_stdTM < std_thresh] = np.nan
+pred_panel_shift_3_pcTM[pred_panel_shift_3_stdTM < std_thresh] = np.nan
+pred_panel_shift_4_pcTM[pred_panel_shift_4_stdTM < std_thresh] = np.nan
+pred_panel_shift_5_pcTM[pred_panel_shift_5_stdTM < std_thresh] = np.nan
+pred_panel_shift_6_pcTM[pred_panel_shift_6_stdTM < std_thresh] = np.nan
+pred_panel_shift_7_pcTM[pred_panel_shift_7_stdTM < std_thresh] = np.nan
+pred_panel_shift_8_pcTM[pred_panel_shift_8_stdTM < std_thresh] = np.nan
+pred_panel_shift_9_pcTM[pred_panel_shift_9_stdTM < std_thresh] = np.nan
+pred_panel_shift_10_pcTM[pred_panel_shift_10_stdTM < std_thresh] = np.nan
+pred_panel_shift_11_pcTM[pred_panel_shift_11_stdTM < std_thresh] = np.nan
+pred_panel_shift_12_pcTM[pred_panel_shift_12_stdTM < std_thresh] = np.nan
+pred_panel_shift_13_pcTM[pred_panel_shift_13_stdTM < std_thresh] = np.nan
+pred_panel_shift_14_pcTM[pred_panel_shift_14_stdTM < std_thresh] = np.nan
+pred_panel_shift_15_pcTM[pred_panel_shift_15_stdTM < std_thresh] = np.nan
+pred_panel_shift_16_pcTM[pred_panel_shift_16_stdTM < std_thresh] = np.nan
+
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
 
@@ -952,7 +993,10 @@ yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 
 fig = plt.figure()
 plt.subplot(4, 3, 1)
-plt.imshow(pred_panel_shift_1_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_1_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (months)')
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -962,7 +1006,10 @@ plt.title('Arctic')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 2)
-plt.imshow(pred_panel_shift_4_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_4_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (months)')
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -970,70 +1017,100 @@ plt.title('Beaufort')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 3)
-plt.imshow(pred_panel_shift_3_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_3_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Chukchi')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 4)
-plt.imshow(pred_panel_shift_6_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_6_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('E Siberian')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 5)
-plt.imshow(pred_panel_shift_7_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_7_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Laptev')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 6)
-plt.imshow(pred_panel_shift_10_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_10_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Kara')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 7)
-plt.imshow(pred_panel_shift_9_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_9_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Barents')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 8)
-plt.imshow(pred_panel_shift_11_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_11_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Greenland')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 9)
-plt.imshow(pred_panel_shift_13_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_13_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Labrador')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 10)
-plt.imshow(pred_panel_shift_12_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_12_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Baffin')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 11)
-plt.imshow(pred_panel_shift_15_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_15_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Bering')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 12)
-plt.imshow(pred_panel_shift_16_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_16_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Okhotsk')
@@ -1092,6 +1169,42 @@ else:
     pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcTMdiff']
     pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcTMdiff']
 
+# mask out small variances
+pred_panel_shift_1_stdTM = compData['pred_panel_shift_1_stdTM']
+# pred_panel_shift_1_stdTM = compData['pred_panel_shift_17_stdTM']
+pred_panel_shift_2_stdTM = compData['pred_panel_shift_2_stdTM']
+pred_panel_shift_3_stdTM = compData['pred_panel_shift_3_stdTM']
+pred_panel_shift_4_stdTM = compData['pred_panel_shift_4_stdTM']
+pred_panel_shift_5_stdTM = compData['pred_panel_shift_5_stdTM']
+pred_panel_shift_6_stdTM = compData['pred_panel_shift_6_stdTM']
+pred_panel_shift_7_stdTM = compData['pred_panel_shift_7_stdTM']
+pred_panel_shift_8_stdTM = compData['pred_panel_shift_8_stdTM']
+pred_panel_shift_9_stdTM = compData['pred_panel_shift_9_stdTM']
+pred_panel_shift_10_stdTM = compData['pred_panel_shift_10_stdTM']
+pred_panel_shift_11_stdTM = compData['pred_panel_shift_11_stdTM']
+pred_panel_shift_12_stdTM = compData['pred_panel_shift_12_stdTM']
+pred_panel_shift_13_stdTM = compData['pred_panel_shift_13_stdTM']
+pred_panel_shift_14_stdTM = compData['pred_panel_shift_14_stdTM']
+pred_panel_shift_15_stdTM = compData['pred_panel_shift_15_stdTM']
+pred_panel_shift_16_stdTM = compData['pred_panel_shift_16_stdTM']
+
+pred_panel_shift_1_pcTMdiff[pred_panel_shift_1_stdTM < std_thresh] = np.nan
+pred_panel_shift_2_pcTMdiff[pred_panel_shift_2_stdTM < std_thresh] = np.nan
+pred_panel_shift_3_pcTMdiff[pred_panel_shift_3_stdTM < std_thresh] = np.nan
+pred_panel_shift_4_pcTMdiff[pred_panel_shift_4_stdTM < std_thresh] = np.nan
+pred_panel_shift_5_pcTMdiff[pred_panel_shift_5_stdTM < std_thresh] = np.nan
+pred_panel_shift_6_pcTMdiff[pred_panel_shift_6_stdTM < std_thresh] = np.nan
+pred_panel_shift_7_pcTMdiff[pred_panel_shift_7_stdTM < std_thresh] = np.nan
+pred_panel_shift_8_pcTMdiff[pred_panel_shift_8_stdTM < std_thresh] = np.nan
+pred_panel_shift_9_pcTMdiff[pred_panel_shift_9_stdTM < std_thresh] = np.nan
+pred_panel_shift_10_pcTMdiff[pred_panel_shift_10_stdTM < std_thresh] = np.nan
+pred_panel_shift_11_pcTMdiff[pred_panel_shift_11_stdTM < std_thresh] = np.nan
+pred_panel_shift_12_pcTMdiff[pred_panel_shift_12_stdTM < std_thresh] = np.nan
+pred_panel_shift_13_pcTMdiff[pred_panel_shift_13_stdTM < std_thresh] = np.nan
+pred_panel_shift_14_pcTMdiff[pred_panel_shift_14_stdTM < std_thresh] = np.nan
+pred_panel_shift_15_pcTMdiff[pred_panel_shift_15_stdTM < std_thresh] = np.nan
+pred_panel_shift_16_pcTMdiff[pred_panel_shift_16_stdTM < std_thresh] = np.nan
+
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
 
@@ -1101,7 +1214,9 @@ yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 fig = plt.figure()
 plt.subplot(4, 3, 1)
 plt.imshow(pred_panel_shift_1_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (months)')
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -1112,7 +1227,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 2)
 plt.imshow(pred_panel_shift_4_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Beaufort')
@@ -1120,7 +1237,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 3)
 plt.imshow(pred_panel_shift_3_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Chukchi')
@@ -1128,7 +1247,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 4)
 plt.imshow(pred_panel_shift_6_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('E Siberian')
@@ -1136,7 +1257,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 5)
 plt.imshow(pred_panel_shift_7_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Laptev')
@@ -1144,7 +1267,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 6)
 plt.imshow(pred_panel_shift_10_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Kara')
@@ -1152,7 +1277,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 7)
 plt.imshow(pred_panel_shift_9_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Barents')
@@ -1160,7 +1287,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 8)
 plt.imshow(pred_panel_shift_11_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Greenland')
@@ -1168,7 +1297,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 9)
 plt.imshow(pred_panel_shift_13_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Labrador')
@@ -1176,7 +1307,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 10)
 plt.imshow(pred_panel_shift_12_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Baffin')
@@ -1184,7 +1317,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 11)
 plt.imshow(pred_panel_shift_15_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Bering')
@@ -1192,7 +1327,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 12)
 plt.imshow(pred_panel_shift_16_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Okhotsk')
@@ -1425,7 +1562,10 @@ plt.rcParams.update({'figure.autolayout': False})
 
 fig = plt.figure()
 plt.subplot(121)
-plt.imshow(pred_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 yLabelsN = ['M', 'J', 'S', 'D']
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -1434,7 +1574,10 @@ plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (month)')
 plt.title('SIT q=12')
 plt.subplot(122)
-plt.imshow(pred_pcTMS, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_pcTMS,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (month)')
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -1479,6 +1622,42 @@ pred_panel_shift_14_pcTM = compData['pred_panel_shift_14_pcTM']
 pred_panel_shift_15_pcTM = compData['pred_panel_shift_15_pcTM']
 pred_panel_shift_16_pcTM = compData['pred_panel_shift_16_pcTM']
 
+# mask out small variances
+pred_panel_shift_1_stdTM = compData['pred_panel_shift_1_stdTM']
+# pred_panel_shift_1_stdTM = compData['pred_panel_shift_17_stdTM']
+pred_panel_shift_2_stdTM = compData['pred_panel_shift_2_stdTM']
+pred_panel_shift_3_stdTM = compData['pred_panel_shift_3_stdTM']
+pred_panel_shift_4_stdTM = compData['pred_panel_shift_4_stdTM']
+pred_panel_shift_5_stdTM = compData['pred_panel_shift_5_stdTM']
+pred_panel_shift_6_stdTM = compData['pred_panel_shift_6_stdTM']
+pred_panel_shift_7_stdTM = compData['pred_panel_shift_7_stdTM']
+pred_panel_shift_8_stdTM = compData['pred_panel_shift_8_stdTM']
+pred_panel_shift_9_stdTM = compData['pred_panel_shift_9_stdTM']
+pred_panel_shift_10_stdTM = compData['pred_panel_shift_10_stdTM']
+pred_panel_shift_11_stdTM = compData['pred_panel_shift_11_stdTM']
+pred_panel_shift_12_stdTM = compData['pred_panel_shift_12_stdTM']
+pred_panel_shift_13_stdTM = compData['pred_panel_shift_13_stdTM']
+pred_panel_shift_14_stdTM = compData['pred_panel_shift_14_stdTM']
+pred_panel_shift_15_stdTM = compData['pred_panel_shift_15_stdTM']
+pred_panel_shift_16_stdTM = compData['pred_panel_shift_16_stdTM']
+
+pred_panel_shift_1_pcTM[pred_panel_shift_1_stdTM < std_thresh] = np.nan
+pred_panel_shift_2_pcTM[pred_panel_shift_2_stdTM < std_thresh] = np.nan
+pred_panel_shift_3_pcTM[pred_panel_shift_3_stdTM < std_thresh] = np.nan
+pred_panel_shift_4_pcTM[pred_panel_shift_4_stdTM < std_thresh] = np.nan
+pred_panel_shift_5_pcTM[pred_panel_shift_5_stdTM < std_thresh] = np.nan
+pred_panel_shift_6_pcTM[pred_panel_shift_6_stdTM < std_thresh] = np.nan
+pred_panel_shift_7_pcTM[pred_panel_shift_7_stdTM < std_thresh] = np.nan
+pred_panel_shift_8_pcTM[pred_panel_shift_8_stdTM < std_thresh] = np.nan
+pred_panel_shift_9_pcTM[pred_panel_shift_9_stdTM < std_thresh] = np.nan
+pred_panel_shift_10_pcTM[pred_panel_shift_10_stdTM < std_thresh] = np.nan
+pred_panel_shift_11_pcTM[pred_panel_shift_11_stdTM < std_thresh] = np.nan
+pred_panel_shift_12_pcTM[pred_panel_shift_12_stdTM < std_thresh] = np.nan
+pred_panel_shift_13_pcTM[pred_panel_shift_13_stdTM < std_thresh] = np.nan
+pred_panel_shift_14_pcTM[pred_panel_shift_14_stdTM < std_thresh] = np.nan
+pred_panel_shift_15_pcTM[pred_panel_shift_15_stdTM < std_thresh] = np.nan
+pred_panel_shift_16_pcTM[pred_panel_shift_16_stdTM < std_thresh] = np.nan
+
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
 
@@ -1487,7 +1666,10 @@ yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 
 fig = plt.figure()
 plt.subplot(4, 3, 1)
-plt.imshow(pred_panel_shift_1_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_1_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (months)')
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -1497,77 +1679,110 @@ plt.title('Arctic')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 2)
-plt.imshow(pred_panel_shift_4_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_4_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Beaufort')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 3)
-plt.imshow(pred_panel_shift_3_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_3_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Chukchi')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 4)
-plt.imshow(pred_panel_shift_6_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_6_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('E Siberian')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 5)
-plt.imshow(pred_panel_shift_7_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_7_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Laptev')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 6)
-plt.imshow(pred_panel_shift_10_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_10_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Kara')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 7)
-plt.imshow(pred_panel_shift_9_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_9_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Barents')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 8)
-plt.imshow(pred_panel_shift_11_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_11_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Greenland')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 9)
-plt.imshow(pred_panel_shift_13_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_13_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Labrador')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 10)
-plt.imshow(pred_panel_shift_12_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_12_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Baffin')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 11)
-plt.imshow(pred_panel_shift_15_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_15_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Bering')
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 12)
-plt.imshow(pred_panel_shift_16_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_panel_shift_16_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Okhotsk')
@@ -1635,7 +1850,9 @@ yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 fig = plt.figure()
 plt.subplot(4, 3, 1)
 plt.imshow(pred_panel_shift_1_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (months)')
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -1646,7 +1863,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 2)
 plt.imshow(pred_panel_shift_4_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Beaufort')
@@ -1654,7 +1873,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 3)
 plt.imshow(pred_panel_shift_3_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Chukchi')
@@ -1662,7 +1883,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 4)
 plt.imshow(pred_panel_shift_6_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('E Siberian')
@@ -1670,7 +1893,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 5)
 plt.imshow(pred_panel_shift_7_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Laptev')
@@ -1678,7 +1903,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 6)
 plt.imshow(pred_panel_shift_10_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Kara')
@@ -1686,7 +1913,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 7)
 plt.imshow(pred_panel_shift_9_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Barents')
@@ -1694,7 +1923,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 8)
 plt.imshow(pred_panel_shift_11_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Greenland')
@@ -1702,7 +1933,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 9)
 plt.imshow(pred_panel_shift_13_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Labrador')
@@ -1710,7 +1943,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 10)
 plt.imshow(pred_panel_shift_12_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Baffin')
@@ -1718,7 +1953,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 11)
 plt.imshow(pred_panel_shift_15_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Bering')
@@ -1726,7 +1963,9 @@ plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 12)
 plt.imshow(pred_panel_shift_16_pcTMdiff,
-           cmap=cmocean.cm.balance, clim=(-0.5, 0.5), interpolation='none')
+           cmap=cmocean.cm.balance,
+           clim=(-0.5, 0.5),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Okhotsk')
@@ -1762,7 +2001,10 @@ plt.rcParams.update({'figure.autolayout': False})
 
 fig = plt.figure()
 plt.subplot(121)
-plt.imshow(pred_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 yLabelsN = ['M', 'J', 'S', 'D']
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -1771,7 +2013,10 @@ plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (month)')
 plt.title('Full Training')
 plt.subplot(122)
-plt.imshow(pred_pcTMS, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_pcTMS,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (month)')
 plt.yticks((2, 5, 8, 11), yLabels)
