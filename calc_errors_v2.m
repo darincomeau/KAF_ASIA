@@ -89,5 +89,5 @@ end
 
 % save std as % of mean
 for i = 1:tLag
-    std_truth(i) = std_truth(i)/mean_truth(i)
+    std_truth(i) = std_truth(i)/mean_truth(i);
 end
