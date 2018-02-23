@@ -27,13 +27,13 @@ std_thresh = 0.1;
 
 for i = 1:tLag
     nf = 0;
-    counter = 1
+    counter = 1;
     for j = 1:nIter
         pred_rms(i) = pred_rms(i) + (pred_traj(j,i) - truth(j,i))^2;
-        nf
+        nf(counter) = truth(j,i);
+        counter = counter + 1
     end
-    nf(counter) = truth(j,i);
-    nfactor = std(nf)
+    nfactor = std(nf);
     pred_rms(i) = sqrt(pred_rms(i)/nIter)/nfactor;
 end
 
