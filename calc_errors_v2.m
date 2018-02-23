@@ -1,4 +1,4 @@
-function [ pred_rms, pred_pc, pred_rmsP, pred_pcP, pValues ] =  calc_errors_v2( pred_traj, truth )
+function [ pred_rms, pred_pc, pred_rmsP, pred_pcP, pValues, std_truth ] =  calc_errors_v2( pred_traj, truth )
 
 % produces rms and pc error metrics for forecasts and persistence (P)
 
@@ -26,13 +26,11 @@ std_thresh = 0.1;
 % rms
 
 for i = 1:tLag
-    nf = zeros(1,nIter);
     for j = 1:nIter
         pred_rms(i) = pred_rms(i) + (pred_traj(j,i) - truth(j,i))^2;
-        nf(j) = truth(j,i);
     end
-    nfactor = std(nf);
-    pred_rms(i) = sqrt(pred_rms(i)/nIter)/nfactor;
+    std_truth(i) = std(truth(:,i));
+    pred_rms(i) = sqrt(pred_rms(i)/nIter)/std_truth(i);
 end
 
 % pattern correlation

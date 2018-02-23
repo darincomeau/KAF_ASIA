@@ -432,8 +432,8 @@ if exist(checkFile) == 0 | predOn == 1
         end
     end
 
-    [pred_rms, pred_pc, pred_rmsP, pred_pcP, pValues] = calc_errors_v2(pred_traj, truth);
-    [pred_rmsDP, pred_pcDP, pred_rmsP, pred_pcP, pValuesDP] = calc_errors_v2(pred_trajDP, truth);
+    [pred_rms, pred_pc, pred_rmsP, pred_pcP, pValues, std_truth] = calc_errors_v2(pred_traj, truth);
+    [pred_rmsDP, pred_pcDP, pred_rmsP, pred_pcP, pValuesDP, std_tmp] = calc_errors_v2(pred_trajDP, truth);
 
     % condition trajectories on initial month
     pred_rmsIM  = zeros(12,tLag);
@@ -466,8 +466,8 @@ if exist(checkFile) == 0 | predOn == 1
             truthM(j,:) = truth(initM + (j-1)*12, :);
         end
 
-        [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesIM] = calc_errors_v2(pred_trajM, truthM);
-        [pred_rmsDP_tmp, pred_pcDP_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesIMDP] = calc_errors_v2(pred_trajDPM, truthM);
+        [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesIM, std_truthIM] = calc_errors_v2(pred_trajM, truthM);
+        [pred_rmsDP_tmp, pred_pcDP_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesIMDP, std_tmp] = calc_errors_v2(pred_trajDPM, truthM);
 
         pred_rmsIM(initM,:)  = pred_rms_tmp;
         pred_pcIM(initM,:)   = pred_pc_tmp;
@@ -489,8 +489,8 @@ if exist(checkFile) == 0 | predOn == 1
             end
         end
 
-        [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesTM] = calc_errors_v2(pred_trajM, truthM);
-        [pred_rmsDP_tmp, pred_pcDP_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesTMDP] = calc_errors_v2(pred_trajDPM, truthM);
+        [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesTM, std_truthTM] = calc_errors_v2(pred_trajM, truthM);
+        [pred_rmsDP_tmp, pred_pcDP_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesTMDP, std_tmp] = calc_errors_v2(pred_trajDPM, truthM);
 
         pred_rmsTM(initM,:)  = pred_rms_tmp;
         pred_pcTM(initM,:)   = pred_pc_tmp;
@@ -506,6 +506,7 @@ if exist(checkFile) == 0 | predOn == 1
     save(S,'pred_traj','pred_rms','pred_pc','pred_rmsIM','pred_pcIM','pred_rmsTM','pred_pcTM', ...
         'pred_rmsP','pred_pcP','pred_rmsIMP','pred_pcIMP','pred_rmsTMP','pred_pcTMP', ...
         'pred_rmsDP','pred_pcDP','pred_rmsIMDP','pred_pcIMDP','pred_rmsTMDP','pred_pcTMDP', 'ar1coef', ...
-        'f_ext','truth','d_ref','d_ose','tLag','data_train','data_test','eps_0', 'pred_trajDP', 'pValues', 'pValuesTM')
+        'f_ext','truth','d_ref','d_ose','tLag','data_train','data_test','eps_0', 'pred_trajDP', 'pValues', 'pValuesTM'...
+        'std_truth', 'std_truthIM', 'std_truthTM')
 
 end
