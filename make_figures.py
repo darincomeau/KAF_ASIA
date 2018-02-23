@@ -1346,6 +1346,7 @@ region = []
 region.append('Arctic')
 region.append('Beaufort')
 region.append('Bering')
+region.append('Greenland')
 varUsed = []
 varUsed.append('SIC')
 varUsed.append('SIC_SST')
@@ -1354,11 +1355,11 @@ varUsed.append('SIC_SLP')
 embedWin = 12
 iceVar = 'ica'
 
-pred_var_rms = np.zeros((3, 4, 13))
-pred_var_pc = np.zeros((3, 4, 13))
+pred_var_rms = np.zeros((4, 4, 13))
+pred_var_pc = np.zeros((4, 4, 13))
 
-pred_var_rmsP = np.zeros((3, 13))
-pred_var_pcP = np.zeros((3, 13))
+pred_var_rmsP = np.zeros((4, 13))
+pred_var_pcP = np.zeros((4, 13))
 
 # load Arctic data
 dataDir = WORK_DIR + region[0] + '_' + varUsed[0] + '_q' + str(embedWin) + \
@@ -1426,6 +1427,28 @@ data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 pred_var_rms[2, 3, :] = data['pred_rms']
 pred_var_pc[2, 3, :] = data['pred_pc']
 
+# load Greenland data
+dataDir = WORK_DIR + region[3] + '_' + varUsed[0] + '_q' + str(embedWin) + \
+    '_train_100_499/'
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
+pred_var_rms[3, 0, :] = data['pred_rms']
+pred_var_pc[3, 0, :] = data['pred_pc']
+dataDir = WORK_DIR + region[3] + '_' + varUsed[1] + '_q' + str(embedWin) + \
+    '_train_100_499/'
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
+pred_var_rms[3, 1, :] = data['pred_rms']
+pred_var_pc[3, 1, :] = data['pred_pc']
+dataDir = WORK_DIR + region[3] + '_' + varUsed[2] + '_q' + str(embedWin) + \
+    '_train_100_499/'
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
+pred_var_rms[3, 2, :] = data['pred_rms']
+pred_var_pc[3, 2, :] = data['pred_pc']
+dataDir = WORK_DIR + region[3] + '_' + varUsed[3] + '_q' + str(embedWin) + \
+    '_train_100_499/'
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
+pred_var_rms[3, 3, :] = data['pred_rms']
+pred_var_pc[3, 3, :] = data['pred_pc']
+
 # load persistence data
 dataDir = WORK_DIR + region[0] + '_' + varUsed[0] + '_q' + str(embedWin) + \
     '_train_100_499/'
@@ -1455,6 +1478,15 @@ if dampedP == 1:
 else:
     pred_var_rmsP[2, :] = data['pred_rmsP']
     pred_var_pcP[2, :] = data['pred_pcP']
+dataDir = WORK_DIR + region[3] + '_' + varUsed[0] + '_q' + str(embedWin) + \
+    '_train_100_499/'
+data = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
+if dampedP == 1:
+    pred_var_rmsP[3, :] = data['pred_rmsDP']
+    pred_var_pcP[3, :] = data['pred_pcDP']
+else:
+    pred_var_rmsP[3, :] = data['pred_rmsP']
+    pred_var_pcP[3, :] = data['pred_pcP']    
 
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
@@ -1466,7 +1498,7 @@ tt = np.linspace(0, int(tLag) - 1, int(tLag))
 thresh = np.ones(tLag) * 0.5
 
 fig = plt.figure()
-plt.subplot(3, 2, 1)
+plt.subplot(4, 2, 1)
 plt.plot(tt, pred_var_rms[0, 0, :], label='SIC')
 plt.plot(tt, pred_var_rms[0, 1, :], label='SIC, SST')
 plt.plot(tt, pred_var_rms[0, 2, :], label='SIC, SIT')
@@ -1474,12 +1506,13 @@ plt.plot(tt, pred_var_rms[0, 3, :], label='SIC, SLP')
 plt.plot(tt, pred_var_rmsP[0, :], '--', label='damped pers.')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlabel('lead time (months)')
-plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
-plt.ylabel(r'km$^2$')
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylabel(r'km$^2$')
+plt.ylabel('NRMSE')
 plt.legend(loc='lower right', prop={'size': 8})
 plt.title('Arctic NRMSE')
 
-plt.subplot(3, 2, 2)
+plt.subplot(4, 2, 2)
 plt.plot(tt, pred_var_pc[0, 0, :], label='SIC')
 plt.plot(tt, pred_var_pc[0, 1, :], label='SIC, SST')
 plt.plot(tt, pred_var_pc[0, 2, :], label='SIC, SIT')
@@ -1490,17 +1523,17 @@ plt.xticks([0, 3, 6, 9, 12])
 plt.yticks([0, 0.5, 1])
 plt.title('Arctic PC')
 
-plt.subplot(3, 2, 3)
+plt.subplot(4, 2, 3)
 plt.plot(tt, pred_var_rms[1, 0, :], label='SIC')
 plt.plot(tt, pred_var_rms[1, 1, :], label='SIC, SST')
 plt.plot(tt, pred_var_rms[1, 2, :], label='SIC, SIT')
 plt.plot(tt, pred_var_rms[1, 3, :], label='SIC, SLP')
 plt.plot(tt, pred_var_rmsP[1, :], '--', label='damped pers.')
 plt.xticks([0, 3, 6, 9, 12])
-plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
 plt.title('Beaufort NRMSE')
 
-plt.subplot(3, 2, 4)
+plt.subplot(4, 2, 4)
 plt.plot(tt, pred_var_pc[1, 0, :], label='SIC')
 plt.plot(tt, pred_var_pc[1, 1, :], label='SIC, SST')
 plt.plot(tt, pred_var_pc[1, 2, :], label='SIC, SIT')
@@ -1511,17 +1544,17 @@ plt.xticks([0, 3, 6, 9, 12])
 plt.yticks([0, 0.5, 1])
 plt.title('Beaufort PC')
 
-plt.subplot(3, 2, 5)
+plt.subplot(4, 2, 5)
 plt.plot(tt, pred_var_rms[2, 0, :], label='SIC')
 plt.plot(tt, pred_var_rms[2, 1, :], label='SIC, SST')
 plt.plot(tt, pred_var_rms[2, 2, :], label='SIC, SIT')
 plt.plot(tt, pred_var_rms[2, 3, :], label='SIC, SLP')
 plt.plot(tt, pred_var_rmsP[2, :], '--', label='damped pers.')
 plt.xticks([0, 3, 6, 9, 12])
-plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
 plt.title('Bering NRMSE')
 
-plt.subplot(3, 2, 6)
+plt.subplot(4, 2, 6)
 plt.plot(tt, pred_var_pc[2, 0, :], label='SIC')
 plt.plot(tt, pred_var_pc[2, 1, :], label='SIC, SST')
 plt.plot(tt, pred_var_pc[2, 2, :], label='SIC, SIT')
@@ -1531,6 +1564,27 @@ plt.plot(tt, thresh, 'k--')
 plt.xticks([0, 3, 6, 9, 12])
 plt.yticks([0, 0.5, 1])
 plt.title('Bering PC')
+
+plt.subplot(4, 2, 7)
+plt.plot(tt, pred_var_rms[3, 0, :], label='SIC')
+plt.plot(tt, pred_var_rms[3, 1, :], label='SIC, SST')
+plt.plot(tt, pred_var_rms[3, 2, :], label='SIC, SIT')
+plt.plot(tt, pred_var_rms[3, 3, :], label='SIC, SLP')
+plt.plot(tt, pred_var_rmsP[3, :], '--', label='damped pers.')
+plt.xticks([0, 3, 6, 9, 12])
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+plt.title('Greenland NRMSE')
+
+plt.subplot(4, 2, 8)
+plt.plot(tt, pred_var_pc[3, 0, :], label='SIC')
+plt.plot(tt, pred_var_pc[3, 1, :], label='SIC, SST')
+plt.plot(tt, pred_var_pc[3, 2, :], label='SIC, SIT')
+plt.plot(tt, pred_var_pc[3, 3, :], label='SIC, SLP')
+plt.plot(tt, pred_var_pcP[3, :], '--', label='damped pers.')
+plt.plot(tt, thresh, 'k--')
+plt.xticks([0, 3, 6, 9, 12])
+plt.yticks([0, 0.5, 1])
+plt.title('Greenland PC')
 
 fig.set_figheight(10)
 fig.set_figwidth(8)
@@ -1840,6 +1894,42 @@ else:
     pred_panel_shift_14_pcTMdiff = compData['pred_panel_shift_14_pcTMdiff']
     pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcTMdiff']
     pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcTMdiff']
+
+# mask out small variances
+pred_panel_shift_1_stdTM = compData['pred_panel_shift_1_stdTM']
+# pred_panel_shift_1_stdTM = compData['pred_panel_shift_17_stdTM']
+pred_panel_shift_2_stdTM = compData['pred_panel_shift_2_stdTM']
+pred_panel_shift_3_stdTM = compData['pred_panel_shift_3_stdTM']
+pred_panel_shift_4_stdTM = compData['pred_panel_shift_4_stdTM']
+pred_panel_shift_5_stdTM = compData['pred_panel_shift_5_stdTM']
+pred_panel_shift_6_stdTM = compData['pred_panel_shift_6_stdTM']
+pred_panel_shift_7_stdTM = compData['pred_panel_shift_7_stdTM']
+pred_panel_shift_8_stdTM = compData['pred_panel_shift_8_stdTM']
+pred_panel_shift_9_stdTM = compData['pred_panel_shift_9_stdTM']
+pred_panel_shift_10_stdTM = compData['pred_panel_shift_10_stdTM']
+pred_panel_shift_11_stdTM = compData['pred_panel_shift_11_stdTM']
+pred_panel_shift_12_stdTM = compData['pred_panel_shift_12_stdTM']
+pred_panel_shift_13_stdTM = compData['pred_panel_shift_13_stdTM']
+pred_panel_shift_14_stdTM = compData['pred_panel_shift_14_stdTM']
+pred_panel_shift_15_stdTM = compData['pred_panel_shift_15_stdTM']
+pred_panel_shift_16_stdTM = compData['pred_panel_shift_16_stdTM']
+
+pred_panel_shift_1_pcTMdiff[pred_panel_shift_1_stdTM < std_thresh] = np.nan
+pred_panel_shift_2_pcTMdiff[pred_panel_shift_2_stdTM < std_thresh] = np.nan
+pred_panel_shift_3_pcTMdiff[pred_panel_shift_3_stdTM < std_thresh] = np.nan
+pred_panel_shift_4_pcTMdiff[pred_panel_shift_4_stdTM < std_thresh] = np.nan
+pred_panel_shift_5_pcTMdiff[pred_panel_shift_5_stdTM < std_thresh] = np.nan
+pred_panel_shift_6_pcTMdiff[pred_panel_shift_6_stdTM < std_thresh] = np.nan
+pred_panel_shift_7_pcTMdiff[pred_panel_shift_7_stdTM < std_thresh] = np.nan
+pred_panel_shift_8_pcTMdiff[pred_panel_shift_8_stdTM < std_thresh] = np.nan
+pred_panel_shift_9_pcTMdiff[pred_panel_shift_9_stdTM < std_thresh] = np.nan
+pred_panel_shift_10_pcTMdiff[pred_panel_shift_10_stdTM < std_thresh] = np.nan
+pred_panel_shift_11_pcTMdiff[pred_panel_shift_11_stdTM < std_thresh] = np.nan
+pred_panel_shift_12_pcTMdiff[pred_panel_shift_12_stdTM < std_thresh] = np.nan
+pred_panel_shift_13_pcTMdiff[pred_panel_shift_13_stdTM < std_thresh] = np.nan
+pred_panel_shift_14_pcTMdiff[pred_panel_shift_14_stdTM < std_thresh] = np.nan
+pred_panel_shift_15_pcTMdiff[pred_panel_shift_15_stdTM < std_thresh] = np.nan
+pred_panel_shift_16_pcTMdiff[pred_panel_shift_16_stdTM < std_thresh] = np.nan
 
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
