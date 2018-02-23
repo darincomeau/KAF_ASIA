@@ -53,6 +53,7 @@ for i = 1:tLag
     pred_pc(i) = pred_pc(i)/(std_pred(i)*std_truth(i)*nIter);
     if std_truth(i)/mean_truth(i) < std_thresh
         pred_pc(i) = nan;
+    end
     c = pred_pc(i);
     tStat = abs(c) * sqrt(nIter) / sqrt(1 - c^2);
     pValues(i) = 2*(1-tcdf(tStat,nIter));
