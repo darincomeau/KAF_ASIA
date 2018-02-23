@@ -951,7 +951,7 @@ pred_panel_shift_16_pcTM = compData['pred_panel_shift_16_pcTM']
 
 # mask out small variances
 pred_panel_shift_1_stdTM = compData['pred_panel_shift_1_stdTM']
-# pred_panel_shift_1_stdTM = compData['pred_panel_shift_17_stdTM']
+# pred_panel_shift_1_stdTM = compData['pred_panel_shift_17_stdT'])
 pred_panel_shift_2_stdTM = compData['pred_panel_shift_2_stdTM']
 pred_panel_shift_3_stdTM = compData['pred_panel_shift_3_stdTM']
 pred_panel_shift_4_stdTM = compData['pred_panel_shift_4_stdTM']
@@ -967,6 +967,7 @@ pred_panel_shift_13_stdTM = compData['pred_panel_shift_13_stdTM']
 pred_panel_shift_14_stdTM = compData['pred_panel_shift_14_stdTM']
 pred_panel_shift_15_stdTM = compData['pred_panel_shift_15_stdTM']
 pred_panel_shift_16_stdTM = compData['pred_panel_shift_16_stdTM']
+
 
 pred_panel_shift_1_pcTM[pred_panel_shift_1_stdTM < std_thresh] = np.nan
 pred_panel_shift_2_pcTM[pred_panel_shift_2_stdTM < std_thresh] = np.nan
@@ -1486,7 +1487,7 @@ if dampedP == 1:
     pred_var_pcP[3, :] = data['pred_pcDP']
 else:
     pred_var_rmsP[3, :] = data['pred_rmsP']
-    pred_var_pcP[3, :] = data['pred_pcP']    
+    pred_var_pcP[3, :] = data['pred_pcP']
 
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
