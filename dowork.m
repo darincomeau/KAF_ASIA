@@ -21,9 +21,9 @@ testLim  = [500 899];
 % embedWin = 12
 % all_regions_work
 
-% varsUsed = 'SIC_SST_SIT_SLP'
-% embedWin = 12
-% all_regions_work
+varsUsed = 'SIC_SST_SIT_SLP'
+embedWin = 12
+all_regions_work
 
 % varsUsed = 'SIC_SIT'
 % embedWin = 12

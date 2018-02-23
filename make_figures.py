@@ -6,7 +6,7 @@ sea ice anomalies with kernel analog forecasting' manuscript.
 """
 
 import numpy as np
-import numpy.ma as ma
+# import numpy.ma as ma
 import scipy.stats as stats
 from netCDF4 import Dataset
 import scipy.io as sio
@@ -24,6 +24,7 @@ SIC_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/output/'
 SAVE_DIR = '/Users/dcomeau/Projects/KAF/CD_STAPIS/Revision/'
 flag = 0
 dampedP = 1
+std_thresh = 0.1
 
 # """ Figure 1 """
 # # load data
@@ -287,6 +288,7 @@ if dampedP == 1:
     pred_pcTMP = dataPredICA['pred_pcTMDP']
 else:
     pred_pcTMP = dataPredICA['pred_pcTMP']
+std_truthTM = dataPredICA['std_truthTM']
 cTicks = np.linspace(0, 1, 3)
 
 plt.rcParams.update({'font.size': 14})
@@ -295,7 +297,10 @@ plt.rcParams.update({'figure.autolayout': False})
 
 fig = plt.figure()
 plt.subplot(121)
-plt.imshow(pred_pcTM, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
 yLabelsN = ['M', 'J', 'S', 'D']
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -304,7 +309,10 @@ plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (month)')
 plt.title('PC (KAF)')
 plt.subplot(122)
-plt.imshow(pred_pcTMP, cmap=cmocean.cm.balance, clim=(0, 1), interpolation='none')
+plt.imshow(pred_pcTMP,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (month)')
 plt.yticks((2, 5, 8, 11), yLabels)
@@ -606,7 +614,8 @@ plt.title('Arctic')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
 plt.xlabel('lead time (months)')
-plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
 # plt.ylabel(r'RMSE (km$^2$)')
 plt.ylabel('NRMSE')
 plt.legend(loc='lower right', prop={'size': 10})
@@ -617,7 +626,8 @@ plt.plot(tt, pred_panel_4_rmsP, 'r', label='damped pers.')
 plt.title('Beaufort')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
-plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
 
 plt.subplot(4, 3, 3)
 plt.plot(tt, pred_panel_3_rms, 'b', label='KAF')
@@ -625,7 +635,8 @@ plt.plot(tt, pred_panel_3_rmsP, 'r', label='damped pers.')
 plt.title('Chukchi')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
-plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
 
 plt.subplot(4, 3, 4)
 plt.plot(tt, pred_panel_6_rms, 'b', label='KAF')
@@ -633,7 +644,8 @@ plt.plot(tt, pred_panel_6_rmsP, 'r', label='damped pers.')
 plt.title('E Siberian')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
-plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
 
 plt.subplot(4, 3, 5)
 plt.plot(tt, pred_panel_7_rms, 'b', label='KAF')
@@ -641,7 +653,8 @@ plt.plot(tt, pred_panel_7_rmsP, 'r', label='damped pers.')
 plt.title('Laptev')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
-plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
 
 plt.subplot(4, 3, 6)
 plt.plot(tt, pred_panel_10_rms, 'b', label='KAF')
@@ -649,7 +662,8 @@ plt.plot(tt, pred_panel_10_rmsP, 'r', label='damped pers.')
 plt.title('Kara')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
-plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
 
 plt.subplot(4, 3, 7)
 plt.plot(tt, pred_panel_9_rms, 'b', label='KAF')
@@ -657,7 +671,8 @@ plt.plot(tt, pred_panel_9_rmsP, 'r', label='damped pers.')
 plt.title('Barents')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
-plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
 
 plt.subplot(4, 3, 8)
 plt.plot(tt, pred_panel_11_rms, 'b', label='KAF')
@@ -665,7 +680,8 @@ plt.plot(tt, pred_panel_11_rmsP, 'r', label='damped pers.')
 plt.title('Greenland')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
-plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
 
 plt.subplot(4, 3, 9)
 plt.plot(tt, pred_panel_13_rms, 'b', label='KAF')
@@ -673,7 +689,8 @@ plt.plot(tt, pred_panel_13_rmsP, 'r', label='damped pers.')
 plt.title('Labrador')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
-plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
 
 plt.subplot(4, 3, 10)
 plt.plot(tt, pred_panel_12_rms, 'b', label='KAF')
@@ -681,7 +698,8 @@ plt.plot(tt, pred_panel_12_rmsP, 'r', label='damped pers.')
 plt.title('Baffin')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
-plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
 
 plt.subplot(4, 3, 11)
 plt.plot(tt, pred_panel_15_rms, 'b', label='KAF')
@@ -689,7 +707,8 @@ plt.plot(tt, pred_panel_15_rmsP, 'r', label='damped pers.')
 plt.title('Bering')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
-plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
 
 plt.subplot(4, 3, 12)
 plt.plot(tt, pred_panel_16_rms, 'b', label='KAF')
@@ -697,7 +716,8 @@ plt.plot(tt, pred_panel_16_rmsP, 'r', label='damped pers.')
 plt.title('Okhotsk')
 plt.xticks([0, 3, 6, 9, 12])
 plt.xlim(0, 12)
-plt.yticks([0, 0.005, 0.01, 0.015, 0.02, 0.025])
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
 
 fig.set_figheight(10)
 fig.set_figwidth(15)
