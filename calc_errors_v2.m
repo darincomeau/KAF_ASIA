@@ -26,12 +26,10 @@ std_thresh = 0.1;
 % rms
 
 for i = 1:tLag
-    nf = 0;
-    counter = 1;
+    nf = zeros(1,nIter);
     for j = 1:nIter
         pred_rms(i) = pred_rms(i) + (pred_traj(j,i) - truth(j,i))^2;
-        nf(counter) = truth(j,i);
-        counter = counter + 1
+        nf(j) = truth(j,i);
     end
     nfactor = std(nf);
     pred_rms(i) = sqrt(pred_rms(i)/nIter)/nfactor;
@@ -89,6 +87,6 @@ for i = 1:tLag
     pred_pcP(i) = pred_pcP(i)/(stdP(i)*std_truth(i)*nIter);
     if std_truth(i)/mean_truth(i) < std_thresh
         pred_pcP(i) = nan
-end
+    end
 
 end
