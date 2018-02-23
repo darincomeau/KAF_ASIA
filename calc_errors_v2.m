@@ -27,7 +27,7 @@ std_thresh = 0.1;
 
 for i = 1:tLag
     nf = 0;
-    counter = 0
+    counter = 1
     for j = 1:nIter
         pred_rms(i) = pred_rms(i) + (pred_traj(j,i) - truth(j,i))^2;
         nf
