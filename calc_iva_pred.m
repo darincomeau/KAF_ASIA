@@ -450,6 +450,9 @@ if exist(checkFile) == 0 | predOn == 1
     pred_rmsTMDP = zeros(12,tLag);
     pred_pcTMDP  = zeros(12,tLag);
 
+    std_truthIM = zeros(12,tLag);
+    std_truthTM = zeros(12,tLag);    
+
     mIter = floor(nIter/12);
 
     for m = 1:12
@@ -466,7 +469,7 @@ if exist(checkFile) == 0 | predOn == 1
             truthM(j,:) = truth(initM + (j-1)*12, :);
         end
 
-        [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesIM, std_truthIM] = calc_errors_v2(pred_trajM, truthM);
+        [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesIM, std_truth_tmp] = calc_errors_v2(pred_trajM, truthM);
         [pred_rmsDP_tmp, pred_pcDP_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesIMDP, std_tmp] = calc_errors_v2(pred_trajDPM, truthM);
 
         pred_rmsIM(initM,:)  = pred_rms_tmp;
@@ -475,6 +478,7 @@ if exist(checkFile) == 0 | predOn == 1
         pred_pcIMP(initM,:)  = pred_pcP_tmp;
         pred_rmsIMDP(initM,:) = pred_rmsDP_tmp;
         pred_pcIMDP(initM,:)  = pred_pcDP_tmp;
+        std_truthIM(initM,:) = std_truth_tmp;         
 
         % target month - predictions end in month initM
         pred_trajM = zeros(mIter,tLag);
@@ -489,7 +493,7 @@ if exist(checkFile) == 0 | predOn == 1
             end
         end
 
-        [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesTM, std_truthTM] = calc_errors_v2(pred_trajM, truthM);
+        [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesTM, std_truth_tmp] = calc_errors_v2(pred_trajM, truthM);
         [pred_rmsDP_tmp, pred_pcDP_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesTMDP, std_tmp] = calc_errors_v2(pred_trajDPM, truthM);
 
         pred_rmsTM(initM,:)  = pred_rms_tmp;
@@ -498,6 +502,7 @@ if exist(checkFile) == 0 | predOn == 1
         pred_pcTMP(initM,:)  = pred_pcP_tmp;
         pred_rmsTMDP(initM,:) = pred_rmsDP_tmp;
         pred_pcTMDP(initM,:)  = pred_pcDP_tmp;
+        std_truthTM(initM,:) = std_truth_tmp;        
 
     end
 
