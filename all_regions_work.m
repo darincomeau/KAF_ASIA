@@ -40,40 +40,40 @@
 % calc_iva_pred
 % close all
 
-% region = 'Barents'
+region = 'Barents'
+calc_ica_pred
+calc_iva_pred
+close all
+
+% region = 'Kara'
 % calc_ica_pred
 % calc_iva_pred
 % close all
 
-region = 'Kara'
-calc_ica_pred
-calc_iva_pred
-close all
-
-region = 'Greenland'
-calc_ica_pred
-calc_iva_pred
-close all
+% region = 'Greenland'
+% calc_ica_pred
+% calc_iva_pred
+% close all
 
 % region = 'Baffin'
 % calc_ica_pred
 % calc_iva_pred
 % close all
 
-region = 'Labrador'
-calc_ica_pred
-calc_iva_pred
-close all
+% region = 'Labrador'
+% calc_ica_pred
+% calc_iva_pred
+% close all
 
 % region = 'Hudson'
 % calc_ica_pred
 % calc_iva_pred
 % close all
 
-region = 'Bering'
-calc_ica_pred
-calc_iva_pred
-close all
+% region = 'Bering'
+% calc_ica_pred
+% calc_iva_pred
+% close all
 
 % region = 'Okhotsk'
 % calc_ica_pred
