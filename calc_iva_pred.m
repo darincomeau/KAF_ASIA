@@ -432,8 +432,8 @@ if exist(checkFile) == 0 | predOn == 1
         end
     end
 
-    [pred_rms, pred_pc, pred_rmsP, pred_pcP, pValues, std_truth] = calc_errors_v2(pred_traj, truth);
-    [pred_rmsDP, pred_pcDP, pred_rmsP, pred_pcP, pValuesDP, std_tmp] = calc_errors_v2(pred_trajDP, truth);
+    [pred_rms, pred_pc, pred_rmsP, pred_pcP, pValues, std_truth, Nstd_truth] = calc_errors_v2(pred_traj, truth);
+    [pred_rmsDP, pred_pcDP, pred_rmsP, pred_pcP, pValuesDP, std_tmp, Nstd_tmp] = calc_errors_v2(pred_trajDP, truth);
 
     % condition trajectories on initial month
     pred_rmsIM  = zeros(12,tLag);
@@ -451,7 +451,9 @@ if exist(checkFile) == 0 | predOn == 1
     pred_pcTMDP  = zeros(12,tLag);
 
     std_truthIM = zeros(12,tLag);
-    std_truthTM = zeros(12,tLag);    
+    std_truthTM = zeros(12,tLag);
+    Nstd_truthIM = zeros(12,tLag);
+    Nstd_truthTM = zeros(12,tLag);       
 
     mIter = floor(nIter/12);
 
@@ -469,8 +471,8 @@ if exist(checkFile) == 0 | predOn == 1
             truthM(j,:) = truth(initM + (j-1)*12, :);
         end
 
-        [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesIM, std_truth_tmp] = calc_errors_v2(pred_trajM, truthM);
-        [pred_rmsDP_tmp, pred_pcDP_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesIMDP, std_tmp] = calc_errors_v2(pred_trajDPM, truthM);
+        [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesIM, std_truth_tmp, Nstd_truth_tmp] = calc_errors_v2(pred_trajM, truthM);
+        [pred_rmsDP_tmp, pred_pcDP_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesIMDP, std_tmp, Nstd_tmp] = calc_errors_v2(pred_trajDPM, truthM);
 
         pred_rmsIM(initM,:)  = pred_rms_tmp;
         pred_pcIM(initM,:)   = pred_pc_tmp;
@@ -478,7 +480,8 @@ if exist(checkFile) == 0 | predOn == 1
         pred_pcIMP(initM,:)  = pred_pcP_tmp;
         pred_rmsIMDP(initM,:) = pred_rmsDP_tmp;
         pred_pcIMDP(initM,:)  = pred_pcDP_tmp;
-        std_truthIM(initM,:) = std_truth_tmp;         
+        std_truthIM(initM,:) = std_truth_tmp;
+        Nstd_truthIM(initM,:) = Nstd_truth_tmp;        
 
         % target month - predictions end in month initM
         pred_trajM = zeros(mIter,tLag);
@@ -493,8 +496,8 @@ if exist(checkFile) == 0 | predOn == 1
             end
         end
 
-        [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesTM, std_truth_tmp] = calc_errors_v2(pred_trajM, truthM);
-        [pred_rmsDP_tmp, pred_pcDP_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesTMDP, std_tmp] = calc_errors_v2(pred_trajDPM, truthM);
+        [pred_rms_tmp, pred_pc_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesTM, std_truth_tmp, Nstd_truth_tmp] = calc_errors_v2(pred_trajM, truthM);
+        [pred_rmsDP_tmp, pred_pcDP_tmp, pred_rmsP_tmp, pred_pcP_tmp, pValuesTMDP, std_tmp, Nstd_tmp] = calc_errors_v2(pred_trajDPM, truthM);
 
         pred_rmsTM(initM,:)  = pred_rms_tmp;
         pred_pcTM(initM,:)   = pred_pc_tmp;
@@ -502,7 +505,8 @@ if exist(checkFile) == 0 | predOn == 1
         pred_pcTMP(initM,:)  = pred_pcP_tmp;
         pred_rmsTMDP(initM,:) = pred_rmsDP_tmp;
         pred_pcTMDP(initM,:)  = pred_pcDP_tmp;
-        std_truthTM(initM,:) = std_truth_tmp;        
+        std_truthTM(initM,:) = std_truth_tmp;
+        Nstd_truthTM(initM,:) = Nstd_truth_tmp;        
 
     end
 
@@ -512,6 +516,6 @@ if exist(checkFile) == 0 | predOn == 1
         'pred_rmsP','pred_pcP','pred_rmsIMP','pred_pcIMP','pred_rmsTMP','pred_pcTMP', ...
         'pred_rmsDP','pred_pcDP','pred_rmsIMDP','pred_pcIMDP','pred_rmsTMDP','pred_pcTMDP', 'ar1coef', ...
         'f_ext','truth','d_ref','d_ose','tLag','data_train','data_test','eps_0', 'pred_trajDP', 'pValues', 'pValuesTM', ...
-        'std_truth', 'std_truthIM', 'std_truthTM')
+        'std_truth', 'std_truthIM', 'std_truthTM', 'Nstd_truth', 'Nstd_truthIM', 'Nstd_truthTM')
 
 end

@@ -1,4 +1,4 @@
-function [ pred_rms, pred_pc, pred_rmsP, pred_pcP, pValues, std_truth ] =  calc_errors_v2( pred_traj, truth )
+function [ pred_rms, pred_pc, pred_rmsP, pred_pcP, pValues, std_truth, Nstd_truth ] =  calc_errors_v2( pred_traj, truth )
 
 % produces rms and pc error metrics for forecasts and persistence (P)
 
@@ -10,6 +10,7 @@ mean_pred  = zeros(1,tLag);
 std_pred   = zeros(1,tLag);
 mean_truth = zeros(1,tLag);
 std_truth  = zeros(1,tLag);
+Nstd_truth  = zeros(1,tLag);
 
 predP      = zeros(size(pred_traj));
 pred_rmsP  = zeros(1,tLag);
@@ -90,5 +91,5 @@ end
 % save std as % of mean
 for i = 1:tLag
     mean_truth(i) = mean(abs(truth(:,i)));
-    std_truth(i) = std_truth(i)/mean_truth(i);
+    Nstd_truth(i) = std_truth(i)/mean_truth(i);
 end
