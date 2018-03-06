@@ -15,16 +15,16 @@ from mpl_toolkits.basemap import Basemap
 import cmocean
 # %matplotlib inline
 
-WORK_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/output/\
-            predictions/'
+WORK_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/' + \
+           'output/predictions/'
 SAVE_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/figures/'
 SEA_ICE_FILE = '/Users/dcomeau/Data/ice/CCSM4/piControl/' + \
     'b40.1850.track1.1deg.006.cice.h.aice_nh.000101-130012.nc'
 SIC_DIR = '/Users/dcomeau/Projects/KAF/analysis_scripts_revision/output/'
-SAVE_DIR = '/Users/dcomeau/Projects/KAF/CD_STAPIS/Revision/'
+SAVE_DIR = '/Users/dcomeau/Projects/KAF/CD_STAPIS/Revision_v2/'
 flag = 0
 dampedP = 1
-std_thresh = 0.1
+std_thresh = 1.0
 
 # """ Figure 1 """
 # # load data
@@ -132,7 +132,6 @@ varsUsed = 'SIC_SST_SLP'
 
 dataDir = WORK_DIR + region + '_' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
-
 # concentration anomaly data
 dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 truth = dataPredICA['truth']
@@ -283,12 +282,40 @@ dataDir = WORK_DIR + region + '_' + varsUsed + '_q' + str(embedWin) + \
 # concentration anomaly data
 dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
 
-pred_pcTM = dataPredICA['pred_pcTM']
+pred_pcTM = dataPredICA['pred_pcIM']
+pred_pcIM = dataPredICA['pred_pcIM']
 if dampedP == 1:
-    pred_pcTMP = dataPredICA['pred_pcTMDP']
+    pred_pcTMP = dataPredICA['pred_pcIMDP']
+    pred_pcIMP = dataPredICA['pred_pcIMDP']
 else:
-    pred_pcTMP = dataPredICA['pred_pcTMP']
+    pred_pcTMP = dataPredICA['pred_pcIMP']
+    pred_pcIMP = dataPredICA['pred_pcIMP']
 std_truthTM = dataPredICA['std_truthTM']
+
+# shift due to 12 month embedding window
+mM = [10, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+tmp1 = np.zeros(np.shape(pred_pcTM))
+tmp2 = np.zeros(np.shape(pred_pcTM))
+tmp3 = np.zeros(np.shape(pred_pcTM))
+tmp1 = pred_pcTM[mM, :]
+tmp2 = pred_pcTMP[mM, :]
+tmp3 = std_truthTM[mM, :]
+pred_pcTM = tmp1
+pred_pcTMP = tmp2
+std_truthTM = tmp3
+
+# shift to target
+tmp1 = np.zeros(np.shape(pred_pcTM))
+tmp2 = np.zeros(np.shape(pred_pcTM))
+for i in range(12):
+    for j in range(13):
+        newM = i + j
+        if newM > 11:
+            newM -= 12
+        tmp1[newM, j] = pred_pcTM[i, j]
+        tmp2[newM, j] = pred_pcTMP[i, j]
+pred_pcTM = tmp1
+pred_pcTMP = tmp2
 
 # mask out small variances
 pred_pcTM[std_truthTM < std_thresh] = np.nan
@@ -301,7 +328,7 @@ plt.rcParams.update({'figure.autolayout': False})
 # plt.rcParams.update({'font.family': 'serif'})
 
 fig = plt.figure()
-plt.subplot(121)
+plt.subplot(221)
 plt.imshow(pred_pcTM,
            cmap=cmocean.cm.balance,
            clim=(0, 1),
@@ -313,7 +340,14 @@ plt.ylabel('Target month')
 plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (month)')
 plt.title('PC (KAF)')
-plt.subplot(122)
+plt.plot([2, 3, 4, 5, 6, 7, 8],
+         color='green', linestyle='--', linewidth=3)
+plt.plot([8, 9, 10, 11],
+         color='green', linewidth=3)
+plt.plot([np.nan, np.nan, np.nan, np.nan, 0, 1, 2],
+         color='green', linewidth=3)
+plt.colorbar().set_ticks(cTicks)
+plt.subplot(222)
 plt.imshow(pred_pcTMP,
            cmap=cmocean.cm.balance,
            clim=(0, 1),
@@ -322,14 +356,58 @@ plt.xticks((0, 3, 6, 9, 12))
 plt.xlabel('lead time (month)')
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('PC (damped pers.)')
+plt.plot([2, 3, 4, 5, 6, 7, 8],
+         color='green', linestyle='--', linewidth=3)
+plt.plot([8, 9, 10, 11],
+         color='green', linewidth=3)
+plt.plot([np.nan, np.nan, np.nan, np.nan, 0, 1, 2],
+         color='green', linewidth=3)
+plt.colorbar().set_ticks(cTicks)
+plt.subplot(223)
+plt.imshow(pred_pcIM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
+yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
+yLabelsN = ['M', 'J', 'S', 'D']
+plt.yticks((2, 5, 8, 11), yLabels)
+plt.ylabel('Initial month')
+plt.xticks((0, 3, 6, 9, 12))
+plt.xlabel('lead time (month)')
+plt.title('PC (KAF)')
+plt.plot([2, 1, 0],
+         color='green', linestyle='--', linewidth=3)
+plt.plot([np.nan, np.nan, np.nan, 11, 10, 9, 8],
+         color='green', linestyle='--', linewidth=3)
+plt.plot([8, 7, 6, 5, 4, 3, 2],
+         color='green', linewidth=3)
+plt.colorbar().set_ticks(cTicks)
+plt.subplot(224)
+plt.imshow(pred_pcIMP,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
+plt.xticks((0, 3, 6, 9, 12))
+plt.xlabel('lead time (month)')
+plt.yticks((2, 5, 8, 11), yLabels)
+plt.title('PC (damped pers.)')
+plt.plot([2, 1, 0],
+         color='green', linestyle='--', linewidth=3)
+plt.plot([np.nan, np.nan, np.nan, 11, 10, 9, 8],
+         color='green', linestyle='--', linewidth=3)
+plt.plot([8, 7, 6, 5, 4, 3, 2],
+         color='green', linewidth=3)
+plt.colorbar().set_ticks(cTicks)
 
-plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-# cax = plt.axes([0.85, 0.3, 0.03, 0.4])
-# cax = plt.axes([0.85, 0.1, 0.075, 0.5])
-cax = plt.axes([0.85, 0.21, 0.04, 0.57])
+# plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+# # cax = plt.axes([0.85, 0.3, 0.03, 0.4])
+# # cax = plt.axes([0.85, 0.1, 0.075, 0.5])
+# cax = plt.axes([0.85, 0.21, 0.04, 0.57])
+# plt.colorbar(cax=cax, ticks=cTicks)
 
-plt.colorbar(cax=cax, ticks=cTicks)
 fig.set_figwidth(8)
+fig.set_figheight(6)
+plt.tight_layout()
 plt.savefig(SAVE_DIR + 'Fig4.eps', format='eps', dpi=1200)
 
 
@@ -918,7 +996,6 @@ fig.set_figheight(10)
 fig.set_figwidth(15)
 plt.savefig(SAVE_DIR + 'Fig7.eps', format='eps', dpi=1200)
 
-
 """ Figure 8 """
 embedWin = 12
 iceVar = 'ica'
@@ -931,60 +1008,290 @@ compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
 
 tLag = compData['tLag']
 
-pred_panel_shift_1_pcTM = compData['pred_panel_shift_1_pcTM']
-# pred_panel_shift_1_pcTM = compData['pred_panel_shift_17_pcTM']
-pred_panel_shift_2_pcTM = compData['pred_panel_shift_2_pcTM']
-pred_panel_shift_3_pcTM = compData['pred_panel_shift_3_pcTM']
-pred_panel_shift_4_pcTM = compData['pred_panel_shift_4_pcTM']
-pred_panel_shift_5_pcTM = compData['pred_panel_shift_5_pcTM']
-pred_panel_shift_6_pcTM = compData['pred_panel_shift_6_pcTM']
-pred_panel_shift_7_pcTM = compData['pred_panel_shift_7_pcTM']
-pred_panel_shift_8_pcTM = compData['pred_panel_shift_8_pcTM']
-pred_panel_shift_9_pcTM = compData['pred_panel_shift_9_pcTM']
-pred_panel_shift_10_pcTM = compData['pred_panel_shift_10_pcTM']
-pred_panel_shift_11_pcTM = compData['pred_panel_shift_11_pcTM']
-pred_panel_shift_12_pcTM = compData['pred_panel_shift_12_pcTM']
-pred_panel_shift_13_pcTM = compData['pred_panel_shift_13_pcTM']
-pred_panel_shift_14_pcTM = compData['pred_panel_shift_14_pcTM']
-pred_panel_shift_15_pcTM = compData['pred_panel_shift_15_pcTM']
-pred_panel_shift_16_pcTM = compData['pred_panel_shift_16_pcTM']
-
 # mask out small variances
-pred_panel_shift_1_stdTM = compData['pred_panel_shift_1_stdTM']
-# pred_panel_shift_1_stdTM = compData['pred_panel_shift_17_stdT'])
-pred_panel_shift_2_stdTM = compData['pred_panel_shift_2_stdTM']
-pred_panel_shift_3_stdTM = compData['pred_panel_shift_3_stdTM']
-pred_panel_shift_4_stdTM = compData['pred_panel_shift_4_stdTM']
-pred_panel_shift_5_stdTM = compData['pred_panel_shift_5_stdTM']
-pred_panel_shift_6_stdTM = compData['pred_panel_shift_6_stdTM']
-pred_panel_shift_7_stdTM = compData['pred_panel_shift_7_stdTM']
-pred_panel_shift_8_stdTM = compData['pred_panel_shift_8_stdTM']
-pred_panel_shift_9_stdTM = compData['pred_panel_shift_9_stdTM']
-pred_panel_shift_10_stdTM = compData['pred_panel_shift_10_stdTM']
-pred_panel_shift_11_stdTM = compData['pred_panel_shift_11_stdTM']
-pred_panel_shift_12_stdTM = compData['pred_panel_shift_12_stdTM']
-pred_panel_shift_13_stdTM = compData['pred_panel_shift_13_stdTM']
-pred_panel_shift_14_stdTM = compData['pred_panel_shift_14_stdTM']
-pred_panel_shift_15_stdTM = compData['pred_panel_shift_15_stdTM']
-pred_panel_shift_16_stdTM = compData['pred_panel_shift_16_stdTM']
+pred_panel_shift_1_stdTM = compData['pred_panel_shift_1_stdIM']
+pred_panel_shift_2_stdTM = compData['pred_panel_shift_2_stdIM']
+pred_panel_shift_3_stdTM = compData['pred_panel_shift_3_stdIM']
+pred_panel_shift_4_stdTM = compData['pred_panel_shift_4_stdIM']
+pred_panel_shift_5_stdTM = compData['pred_panel_shift_5_stdIM']
+pred_panel_shift_6_stdTM = compData['pred_panel_shift_6_stdIM']
+pred_panel_shift_7_stdTM = compData['pred_panel_shift_7_stdIM']
+pred_panel_shift_8_stdTM = compData['pred_panel_shift_8_stdIM']
+pred_panel_shift_9_stdTM = compData['pred_panel_shift_9_stdIM']
+pred_panel_shift_10_stdTM = compData['pred_panel_shift_10_stdIM']
+pred_panel_shift_11_stdTM = compData['pred_panel_shift_11_stdIM']
+pred_panel_shift_12_stdTM = compData['pred_panel_shift_12_stdIM']
+pred_panel_shift_13_stdTM = compData['pred_panel_shift_13_stdIM']
+pred_panel_shift_14_stdTM = compData['pred_panel_shift_14_stdIM']
+pred_panel_shift_15_stdTM = compData['pred_panel_shift_15_stdIM']
+pred_panel_shift_16_stdTM = compData['pred_panel_shift_16_stdIM']
 
+# shift to target
+tmp1 = np.zeros(np.shape(pred_panel_shift_1_stdTM))
+tmp2 = np.zeros(np.shape(pred_panel_shift_2_stdTM))
+tmp3 = np.zeros(np.shape(pred_panel_shift_3_stdTM))
+tmp4 = np.zeros(np.shape(pred_panel_shift_4_stdTM))
+tmp5 = np.zeros(np.shape(pred_panel_shift_5_stdTM))
+tmp6 = np.zeros(np.shape(pred_panel_shift_6_stdTM))
+tmp7 = np.zeros(np.shape(pred_panel_shift_7_stdTM))
+tmp8 = np.zeros(np.shape(pred_panel_shift_8_stdTM))
+tmp9 = np.zeros(np.shape(pred_panel_shift_9_stdTM))
+tmp10 = np.zeros(np.shape(pred_panel_shift_10_stdTM))
+tmp11 = np.zeros(np.shape(pred_panel_shift_11_stdTM))
+tmp12 = np.zeros(np.shape(pred_panel_shift_12_stdTM))
+tmp13 = np.zeros(np.shape(pred_panel_shift_13_stdTM))
+tmp14 = np.zeros(np.shape(pred_panel_shift_14_stdTM))
+tmp15 = np.zeros(np.shape(pred_panel_shift_15_stdTM))
+tmp16 = np.zeros(np.shape(pred_panel_shift_16_stdTM))
+for i in range(12):
+    for j in range(13):
+        newM = i + j
+        if newM > 11:
+            newM -= 12
+        tmp1[newM, j] = pred_panel_shift_1_stdTM[i, j]
+        tmp2[newM, j] = pred_panel_shift_2_stdTM[i, j]
+        tmp3[newM, j] = pred_panel_shift_3_stdTM[i, j]
+        tmp4[newM, j] = pred_panel_shift_4_stdTM[i, j]
+        tmp5[newM, j] = pred_panel_shift_5_stdTM[i, j]
+        tmp6[newM, j] = pred_panel_shift_6_stdTM[i, j]
+        tmp7[newM, j] = pred_panel_shift_7_stdTM[i, j]
+        tmp8[newM, j] = pred_panel_shift_8_stdTM[i, j]
+        tmp9[newM, j] = pred_panel_shift_9_stdTM[i, j]
+        tmp10[newM, j] = pred_panel_shift_10_stdTM[i, j]
+        tmp11[newM, j] = pred_panel_shift_11_stdTM[i, j]
+        tmp12[newM, j] = pred_panel_shift_12_stdTM[i, j]
+        tmp13[newM, j] = pred_panel_shift_13_stdTM[i, j]
+        tmp14[newM, j] = pred_panel_shift_14_stdTM[i, j]
+        tmp15[newM, j] = pred_panel_shift_15_stdTM[i, j]
+        tmp16[newM, j] = pred_panel_shift_16_stdTM[i, j]
+pred_panel_shift_1_stdTM = tmp1
+pred_panel_shift_2_stdTM = tmp2
+pred_panel_shift_3_stdTM = tmp3
+pred_panel_shift_4_stdTM = tmp4
+pred_panel_shift_5_stdTM = tmp5
+pred_panel_shift_6_stdTM = tmp6
+pred_panel_shift_7_stdTM = tmp7
+pred_panel_shift_8_stdTM = tmp8
+pred_panel_shift_9_stdTM = tmp9
+pred_panel_shift_10_stdTM = tmp10
+pred_panel_shift_11_stdTM = tmp11
+pred_panel_shift_12_stdTM = tmp12
+pred_panel_shift_13_stdTM = tmp13
+pred_panel_shift_14_stdTM = tmp14
+pred_panel_shift_15_stdTM = tmp15
+pred_panel_shift_16_stdTM = tmp16
 
-pred_panel_shift_1_pcTM[pred_panel_shift_1_stdTM < std_thresh] = np.nan
-pred_panel_shift_2_pcTM[pred_panel_shift_2_stdTM < std_thresh] = np.nan
-pred_panel_shift_3_pcTM[pred_panel_shift_3_stdTM < std_thresh] = np.nan
-pred_panel_shift_4_pcTM[pred_panel_shift_4_stdTM < std_thresh] = np.nan
-pred_panel_shift_5_pcTM[pred_panel_shift_5_stdTM < std_thresh] = np.nan
-pred_panel_shift_6_pcTM[pred_panel_shift_6_stdTM < std_thresh] = np.nan
-pred_panel_shift_7_pcTM[pred_panel_shift_7_stdTM < std_thresh] = np.nan
-pred_panel_shift_8_pcTM[pred_panel_shift_8_stdTM < std_thresh] = np.nan
-pred_panel_shift_9_pcTM[pred_panel_shift_9_stdTM < std_thresh] = np.nan
-pred_panel_shift_10_pcTM[pred_panel_shift_10_stdTM < std_thresh] = np.nan
-pred_panel_shift_11_pcTM[pred_panel_shift_11_stdTM < std_thresh] = np.nan
-pred_panel_shift_12_pcTM[pred_panel_shift_12_stdTM < std_thresh] = np.nan
-pred_panel_shift_13_pcTM[pred_panel_shift_13_stdTM < std_thresh] = np.nan
-pred_panel_shift_14_pcTM[pred_panel_shift_14_stdTM < std_thresh] = np.nan
-pred_panel_shift_15_pcTM[pred_panel_shift_15_stdTM < std_thresh] = np.nan
-pred_panel_shift_16_pcTM[pred_panel_shift_16_stdTM < std_thresh] = np.nan
+plt.rcParams.update({'font.size': 14})
+# plt.rcParams.update({'font.family': 'serif'})
+
+# xLabels = ['Jan', 'Apr', 'Jul', 'Oct', 'Dec']
+xLabels = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']
+xx = range(12)
+
+fig = plt.figure()
+plt.subplot(4, 3, 1)
+plt.plot(xx, pred_panel_shift_1_stdTM[:, 0], 'b', label='KAF')
+plt.ylabel(r'SIAA $\sigma$, (km$^2$)')
+plt.xticks(range(12), xLabels)
+plt.xlim(0, 11)
+plt.xlabel('month')
+plt.ylim(0, 5.0e7)
+plt.yticks([0, 1e7, 2e7, 3e7, 4e7, 5e7])
+plt.title('Arctic')
+
+plt.subplot(4, 3, 2)
+plt.plot(xx, pred_panel_shift_4_stdTM[:, 0], 'b', label='KAF')
+plt.xticks(range(12), xLabels)
+plt.xlim(0, 11)
+plt.ylim(0, 1.5e7)
+plt.yticks([0, 0.5e7, 1e7, 1.5e7])
+plt.axvline(x=1, color='magenta', linestyle='--')
+plt.axvline(x=3, color='magenta', linestyle='--')
+plt.title('Beaufort')
+
+plt.subplot(4, 3, 3)
+plt.plot(xx, pred_panel_shift_3_stdTM[:, 0], 'b', label='KAF')
+plt.xticks(range(12), xLabels)
+plt.xlim(0, 11)
+plt.ylim(0, 1.5e7)
+plt.yticks([0, 0.5e7, 1e7, 1.5e7])
+plt.axvline(x=1, color='magenta', linestyle='--')
+plt.axvline(x=3, color='magenta', linestyle='--')
+plt.title('Chukchi')
+
+plt.subplot(4, 3, 4)
+plt.plot(xx, pred_panel_shift_6_stdTM[:, 0], 'b', label='KAF')
+plt.xticks(range(12), xLabels)
+plt.xlim(0, 11)
+plt.ylim(0, 1.5e7)
+plt.yticks([0, 0.5e7, 1e7, 1.5e7])
+plt.axvline(x=1, color='magenta', linestyle='--')
+plt.axvline(x=3, color='magenta', linestyle='--')
+plt.title('E Siberian')
+
+plt.subplot(4, 3, 5)
+plt.plot(xx, pred_panel_shift_7_stdTM[:, 0], 'b', label='KAF')
+plt.xticks(range(12), xLabels)
+plt.xlim(0, 11)
+plt.ylim(0, 1.5e7)
+plt.yticks([0, 0.5e7, 1e7, 1.5e7])
+plt.axvline(x=1, color='magenta', linestyle='--')
+plt.axvline(x=3, color='magenta', linestyle='--')
+plt.title('Laptev')
+
+plt.subplot(4, 3, 6)
+plt.plot(xx, pred_panel_shift_10_stdTM[:, 0], 'b', label='KAF')
+plt.xticks(range(12), xLabels)
+plt.xlim(0, 11)
+plt.ylim(0, 1.5e7)
+plt.yticks([0, 0.5e7, 1e7, 1.5e7])
+plt.axvline(x=1, color='magenta', linestyle='--')
+plt.axvline(x=3, color='magenta', linestyle='--')
+plt.title('Kara')
+
+plt.subplot(4, 3, 7)
+plt.plot(xx, pred_panel_shift_9_stdTM[:, 0], 'b', label='KAF')
+plt.xticks(range(12), xLabels)
+plt.xlim(0, 11)
+plt.ylim(0, 2.0e7)
+plt.yticks([0, 0.5e7, 1e7, 1.5e7, 2e7])
+plt.title('Barents')
+
+plt.subplot(4, 3, 8)
+plt.plot(xx, pred_panel_shift_11_stdTM[:, 0], 'b', label='KAF')
+plt.xticks(range(12), xLabels)
+plt.xlim(0, 11)
+plt.ylim(0, 1.5e7)
+plt.yticks([0, 0.5e7, 1e7, 1.5e7])
+plt.title('Greenland')
+
+plt.subplot(4, 3, 9)
+plt.plot(xx, pred_panel_shift_13_stdTM[:, 0], 'b', label='KAF')
+plt.xticks(range(12), xLabels)
+plt.xlim(0, 11)
+plt.ylim(0, 1e7)
+plt.yticks([0, 0.25e7, 0.5e7, 0.75e7, 1e7])
+plt.title('Labrador')
+
+plt.subplot(4, 3, 10)
+plt.plot(xx, pred_panel_shift_12_stdTM[:, 0], 'b', label='KAF')
+plt.xticks(range(12), xLabels)
+plt.xlim(0, 11)
+plt.ylim(0, 1e7)
+plt.yticks([0, 0.25e7, 0.5e7, 0.75e7, 1e7])
+plt.axvline(x=1, color='magenta', linestyle='--')
+plt.axvline(x=3, color='magenta', linestyle='--')
+plt.title('Baffin')
+
+plt.subplot(4, 3, 11)
+plt.plot(xx, pred_panel_shift_15_stdTM[:, 0], 'b', label='KAF')
+plt.xticks(range(12), xLabels)
+plt.xlim(0, 11)
+plt.ylim(0, 2e7)
+plt.yticks([0, 0.5e7, 1e7, 1.5e7, 2e7])
+plt.axvline(x=8, color='magenta', linestyle='--')
+plt.axvline(x=10, color='magenta', linestyle='--')
+plt.title('Bering')
+
+plt.subplot(4, 3, 12)
+plt.plot(xx, pred_panel_shift_16_stdTM[:, 0], 'b', label='KAF')
+plt.xticks(range(12), xLabels)
+plt.xlim(0, 11)
+plt.ylim(0, 3e7)
+plt.yticks([0, 1e7, 2e7, 3e7])
+plt.axvline(x=8, color='magenta', linestyle='--')
+plt.axvline(x=10, color='magenta', linestyle='--')
+plt.title('Okhotsk')
+
+fig.set_figheight(10)
+fig.set_figwidth(15)
+plt.tight_layout()
+# plt.savefig(SAVE_DIR + iceVar + '_std.eps', format='eps', dpi=500)
+plt.savefig(SAVE_DIR + 'Fig8.eps', format='eps', dpi=500)
+
+""" Figure 9 """
+embedWin = 12
+iceVar = 'ica'
+varsUsed = 'SIC_SST_SLP'
+
+dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
+
+compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
+
+tLag = compData['tLag']
+
+pred_panel_shift_1_pcTM = compData['pred_panel_shift_1_pcIM']
+pred_panel_shift_2_pcTM = compData['pred_panel_shift_2_pcIM']
+pred_panel_shift_3_pcTM = compData['pred_panel_shift_3_pcIM']
+pred_panel_shift_4_pcTM = compData['pred_panel_shift_4_pcIM']
+pred_panel_shift_5_pcTM = compData['pred_panel_shift_5_pcIM']
+pred_panel_shift_6_pcTM = compData['pred_panel_shift_6_pcIM']
+pred_panel_shift_7_pcTM = compData['pred_panel_shift_7_pcIM']
+pred_panel_shift_8_pcTM = compData['pred_panel_shift_8_pcIM']
+pred_panel_shift_9_pcTM = compData['pred_panel_shift_9_pcIM']
+pred_panel_shift_10_pcTM = compData['pred_panel_shift_10_pcIM']
+pred_panel_shift_11_pcTM = compData['pred_panel_shift_11_pcIM']
+pred_panel_shift_12_pcTM = compData['pred_panel_shift_12_pcIM']
+pred_panel_shift_13_pcTM = compData['pred_panel_shift_13_pcIM']
+pred_panel_shift_14_pcTM = compData['pred_panel_shift_14_pcIM']
+pred_panel_shift_15_pcTM = compData['pred_panel_shift_15_pcIM']
+pred_panel_shift_16_pcTM = compData['pred_panel_shift_16_pcIM']
+
+# shift to target
+tmp1 = np.zeros(np.shape(pred_panel_shift_1_pcTM))
+tmp2 = np.zeros(np.shape(pred_panel_shift_2_pcTM))
+tmp3 = np.zeros(np.shape(pred_panel_shift_3_pcTM))
+tmp4 = np.zeros(np.shape(pred_panel_shift_4_pcTM))
+tmp5 = np.zeros(np.shape(pred_panel_shift_5_pcTM))
+tmp6 = np.zeros(np.shape(pred_panel_shift_6_pcTM))
+tmp7 = np.zeros(np.shape(pred_panel_shift_7_pcTM))
+tmp8 = np.zeros(np.shape(pred_panel_shift_8_pcTM))
+tmp9 = np.zeros(np.shape(pred_panel_shift_9_pcTM))
+tmp10 = np.zeros(np.shape(pred_panel_shift_10_pcTM))
+tmp11 = np.zeros(np.shape(pred_panel_shift_11_pcTM))
+tmp12 = np.zeros(np.shape(pred_panel_shift_12_pcTM))
+tmp13 = np.zeros(np.shape(pred_panel_shift_13_pcTM))
+tmp14 = np.zeros(np.shape(pred_panel_shift_14_pcTM))
+tmp15 = np.zeros(np.shape(pred_panel_shift_15_pcTM))
+tmp16 = np.zeros(np.shape(pred_panel_shift_16_pcTM))
+for i in range(12):
+    for j in range(13):
+        newM = i + j
+        if newM > 11:
+            newM -= 12
+        tmp1[newM, j] = pred_panel_shift_1_pcTM[i, j]
+        tmp2[newM, j] = pred_panel_shift_2_pcTM[i, j]
+        tmp3[newM, j] = pred_panel_shift_3_pcTM[i, j]
+        tmp4[newM, j] = pred_panel_shift_4_pcTM[i, j]
+        tmp5[newM, j] = pred_panel_shift_5_pcTM[i, j]
+        tmp6[newM, j] = pred_panel_shift_6_pcTM[i, j]
+        tmp7[newM, j] = pred_panel_shift_7_pcTM[i, j]
+        tmp8[newM, j] = pred_panel_shift_8_pcTM[i, j]
+        tmp9[newM, j] = pred_panel_shift_9_pcTM[i, j]
+        tmp10[newM, j] = pred_panel_shift_10_pcTM[i, j]
+        tmp11[newM, j] = pred_panel_shift_11_pcTM[i, j]
+        tmp12[newM, j] = pred_panel_shift_12_pcTM[i, j]
+        tmp13[newM, j] = pred_panel_shift_13_pcTM[i, j]
+        tmp14[newM, j] = pred_panel_shift_14_pcTM[i, j]
+        tmp15[newM, j] = pred_panel_shift_15_pcTM[i, j]
+        tmp16[newM, j] = pred_panel_shift_16_pcTM[i, j]
+pred_panel_shift_1_pcTM = tmp1
+pred_panel_shift_2_pcTM = tmp2
+pred_panel_shift_3_pcTM = tmp3
+pred_panel_shift_4_pcTM = tmp4
+pred_panel_shift_5_pcTM = tmp5
+pred_panel_shift_6_pcTM = tmp6
+pred_panel_shift_7_pcTM = tmp7
+pred_panel_shift_8_pcTM = tmp8
+pred_panel_shift_9_pcTM = tmp9
+pred_panel_shift_10_pcTM = tmp10
+pred_panel_shift_11_pcTM = tmp11
+pred_panel_shift_12_pcTM = tmp12
+pred_panel_shift_13_pcTM = tmp13
+pred_panel_shift_14_pcTM = tmp14
+pred_panel_shift_15_pcTM = tmp15
+pred_panel_shift_16_pcTM = tmp16
 
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
@@ -1012,9 +1319,12 @@ plt.imshow(pred_panel_shift_4_pcTM,
            clim=(0, 1),
            interpolation='none')
 plt.xticks((0, 3, 6, 9, 12))
-plt.xlabel('lead time (months)')
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Beaufort')
+plt.plot([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 3)
@@ -1025,6 +1335,10 @@ plt.imshow(pred_panel_shift_3_pcTM,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Chukchi')
+plt.plot([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 4)
@@ -1035,6 +1349,10 @@ plt.imshow(pred_panel_shift_6_pcTM,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('E Siberian')
+plt.plot([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 5)
@@ -1045,6 +1363,10 @@ plt.imshow(pred_panel_shift_7_pcTM,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Laptev')
+plt.plot([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 6)
@@ -1055,6 +1377,10 @@ plt.imshow(pred_panel_shift_10_pcTM,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Kara')
+plt.plot([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 7)
@@ -1095,6 +1421,10 @@ plt.imshow(pred_panel_shift_12_pcTM,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Baffin')
+plt.plot([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 11)
@@ -1105,6 +1435,10 @@ plt.imshow(pred_panel_shift_15_pcTM,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Bering')
+plt.plot([8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 12)
@@ -1115,15 +1449,19 @@ plt.imshow(pred_panel_shift_16_pcTM,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Okhotsk')
+plt.plot([8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 fig.set_figheight(14)
 fig.set_figwidth(14)
 plt.tight_layout()
-plt.savefig(SAVE_DIR + 'Fig8.eps', format='eps', dpi=500)
+plt.savefig(SAVE_DIR + 'Fig9.eps', format='eps', dpi=500)
 
 
-""" Figure 9 """
+""" Figure 10 """
 embedWin = 12
 iceVar = 'ica'
 varsUsed = 'SIC_SST_SLP'
@@ -1134,77 +1472,96 @@ compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
 tLag = compData['tLag']
 
 if dampedP == 1:
-    pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_1_pcTMDdiff']
-#     pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_17_pcTMDdiff']
-    pred_panel_shift_2_pcTMdiff = compData['pred_panel_shift_2_pcTMDdiff']
-    pred_panel_shift_3_pcTMdiff = compData['pred_panel_shift_3_pcTMDdiff']
-    pred_panel_shift_4_pcTMdiff = compData['pred_panel_shift_4_pcTMDdiff']
-    pred_panel_shift_5_pcTMdiff = compData['pred_panel_shift_5_pcTMDdiff']
-    pred_panel_shift_6_pcTMdiff = compData['pred_panel_shift_6_pcTMDdiff']
-    pred_panel_shift_7_pcTMdiff = compData['pred_panel_shift_7_pcTMDdiff']
-    pred_panel_shift_8_pcTMdiff = compData['pred_panel_shift_8_pcTMDdiff']
-    pred_panel_shift_9_pcTMdiff = compData['pred_panel_shift_9_pcTMDdiff']
-    pred_panel_shift_10_pcTMdiff = compData['pred_panel_shift_10_pcTMDdiff']
-    pred_panel_shift_11_pcTMdiff = compData['pred_panel_shift_11_pcTMDdiff']
-    pred_panel_shift_12_pcTMdiff = compData['pred_panel_shift_12_pcTMDdiff']
-    pred_panel_shift_13_pcTMdiff = compData['pred_panel_shift_13_pcTMDdiff']
-    pred_panel_shift_14_pcTMdiff = compData['pred_panel_shift_14_pcTMDdiff']
-    pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcTMDdiff']
-    pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcTMDdiff']
+    pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_1_pcIMDdiff']
+#     pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_17_pcIMDdiff']
+    pred_panel_shift_2_pcTMdiff = compData['pred_panel_shift_2_pcIMDdiff']
+    pred_panel_shift_3_pcTMdiff = compData['pred_panel_shift_3_pcIMDdiff']
+    pred_panel_shift_4_pcTMdiff = compData['pred_panel_shift_4_pcIMDdiff']
+    pred_panel_shift_5_pcTMdiff = compData['pred_panel_shift_5_pcIMDdiff']
+    pred_panel_shift_6_pcTMdiff = compData['pred_panel_shift_6_pcIMDdiff']
+    pred_panel_shift_7_pcTMdiff = compData['pred_panel_shift_7_pcIMDdiff']
+    pred_panel_shift_8_pcTMdiff = compData['pred_panel_shift_8_pcIMDdiff']
+    pred_panel_shift_9_pcTMdiff = compData['pred_panel_shift_9_pcIMDdiff']
+    pred_panel_shift_10_pcTMdiff = compData['pred_panel_shift_10_pcIMDdiff']
+    pred_panel_shift_11_pcTMdiff = compData['pred_panel_shift_11_pcIMDdiff']
+    pred_panel_shift_12_pcTMdiff = compData['pred_panel_shift_12_pcIMDdiff']
+    pred_panel_shift_13_pcTMdiff = compData['pred_panel_shift_13_pcIMDdiff']
+    pred_panel_shift_14_pcTMdiff = compData['pred_panel_shift_14_pcIMDdiff']
+    pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcIMDdiff']
+    pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcIMDdiff']
 else:
-    pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_1_pcTMdiff']
-#     pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_17_pcTMdiff']
-    pred_panel_shift_2_pcTMdiff = compData['pred_panel_shift_2_pcTMdiff']
-    pred_panel_shift_3_pcTMdiff = compData['pred_panel_shift_3_pcTMdiff']
-    pred_panel_shift_4_pcTMdiff = compData['pred_panel_shift_4_pcTMdiff']
-    pred_panel_shift_5_pcTMdiff = compData['pred_panel_shift_5_pcTMdiff']
-    pred_panel_shift_6_pcTMdiff = compData['pred_panel_shift_6_pcTMdiff']
-    pred_panel_shift_7_pcTMdiff = compData['pred_panel_shift_7_pcTMdiff']
-    pred_panel_shift_8_pcTMdiff = compData['pred_panel_shift_8_pcTMdiff']
-    pred_panel_shift_9_pcTMdiff = compData['pred_panel_shift_9_pcTMdiff']
-    pred_panel_shift_10_pcTMdiff = compData['pred_panel_shift_10_pcTMdiff']
-    pred_panel_shift_11_pcTMdiff = compData['pred_panel_shift_11_pcTMdiff']
-    pred_panel_shift_12_pcTMdiff = compData['pred_panel_shift_12_pcTMdiff']
-    pred_panel_shift_13_pcTMdiff = compData['pred_panel_shift_13_pcTMdiff']
-    pred_panel_shift_14_pcTMdiff = compData['pred_panel_shift_14_pcTMdiff']
-    pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcTMdiff']
-    pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcTMdiff']
+    pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_1_pcIMdiff']
+#     pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_17_pcIMdiff']
+    pred_panel_shift_2_pcTMdiff = compData['pred_panel_shift_2_pcIMdiff']
+    pred_panel_shift_3_pcTMdiff = compData['pred_panel_shift_3_pcIMdiff']
+    pred_panel_shift_4_pcTMdiff = compData['pred_panel_shift_4_pcIMdiff']
+    pred_panel_shift_5_pcTMdiff = compData['pred_panel_shift_5_pcIMdiff']
+    pred_panel_shift_6_pcTMdiff = compData['pred_panel_shift_6_pcIMdiff']
+    pred_panel_shift_7_pcTMdiff = compData['pred_panel_shift_7_pcIMdiff']
+    pred_panel_shift_8_pcTMdiff = compData['pred_panel_shift_8_pcIMdiff']
+    pred_panel_shift_9_pcTMdiff = compData['pred_panel_shift_9_pcIMdiff']
+    pred_panel_shift_10_pcTMdiff = compData['pred_panel_shift_10_pcIMdiff']
+    pred_panel_shift_11_pcTMdiff = compData['pred_panel_shift_11_pcIMdiff']
+    pred_panel_shift_12_pcTMdiff = compData['pred_panel_shift_12_pcIMdiff']
+    pred_panel_shift_13_pcTMdiff = compData['pred_panel_shift_13_pcIMdiff']
+    pred_panel_shift_14_pcTMdiff = compData['pred_panel_shift_14_pcIMdiff']
+    pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcIMdiff']
+    pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcIMdiff']
 
-# mask out small variances
-pred_panel_shift_1_stdTM = compData['pred_panel_shift_1_stdTM']
-# pred_panel_shift_1_stdTM = compData['pred_panel_shift_17_stdTM']
-pred_panel_shift_2_stdTM = compData['pred_panel_shift_2_stdTM']
-pred_panel_shift_3_stdTM = compData['pred_panel_shift_3_stdTM']
-pred_panel_shift_4_stdTM = compData['pred_panel_shift_4_stdTM']
-pred_panel_shift_5_stdTM = compData['pred_panel_shift_5_stdTM']
-pred_panel_shift_6_stdTM = compData['pred_panel_shift_6_stdTM']
-pred_panel_shift_7_stdTM = compData['pred_panel_shift_7_stdTM']
-pred_panel_shift_8_stdTM = compData['pred_panel_shift_8_stdTM']
-pred_panel_shift_9_stdTM = compData['pred_panel_shift_9_stdTM']
-pred_panel_shift_10_stdTM = compData['pred_panel_shift_10_stdTM']
-pred_panel_shift_11_stdTM = compData['pred_panel_shift_11_stdTM']
-pred_panel_shift_12_stdTM = compData['pred_panel_shift_12_stdTM']
-pred_panel_shift_13_stdTM = compData['pred_panel_shift_13_stdTM']
-pred_panel_shift_14_stdTM = compData['pred_panel_shift_14_stdTM']
-pred_panel_shift_15_stdTM = compData['pred_panel_shift_15_stdTM']
-pred_panel_shift_16_stdTM = compData['pred_panel_shift_16_stdTM']
-
-pred_panel_shift_1_pcTMdiff[pred_panel_shift_1_stdTM < std_thresh] = np.nan
-pred_panel_shift_2_pcTMdiff[pred_panel_shift_2_stdTM < std_thresh] = np.nan
-pred_panel_shift_3_pcTMdiff[pred_panel_shift_3_stdTM < std_thresh] = np.nan
-pred_panel_shift_4_pcTMdiff[pred_panel_shift_4_stdTM < std_thresh] = np.nan
-pred_panel_shift_5_pcTMdiff[pred_panel_shift_5_stdTM < std_thresh] = np.nan
-pred_panel_shift_6_pcTMdiff[pred_panel_shift_6_stdTM < std_thresh] = np.nan
-pred_panel_shift_7_pcTMdiff[pred_panel_shift_7_stdTM < std_thresh] = np.nan
-pred_panel_shift_8_pcTMdiff[pred_panel_shift_8_stdTM < std_thresh] = np.nan
-pred_panel_shift_9_pcTMdiff[pred_panel_shift_9_stdTM < std_thresh] = np.nan
-pred_panel_shift_10_pcTMdiff[pred_panel_shift_10_stdTM < std_thresh] = np.nan
-pred_panel_shift_11_pcTMdiff[pred_panel_shift_11_stdTM < std_thresh] = np.nan
-pred_panel_shift_12_pcTMdiff[pred_panel_shift_12_stdTM < std_thresh] = np.nan
-pred_panel_shift_13_pcTMdiff[pred_panel_shift_13_stdTM < std_thresh] = np.nan
-pred_panel_shift_14_pcTMdiff[pred_panel_shift_14_stdTM < std_thresh] = np.nan
-pred_panel_shift_15_pcTMdiff[pred_panel_shift_15_stdTM < std_thresh] = np.nan
-pred_panel_shift_16_pcTMdiff[pred_panel_shift_16_stdTM < std_thresh] = np.nan
+# shift to target
+tmp1 = np.zeros(np.shape(pred_panel_shift_1_pcTMdiff))
+tmp2 = np.zeros(np.shape(pred_panel_shift_2_pcTMdiff))
+tmp3 = np.zeros(np.shape(pred_panel_shift_3_pcTMdiff))
+tmp4 = np.zeros(np.shape(pred_panel_shift_4_pcTMdiff))
+tmp5 = np.zeros(np.shape(pred_panel_shift_5_pcTMdiff))
+tmp6 = np.zeros(np.shape(pred_panel_shift_6_pcTMdiff))
+tmp7 = np.zeros(np.shape(pred_panel_shift_7_pcTMdiff))
+tmp8 = np.zeros(np.shape(pred_panel_shift_8_pcTMdiff))
+tmp9 = np.zeros(np.shape(pred_panel_shift_9_pcTMdiff))
+tmp10 = np.zeros(np.shape(pred_panel_shift_10_pcTMdiff))
+tmp11 = np.zeros(np.shape(pred_panel_shift_11_pcTMdiff))
+tmp12 = np.zeros(np.shape(pred_panel_shift_12_pcTMdiff))
+tmp13 = np.zeros(np.shape(pred_panel_shift_13_pcTMdiff))
+tmp14 = np.zeros(np.shape(pred_panel_shift_14_pcTMdiff))
+tmp15 = np.zeros(np.shape(pred_panel_shift_15_pcTMdiff))
+tmp16 = np.zeros(np.shape(pred_panel_shift_16_pcTMdiff))
+for i in range(12):
+    for j in range(13):
+        newM = i + j
+        if newM > 11:
+            newM -= 12
+        tmp1[newM, j] = pred_panel_shift_1_pcTMdiff[i, j]
+        tmp2[newM, j] = pred_panel_shift_2_pcTMdiff[i, j]
+        tmp3[newM, j] = pred_panel_shift_3_pcTMdiff[i, j]
+        tmp4[newM, j] = pred_panel_shift_4_pcTMdiff[i, j]
+        tmp5[newM, j] = pred_panel_shift_5_pcTMdiff[i, j]
+        tmp6[newM, j] = pred_panel_shift_6_pcTMdiff[i, j]
+        tmp7[newM, j] = pred_panel_shift_7_pcTMdiff[i, j]
+        tmp8[newM, j] = pred_panel_shift_8_pcTMdiff[i, j]
+        tmp9[newM, j] = pred_panel_shift_9_pcTMdiff[i, j]
+        tmp10[newM, j] = pred_panel_shift_10_pcTMdiff[i, j]
+        tmp11[newM, j] = pred_panel_shift_11_pcTMdiff[i, j]
+        tmp12[newM, j] = pred_panel_shift_12_pcTMdiff[i, j]
+        tmp13[newM, j] = pred_panel_shift_13_pcTMdiff[i, j]
+        tmp14[newM, j] = pred_panel_shift_14_pcTMdiff[i, j]
+        tmp15[newM, j] = pred_panel_shift_15_pcTMdiff[i, j]
+        tmp16[newM, j] = pred_panel_shift_16_pcTMdiff[i, j]
+pred_panel_shift_1_pcTMdiff = tmp1
+pred_panel_shift_2_pcTMdiff = tmp2
+pred_panel_shift_3_pcTMdiff = tmp3
+pred_panel_shift_4_pcTMdiff = tmp4
+pred_panel_shift_5_pcTMdiff = tmp5
+pred_panel_shift_6_pcTMdiff = tmp6
+pred_panel_shift_7_pcTMdiff = tmp7
+pred_panel_shift_8_pcTMdiff = tmp8
+pred_panel_shift_9_pcTMdiff = tmp9
+pred_panel_shift_10_pcTMdiff = tmp10
+pred_panel_shift_11_pcTMdiff = tmp11
+pred_panel_shift_12_pcTMdiff = tmp12
+pred_panel_shift_13_pcTMdiff = tmp13
+pred_panel_shift_14_pcTMdiff = tmp14
+pred_panel_shift_15_pcTMdiff = tmp15
+pred_panel_shift_16_pcTMdiff = tmp16
 
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
@@ -1234,6 +1591,10 @@ plt.imshow(pred_panel_shift_4_pcTMdiff,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Beaufort')
+plt.plot([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 3)
@@ -1244,6 +1605,10 @@ plt.imshow(pred_panel_shift_3_pcTMdiff,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Chukchi')
+plt.plot([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 4)
@@ -1254,6 +1619,10 @@ plt.imshow(pred_panel_shift_6_pcTMdiff,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('E Siberian')
+plt.plot([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 5)
@@ -1264,6 +1633,10 @@ plt.imshow(pred_panel_shift_7_pcTMdiff,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Laptev')
+plt.plot([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 6)
@@ -1274,6 +1647,10 @@ plt.imshow(pred_panel_shift_10_pcTMdiff,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Kara')
+plt.plot([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 7)
@@ -1314,6 +1691,10 @@ plt.imshow(pred_panel_shift_12_pcTMdiff,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Baffin')
+plt.plot([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 11)
@@ -1324,6 +1705,10 @@ plt.imshow(pred_panel_shift_15_pcTMdiff,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Bering')
+plt.plot([8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 12)
@@ -1334,20 +1719,26 @@ plt.imshow(pred_panel_shift_16_pcTMdiff,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Okhotsk')
+plt.plot([8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 fig.set_figheight(14)
 fig.set_figwidth(14)
 plt.tight_layout()
-plt.savefig(SAVE_DIR + 'Fig9.eps', format='eps', dpi=500)
+plt.savefig(SAVE_DIR + 'Fig10.eps', format='eps', dpi=500)
 
 
-""" Figure 10 """
+""" Figure 11 """
 region = []
 region.append('Arctic')
 region.append('Beaufort')
 region.append('Bering')
-region.append('Barents')
+# region.append('Greenland')
+# region.append('Barents')
+region.append('Labrador')
 varUsed = []
 varUsed.append('SIC')
 varUsed.append('SIC_SST')
@@ -1590,10 +1981,10 @@ plt.title(region[3] + ' PC')
 fig.set_figheight(10)
 fig.set_figwidth(8)
 plt.tight_layout()
-plt.savefig(SAVE_DIR + 'Fig10.eps', format='eps', dpi=1200)
+plt.savefig(SAVE_DIR + 'Fig11.eps', format='eps', dpi=1200)
 
 
-""" Figure 11 """
+""" Figure 12 """
 region = 'Arctic'
 embedWin = 12
 varsUsed = 'SIC_SST_SIT'
@@ -1601,13 +1992,35 @@ varsUsed = 'SIC_SST_SIT'
 dataDir = WORK_DIR + region + '_SIC_SST_SIT_q' + str(embedWin) + \
     '_train_100_499/'
 dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
-pred_pcTM = dataPredICA['pred_pcTM']
+pred_pcTM = dataPredICA['pred_pcIM']
 
 dataDir = WORK_DIR + region + '_SIC_SST_SITq48_q' + str(embedWin) + \
     '_train_100_499/'
 
 dataPredICAS = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
-pred_pcTMS = dataPredICAS['pred_pcTM']
+pred_pcTMS = dataPredICAS['pred_pcIM']
+
+# shift due to 12 month embedding window
+mM = [10, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+tmp1 = np.zeros(np.shape(pred_pcTM))
+tmp2 = np.zeros(np.shape(pred_pcTM))
+tmp1 = pred_pcTM[mM, :]
+tmp2 = pred_pcTMS[mM, :]
+pred_pcTM = tmp1
+pred_pcTMS = tmp2
+
+# shift to target
+tmp1 = np.zeros(np.shape(pred_pcTM))
+tmp2 = np.zeros(np.shape(pred_pcTMS))
+for i in range(12):
+    for j in range(13):
+        newM = i + j
+        if newM > 11:
+            newM -= 12
+        tmp1[newM, j] = pred_pcTM[i, j]
+        tmp2[newM, j] = pred_pcTMS[i, j]
+pred_pcTM = tmp1
+pred_pcTMS = tmp2
 
 cTicks = np.linspace(0, 1, 3)
 
@@ -1639,15 +2052,16 @@ plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('SIT q=48')
 
 plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-
+# cax = plt.axes([0.85, 0.3, 0.03, 0.4])
+# cax = plt.axes([0.85, 0.1, 0.075, 0.5])
 cax = plt.axes([0.85, 0.21, 0.04, 0.57])
 
 plt.colorbar(cax=cax, ticks=cTicks)
 fig.set_figwidth(8)
-plt.savefig(SAVE_DIR + 'Fig11.eps', format='eps', dpi=1200)
+plt.savefig(SAVE_DIR + 'Fig12.eps', format='eps', dpi=1200)
 
 
-""" Figure 12 """
+""" Figure 13 """
 embedWin = 12
 iceVar = 'iva'
 varsUsed = 'SIC_SST_SLP'
@@ -1659,59 +2073,78 @@ compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
 
 tLag = compData['tLag']
 
-pred_panel_shift_1_pcTM = compData['pred_panel_shift_1_pcTM']
-# pred_panel_shift_1_pcTM = compData['pred_panel_shift_17_pcTM']
-pred_panel_shift_2_pcTM = compData['pred_panel_shift_2_pcTM']
-pred_panel_shift_3_pcTM = compData['pred_panel_shift_3_pcTM']
-pred_panel_shift_4_pcTM = compData['pred_panel_shift_4_pcTM']
-pred_panel_shift_5_pcTM = compData['pred_panel_shift_5_pcTM']
-pred_panel_shift_6_pcTM = compData['pred_panel_shift_6_pcTM']
-pred_panel_shift_7_pcTM = compData['pred_panel_shift_7_pcTM']
-pred_panel_shift_8_pcTM = compData['pred_panel_shift_8_pcTM']
-pred_panel_shift_9_pcTM = compData['pred_panel_shift_9_pcTM']
-pred_panel_shift_10_pcTM = compData['pred_panel_shift_10_pcTM']
-pred_panel_shift_11_pcTM = compData['pred_panel_shift_11_pcTM']
-pred_panel_shift_12_pcTM = compData['pred_panel_shift_12_pcTM']
-pred_panel_shift_13_pcTM = compData['pred_panel_shift_13_pcTM']
-pred_panel_shift_14_pcTM = compData['pred_panel_shift_14_pcTM']
-pred_panel_shift_15_pcTM = compData['pred_panel_shift_15_pcTM']
-pred_panel_shift_16_pcTM = compData['pred_panel_shift_16_pcTM']
+pred_panel_shift_1_pcTM = compData['pred_panel_shift_1_pcIM']
+# pred_panel_shift_1_pcTM = compData['pred_panel_shift_17_pcIM']
+pred_panel_shift_2_pcTM = compData['pred_panel_shift_2_pcIM']
+pred_panel_shift_3_pcTM = compData['pred_panel_shift_3_pcIM']
+pred_panel_shift_4_pcTM = compData['pred_panel_shift_4_pcIM']
+pred_panel_shift_5_pcTM = compData['pred_panel_shift_5_pcIM']
+pred_panel_shift_6_pcTM = compData['pred_panel_shift_6_pcIM']
+pred_panel_shift_7_pcTM = compData['pred_panel_shift_7_pcIM']
+pred_panel_shift_8_pcTM = compData['pred_panel_shift_8_pcIM']
+pred_panel_shift_9_pcTM = compData['pred_panel_shift_9_pcIM']
+pred_panel_shift_10_pcTM = compData['pred_panel_shift_10_pcIM']
+pred_panel_shift_11_pcTM = compData['pred_panel_shift_11_pcIM']
+pred_panel_shift_12_pcTM = compData['pred_panel_shift_12_pcIM']
+pred_panel_shift_13_pcTM = compData['pred_panel_shift_13_pcIM']
+pred_panel_shift_14_pcTM = compData['pred_panel_shift_14_pcIM']
+pred_panel_shift_15_pcTM = compData['pred_panel_shift_15_pcIM']
+pred_panel_shift_16_pcTM = compData['pred_panel_shift_16_pcIM']
 
-# mask out small variances
-pred_panel_shift_1_stdTM = compData['pred_panel_shift_1_stdTM']
-# pred_panel_shift_1_stdTM = compData['pred_panel_shift_17_stdTM']
-pred_panel_shift_2_stdTM = compData['pred_panel_shift_2_stdTM']
-pred_panel_shift_3_stdTM = compData['pred_panel_shift_3_stdTM']
-pred_panel_shift_4_stdTM = compData['pred_panel_shift_4_stdTM']
-pred_panel_shift_5_stdTM = compData['pred_panel_shift_5_stdTM']
-pred_panel_shift_6_stdTM = compData['pred_panel_shift_6_stdTM']
-pred_panel_shift_7_stdTM = compData['pred_panel_shift_7_stdTM']
-pred_panel_shift_8_stdTM = compData['pred_panel_shift_8_stdTM']
-pred_panel_shift_9_stdTM = compData['pred_panel_shift_9_stdTM']
-pred_panel_shift_10_stdTM = compData['pred_panel_shift_10_stdTM']
-pred_panel_shift_11_stdTM = compData['pred_panel_shift_11_stdTM']
-pred_panel_shift_12_stdTM = compData['pred_panel_shift_12_stdTM']
-pred_panel_shift_13_stdTM = compData['pred_panel_shift_13_stdTM']
-pred_panel_shift_14_stdTM = compData['pred_panel_shift_14_stdTM']
-pred_panel_shift_15_stdTM = compData['pred_panel_shift_15_stdTM']
-pred_panel_shift_16_stdTM = compData['pred_panel_shift_16_stdTM']
-
-pred_panel_shift_1_pcTM[pred_panel_shift_1_stdTM < std_thresh] = np.nan
-pred_panel_shift_2_pcTM[pred_panel_shift_2_stdTM < std_thresh] = np.nan
-pred_panel_shift_3_pcTM[pred_panel_shift_3_stdTM < std_thresh] = np.nan
-pred_panel_shift_4_pcTM[pred_panel_shift_4_stdTM < std_thresh] = np.nan
-pred_panel_shift_5_pcTM[pred_panel_shift_5_stdTM < std_thresh] = np.nan
-pred_panel_shift_6_pcTM[pred_panel_shift_6_stdTM < std_thresh] = np.nan
-pred_panel_shift_7_pcTM[pred_panel_shift_7_stdTM < std_thresh] = np.nan
-pred_panel_shift_8_pcTM[pred_panel_shift_8_stdTM < std_thresh] = np.nan
-pred_panel_shift_9_pcTM[pred_panel_shift_9_stdTM < std_thresh] = np.nan
-pred_panel_shift_10_pcTM[pred_panel_shift_10_stdTM < std_thresh] = np.nan
-pred_panel_shift_11_pcTM[pred_panel_shift_11_stdTM < std_thresh] = np.nan
-pred_panel_shift_12_pcTM[pred_panel_shift_12_stdTM < std_thresh] = np.nan
-pred_panel_shift_13_pcTM[pred_panel_shift_13_stdTM < std_thresh] = np.nan
-pred_panel_shift_14_pcTM[pred_panel_shift_14_stdTM < std_thresh] = np.nan
-pred_panel_shift_15_pcTM[pred_panel_shift_15_stdTM < std_thresh] = np.nan
-pred_panel_shift_16_pcTM[pred_panel_shift_16_stdTM < std_thresh] = np.nan
+# shift to target
+tmp1 = np.zeros(np.shape(pred_panel_shift_1_pcTM))
+tmp2 = np.zeros(np.shape(pred_panel_shift_2_pcTM))
+tmp3 = np.zeros(np.shape(pred_panel_shift_3_pcTM))
+tmp4 = np.zeros(np.shape(pred_panel_shift_4_pcTM))
+tmp5 = np.zeros(np.shape(pred_panel_shift_5_pcTM))
+tmp6 = np.zeros(np.shape(pred_panel_shift_6_pcTM))
+tmp7 = np.zeros(np.shape(pred_panel_shift_7_pcTM))
+tmp8 = np.zeros(np.shape(pred_panel_shift_8_pcTM))
+tmp9 = np.zeros(np.shape(pred_panel_shift_9_pcTM))
+tmp10 = np.zeros(np.shape(pred_panel_shift_10_pcTM))
+tmp11 = np.zeros(np.shape(pred_panel_shift_11_pcTM))
+tmp12 = np.zeros(np.shape(pred_panel_shift_12_pcTM))
+tmp13 = np.zeros(np.shape(pred_panel_shift_13_pcTM))
+tmp14 = np.zeros(np.shape(pred_panel_shift_14_pcTM))
+tmp15 = np.zeros(np.shape(pred_panel_shift_15_pcTM))
+tmp16 = np.zeros(np.shape(pred_panel_shift_16_pcTM))
+for i in range(12):
+    for j in range(13):
+        newM = i + j
+        if newM > 11:
+            newM -= 12
+        tmp1[newM, j] = pred_panel_shift_1_pcTM[i, j]
+        tmp2[newM, j] = pred_panel_shift_2_pcTM[i, j]
+        tmp3[newM, j] = pred_panel_shift_3_pcTM[i, j]
+        tmp4[newM, j] = pred_panel_shift_4_pcTM[i, j]
+        tmp5[newM, j] = pred_panel_shift_5_pcTM[i, j]
+        tmp6[newM, j] = pred_panel_shift_6_pcTM[i, j]
+        tmp7[newM, j] = pred_panel_shift_7_pcTM[i, j]
+        tmp8[newM, j] = pred_panel_shift_8_pcTM[i, j]
+        tmp9[newM, j] = pred_panel_shift_9_pcTM[i, j]
+        tmp10[newM, j] = pred_panel_shift_10_pcTM[i, j]
+        tmp11[newM, j] = pred_panel_shift_11_pcTM[i, j]
+        tmp12[newM, j] = pred_panel_shift_12_pcTM[i, j]
+        tmp13[newM, j] = pred_panel_shift_13_pcTM[i, j]
+        tmp14[newM, j] = pred_panel_shift_14_pcTM[i, j]
+        tmp15[newM, j] = pred_panel_shift_15_pcTM[i, j]
+        tmp16[newM, j] = pred_panel_shift_16_pcTM[i, j]
+pred_panel_shift_1_pcTM = tmp1
+pred_panel_shift_2_pcTM = tmp2
+pred_panel_shift_3_pcTM = tmp3
+pred_panel_shift_4_pcTM = tmp4
+pred_panel_shift_5_pcTM = tmp5
+pred_panel_shift_6_pcTM = tmp6
+pred_panel_shift_7_pcTM = tmp7
+pred_panel_shift_8_pcTM = tmp8
+pred_panel_shift_9_pcTM = tmp9
+pred_panel_shift_10_pcTM = tmp10
+pred_panel_shift_11_pcTM = tmp11
+pred_panel_shift_12_pcTM = tmp12
+pred_panel_shift_13_pcTM = tmp13
+pred_panel_shift_14_pcTM = tmp14
+pred_panel_shift_15_pcTM = tmp15
+pred_panel_shift_16_pcTM = tmp16
 
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
@@ -1831,6 +2264,10 @@ plt.imshow(pred_panel_shift_15_pcTM,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Bering')
+plt.plot([8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 12)
@@ -1841,18 +2278,23 @@ plt.imshow(pred_panel_shift_16_pcTM,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Okhotsk')
+plt.plot([8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 fig.set_figheight(14)
 fig.set_figwidth(14)
 plt.tight_layout()
-plt.savefig(SAVE_DIR + 'Fig12.eps', format='eps', dpi=500)
+plt.savefig(SAVE_DIR + 'Fig13.eps', format='eps', dpi=500)
 
 
-""" Figure 13 """
+""" Figure 14 """
 embedWin = 12
 iceVar = 'iva'
 varsUsed = 'SIC_SST_SITq48'
+std_thresh = 0.01
 
 dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
@@ -1860,77 +2302,96 @@ compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
 tLag = compData['tLag']
 
 if dampedP == 1:
-    pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_1_pcTMDdiff']
-#     pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_17_pcTMDdiff']
-    pred_panel_shift_2_pcTMdiff = compData['pred_panel_shift_2_pcTMDdiff']
-    pred_panel_shift_3_pcTMdiff = compData['pred_panel_shift_3_pcTMDdiff']
-    pred_panel_shift_4_pcTMdiff = compData['pred_panel_shift_4_pcTMDdiff']
-    pred_panel_shift_5_pcTMdiff = compData['pred_panel_shift_5_pcTMDdiff']
-    pred_panel_shift_6_pcTMdiff = compData['pred_panel_shift_6_pcTMDdiff']
-    pred_panel_shift_7_pcTMdiff = compData['pred_panel_shift_7_pcTMDdiff']
-    pred_panel_shift_8_pcTMdiff = compData['pred_panel_shift_8_pcTMDdiff']
-    pred_panel_shift_9_pcTMdiff = compData['pred_panel_shift_9_pcTMDdiff']
-    pred_panel_shift_10_pcTMdiff = compData['pred_panel_shift_10_pcTMDdiff']
-    pred_panel_shift_11_pcTMdiff = compData['pred_panel_shift_11_pcTMDdiff']
-    pred_panel_shift_12_pcTMdiff = compData['pred_panel_shift_12_pcTMDdiff']
-    pred_panel_shift_13_pcTMdiff = compData['pred_panel_shift_13_pcTMDdiff']
-    pred_panel_shift_14_pcTMdiff = compData['pred_panel_shift_14_pcTMDdiff']
-    pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcTMDdiff']
-    pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcTMDdiff']
+    pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_1_pcIMDdiff']
+#     pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_17_pcIMDdiff']
+    pred_panel_shift_2_pcTMdiff = compData['pred_panel_shift_2_pcIMDdiff']
+    pred_panel_shift_3_pcTMdiff = compData['pred_panel_shift_3_pcIMDdiff']
+    pred_panel_shift_4_pcTMdiff = compData['pred_panel_shift_4_pcIMDdiff']
+    pred_panel_shift_5_pcTMdiff = compData['pred_panel_shift_5_pcIMDdiff']
+    pred_panel_shift_6_pcTMdiff = compData['pred_panel_shift_6_pcIMDdiff']
+    pred_panel_shift_7_pcTMdiff = compData['pred_panel_shift_7_pcIMDdiff']
+    pred_panel_shift_8_pcTMdiff = compData['pred_panel_shift_8_pcIMDdiff']
+    pred_panel_shift_9_pcTMdiff = compData['pred_panel_shift_9_pcIMDdiff']
+    pred_panel_shift_10_pcTMdiff = compData['pred_panel_shift_10_pcIMDdiff']
+    pred_panel_shift_11_pcTMdiff = compData['pred_panel_shift_11_pcIMDdiff']
+    pred_panel_shift_12_pcTMdiff = compData['pred_panel_shift_12_pcIMDdiff']
+    pred_panel_shift_13_pcTMdiff = compData['pred_panel_shift_13_pcIMDdiff']
+    pred_panel_shift_14_pcTMdiff = compData['pred_panel_shift_14_pcIMDdiff']
+    pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcIMDdiff']
+    pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcIMDdiff']
 else:
-    pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_1_pcTMdiff']
-#     pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_17_pcTMdiff']
-    pred_panel_shift_2_pcTMdiff = compData['pred_panel_shift_2_pcTMdiff']
-    pred_panel_shift_3_pcTMdiff = compData['pred_panel_shift_3_pcTMdiff']
-    pred_panel_shift_4_pcTMdiff = compData['pred_panel_shift_4_pcTMdiff']
-    pred_panel_shift_5_pcTMdiff = compData['pred_panel_shift_5_pcTMdiff']
-    pred_panel_shift_6_pcTMdiff = compData['pred_panel_shift_6_pcTMdiff']
-    pred_panel_shift_7_pcTMdiff = compData['pred_panel_shift_7_pcTMdiff']
-    pred_panel_shift_8_pcTMdiff = compData['pred_panel_shift_8_pcTMdiff']
-    pred_panel_shift_9_pcTMdiff = compData['pred_panel_shift_9_pcTMdiff']
-    pred_panel_shift_10_pcTMdiff = compData['pred_panel_shift_10_pcTMdiff']
-    pred_panel_shift_11_pcTMdiff = compData['pred_panel_shift_11_pcTMdiff']
-    pred_panel_shift_12_pcTMdiff = compData['pred_panel_shift_12_pcTMdiff']
-    pred_panel_shift_13_pcTMdiff = compData['pred_panel_shift_13_pcTMdiff']
-    pred_panel_shift_14_pcTMdiff = compData['pred_panel_shift_14_pcTMdiff']
-    pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcTMdiff']
-    pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcTMdiff']
+    pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_1_pcIMdiff']
+#     pred_panel_shift_1_pcTMdiff = compData['pred_panel_shift_17_pcIMdiff']
+    pred_panel_shift_2_pcTMdiff = compData['pred_panel_shift_2_pcIMdiff']
+    pred_panel_shift_3_pcTMdiff = compData['pred_panel_shift_3_pcIMdiff']
+    pred_panel_shift_4_pcTMdiff = compData['pred_panel_shift_4_pcIMdiff']
+    pred_panel_shift_5_pcTMdiff = compData['pred_panel_shift_5_pcIMdiff']
+    pred_panel_shift_6_pcTMdiff = compData['pred_panel_shift_6_pcIMdiff']
+    pred_panel_shift_7_pcTMdiff = compData['pred_panel_shift_7_pcIMdiff']
+    pred_panel_shift_8_pcTMdiff = compData['pred_panel_shift_8_pcIMdiff']
+    pred_panel_shift_9_pcTMdiff = compData['pred_panel_shift_9_pcIMdiff']
+    pred_panel_shift_10_pcTMdiff = compData['pred_panel_shift_10_pcIMdiff']
+    pred_panel_shift_11_pcTMdiff = compData['pred_panel_shift_11_pcIMdiff']
+    pred_panel_shift_12_pcTMdiff = compData['pred_panel_shift_12_pcIMdiff']
+    pred_panel_shift_13_pcTMdiff = compData['pred_panel_shift_13_pcIMdiff']
+    pred_panel_shift_14_pcTMdiff = compData['pred_panel_shift_14_pcIMdiff']
+    pred_panel_shift_15_pcTMdiff = compData['pred_panel_shift_15_pcIMdiff']
+    pred_panel_shift_16_pcTMdiff = compData['pred_panel_shift_16_pcIMdiff']
 
-# mask out small variances
-pred_panel_shift_1_stdTM = compData['pred_panel_shift_1_stdTM']
-# pred_panel_shift_1_stdTM = compData['pred_panel_shift_17_stdTM']
-pred_panel_shift_2_stdTM = compData['pred_panel_shift_2_stdTM']
-pred_panel_shift_3_stdTM = compData['pred_panel_shift_3_stdTM']
-pred_panel_shift_4_stdTM = compData['pred_panel_shift_4_stdTM']
-pred_panel_shift_5_stdTM = compData['pred_panel_shift_5_stdTM']
-pred_panel_shift_6_stdTM = compData['pred_panel_shift_6_stdTM']
-pred_panel_shift_7_stdTM = compData['pred_panel_shift_7_stdTM']
-pred_panel_shift_8_stdTM = compData['pred_panel_shift_8_stdTM']
-pred_panel_shift_9_stdTM = compData['pred_panel_shift_9_stdTM']
-pred_panel_shift_10_stdTM = compData['pred_panel_shift_10_stdTM']
-pred_panel_shift_11_stdTM = compData['pred_panel_shift_11_stdTM']
-pred_panel_shift_12_stdTM = compData['pred_panel_shift_12_stdTM']
-pred_panel_shift_13_stdTM = compData['pred_panel_shift_13_stdTM']
-pred_panel_shift_14_stdTM = compData['pred_panel_shift_14_stdTM']
-pred_panel_shift_15_stdTM = compData['pred_panel_shift_15_stdTM']
-pred_panel_shift_16_stdTM = compData['pred_panel_shift_16_stdTM']
-
-pred_panel_shift_1_pcTMdiff[pred_panel_shift_1_stdTM < std_thresh] = np.nan
-pred_panel_shift_2_pcTMdiff[pred_panel_shift_2_stdTM < std_thresh] = np.nan
-pred_panel_shift_3_pcTMdiff[pred_panel_shift_3_stdTM < std_thresh] = np.nan
-pred_panel_shift_4_pcTMdiff[pred_panel_shift_4_stdTM < std_thresh] = np.nan
-pred_panel_shift_5_pcTMdiff[pred_panel_shift_5_stdTM < std_thresh] = np.nan
-pred_panel_shift_6_pcTMdiff[pred_panel_shift_6_stdTM < std_thresh] = np.nan
-pred_panel_shift_7_pcTMdiff[pred_panel_shift_7_stdTM < std_thresh] = np.nan
-pred_panel_shift_8_pcTMdiff[pred_panel_shift_8_stdTM < std_thresh] = np.nan
-pred_panel_shift_9_pcTMdiff[pred_panel_shift_9_stdTM < std_thresh] = np.nan
-pred_panel_shift_10_pcTMdiff[pred_panel_shift_10_stdTM < std_thresh] = np.nan
-pred_panel_shift_11_pcTMdiff[pred_panel_shift_11_stdTM < std_thresh] = np.nan
-pred_panel_shift_12_pcTMdiff[pred_panel_shift_12_stdTM < std_thresh] = np.nan
-pred_panel_shift_13_pcTMdiff[pred_panel_shift_13_stdTM < std_thresh] = np.nan
-pred_panel_shift_14_pcTMdiff[pred_panel_shift_14_stdTM < std_thresh] = np.nan
-pred_panel_shift_15_pcTMdiff[pred_panel_shift_15_stdTM < std_thresh] = np.nan
-pred_panel_shift_16_pcTMdiff[pred_panel_shift_16_stdTM < std_thresh] = np.nan
+# shift to target
+tmp1 = np.zeros(np.shape(pred_panel_shift_1_pcTMdiff))
+tmp2 = np.zeros(np.shape(pred_panel_shift_2_pcTMdiff))
+tmp3 = np.zeros(np.shape(pred_panel_shift_3_pcTMdiff))
+tmp4 = np.zeros(np.shape(pred_panel_shift_4_pcTMdiff))
+tmp5 = np.zeros(np.shape(pred_panel_shift_5_pcTMdiff))
+tmp6 = np.zeros(np.shape(pred_panel_shift_6_pcTMdiff))
+tmp7 = np.zeros(np.shape(pred_panel_shift_7_pcTMdiff))
+tmp8 = np.zeros(np.shape(pred_panel_shift_8_pcTMdiff))
+tmp9 = np.zeros(np.shape(pred_panel_shift_9_pcTMdiff))
+tmp10 = np.zeros(np.shape(pred_panel_shift_10_pcTMdiff))
+tmp11 = np.zeros(np.shape(pred_panel_shift_11_pcTMdiff))
+tmp12 = np.zeros(np.shape(pred_panel_shift_12_pcTMdiff))
+tmp13 = np.zeros(np.shape(pred_panel_shift_13_pcTMdiff))
+tmp14 = np.zeros(np.shape(pred_panel_shift_14_pcTMdiff))
+tmp15 = np.zeros(np.shape(pred_panel_shift_15_pcTMdiff))
+tmp16 = np.zeros(np.shape(pred_panel_shift_16_pcTMdiff))
+for i in range(12):
+    for j in range(13):
+        newM = i + j
+        if newM > 11:
+            newM -= 12
+        tmp1[newM, j] = pred_panel_shift_1_pcTMdiff[i, j]
+        tmp2[newM, j] = pred_panel_shift_2_pcTMdiff[i, j]
+        tmp3[newM, j] = pred_panel_shift_3_pcTMdiff[i, j]
+        tmp4[newM, j] = pred_panel_shift_4_pcTMdiff[i, j]
+        tmp5[newM, j] = pred_panel_shift_5_pcTMdiff[i, j]
+        tmp6[newM, j] = pred_panel_shift_6_pcTMdiff[i, j]
+        tmp7[newM, j] = pred_panel_shift_7_pcTMdiff[i, j]
+        tmp8[newM, j] = pred_panel_shift_8_pcTMdiff[i, j]
+        tmp9[newM, j] = pred_panel_shift_9_pcTMdiff[i, j]
+        tmp10[newM, j] = pred_panel_shift_10_pcTMdiff[i, j]
+        tmp11[newM, j] = pred_panel_shift_11_pcTMdiff[i, j]
+        tmp12[newM, j] = pred_panel_shift_12_pcTMdiff[i, j]
+        tmp13[newM, j] = pred_panel_shift_13_pcTMdiff[i, j]
+        tmp14[newM, j] = pred_panel_shift_14_pcTMdiff[i, j]
+        tmp15[newM, j] = pred_panel_shift_15_pcTMdiff[i, j]
+        tmp16[newM, j] = pred_panel_shift_16_pcTMdiff[i, j]
+pred_panel_shift_1_pcTMdiff = tmp1
+pred_panel_shift_2_pcTMdiff = tmp2
+pred_panel_shift_3_pcTMdiff = tmp3
+pred_panel_shift_4_pcTMdiff = tmp4
+pred_panel_shift_5_pcTMdiff = tmp5
+pred_panel_shift_6_pcTMdiff = tmp6
+pred_panel_shift_7_pcTMdiff = tmp7
+pred_panel_shift_8_pcTMdiff = tmp8
+pred_panel_shift_9_pcTMdiff = tmp9
+pred_panel_shift_10_pcTMdiff = tmp10
+pred_panel_shift_11_pcTMdiff = tmp11
+pred_panel_shift_12_pcTMdiff = tmp12
+pred_panel_shift_13_pcTMdiff = tmp13
+pred_panel_shift_14_pcTMdiff = tmp14
+pred_panel_shift_15_pcTMdiff = tmp15
+pred_panel_shift_16_pcTMdiff = tmp16
 
 plt.rcParams.update({'font.size': 14})
 # plt.rcParams.update({'font.family': 'serif'})
@@ -2050,6 +2511,10 @@ plt.imshow(pred_panel_shift_15_pcTMdiff,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Bering')
+plt.plot([8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 plt.subplot(4, 3, 12)
@@ -2060,15 +2525,19 @@ plt.imshow(pred_panel_shift_16_pcTMdiff,
 plt.xticks((0, 3, 6, 9, 12))
 plt.yticks((2, 5, 8, 11), yLabels)
 plt.title('Okhotsk')
+plt.plot([8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+         color='magenta', linestyle='--', linewidth=3)
+plt.plot([10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
+         color='magenta', linestyle='--', linewidth=3)
 plt.colorbar().set_ticks(cTicks)
 
 fig.set_figheight(14)
 fig.set_figwidth(14)
 plt.tight_layout()
-plt.savefig(SAVE_DIR + 'Fig13.eps', format='eps', dpi=500)
+plt.savefig(SAVE_DIR + 'Fig14.eps', format='eps', dpi=500)
 
 
-""" Figure 14 """
+""" Figure 15 """
 region = 'Arctic'
 embedWin = 12
 varsUsed = 'SIC_SST_SIT'
@@ -2077,14 +2546,36 @@ varsUsed = 'SIC_SST_SIT'
 dataDir = WORK_DIR + region + '_' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_499/'
 dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
-pred_pcTM = dataPredICA['pred_pcTM']
+pred_pcTM = dataPredICA['pred_pcIM']
 
 
 # short training data
 dataDir = WORK_DIR + region + '_' + varsUsed + '_q' + str(embedWin) + \
     '_train_100_139/'
 dataPredICAS = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
-pred_pcTMS = dataPredICAS['pred_pcTM']
+pred_pcTMS = dataPredICAS['pred_pcIM']
+
+# shift due to 12 month embedding window
+mM = [10, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+tmp1 = np.zeros(np.shape(pred_pcTM))
+tmp2 = np.zeros(np.shape(pred_pcTM))
+tmp1 = pred_pcTM[mM, :]
+tmp2 = pred_pcTMS[mM, :]
+pred_pcTM = tmp1
+pred_pcTMS = tmp2
+
+# shift to target
+tmp1 = np.zeros(np.shape(pred_pcTM))
+tmp2 = np.zeros(np.shape(pred_pcTMS))
+for i in range(12):
+    for j in range(13):
+        newM = i + j
+        if newM > 11:
+            newM -= 12
+        tmp1[newM, j] = pred_pcTM[i, j]
+        tmp2[newM, j] = pred_pcTMS[i, j]
+pred_pcTM = tmp1
+pred_pcTMS = tmp2
 
 cTicks = np.linspace(0, 1, 3)
 plt.rcParams.update({'font.size': 14})
@@ -2118,4 +2609,4 @@ cax = plt.axes([0.85, 0.21, 0.04, 0.57])
 
 plt.colorbar(cax=cax, ticks=cTicks)
 fig.set_figwidth(8)
-plt.savefig(SAVE_DIR + 'Fig14.eps', format='eps', dpi=1200)
+plt.savefig(SAVE_DIR + 'Fig15.eps', format='eps', dpi=1200)
