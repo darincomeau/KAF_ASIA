@@ -127,877 +127,6 @@ std_thresh = 1.0
 
 """ Figure 2 """
 embedWin = 12
-region = 'Arctic'
-varsUsed = 'SIC_SST_SLP'
-
-dataDir = WORK_DIR + region + '_' + varsUsed + '_q' + str(embedWin) + \
-    '_train_100_499/'
-# concentration anomaly data
-dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
-truth = dataPredICA['truth']
-pred_traj = dataPredICA['pred_traj']
-tLagL = dataPredICA['tLag']
-tLag = tLagL[0][0]
-
-truthSTD = np.std(truth)
-
-tt = np.linspace(0, tLag - 1, tLag)
-thresh = np.ones(tLag) * 0.5
-
-ts = 150
-# ts = 160
-
-x = truth[ts, :]
-y = pred_traj[ts, :]
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.rcParams.update({'font.size': 14})
-plt.rcParams.update({'figure.autolayout': True})
-# plt.rcParams.update({'font.family': 'serif'})
-plt.figure()
-plt.plot(tt, x, 'k', linewidth=2, label='truth')
-plt.plot(tt, x + truthSTD, 'k--', linewidth=0.5)
-plt.plot(tt, x - truthSTD, 'k--', linewidth=0.5)
-plt.plot(tt, y, linewidth=2, label='KAF')
-plt.xlim(0, tLag - 1)
-plt.xlabel('time (months)')
-plt.yticks((-10e7, -5e7, 0, 5e7, 10e7))
-plt.ylim(-10e7, 10e7)
-plt.ylabel(r'km$^2$')
-# plt.title('Sea Ice Area Anomaly Prediction')
-plt.title('SIA Anomaly Prediction, r = %.2f' % (r_value))
-plt.legend(loc='upper right', prop={'size': 12})
-plt.savefig(SAVE_DIR + 'Fig2.eps', format='eps', dpi=1200)
-
-
-""" Figure 3 """
-embedWin = 12
-region = 'Arctic'
-varsUsed = 'SIC_SST_SLP'
-
-dataDir = WORK_DIR + region + '_' + varsUsed + '_q' + str(embedWin) + \
-    '_train_100_499/'
-
-# concentration anomaly data
-dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
-data_testF = dataPredICA['data_test']  # 4785
-pred_trajF = dataPredICA['pred_traj']  # 4773 x 13
-
-ts = 120
-# ts = 150
-
-data_test = data_testF[ts:]
-pred_traj = pred_trajF[ts:, :]
-
-pLength = 60
-tP = np.linspace(1, pLength, pLength)
-
-lag = [0, 3, 6, 9, 12]
-
-plt.rcParams.update({'font.size': 12})
-# plt.rcParams.update({'font.family': 'serif'})
-plt.rcParams.update({'lines.linewidth': 2})
-props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
-
-x = np.squeeze(data_test[lag[0]:pLength + lag[0]])
-y = pred_traj[:pLength, lag[0]]
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-fig = plt.figure()
-plt.subplot(5, 1, 1)
-plt.plot(tP, x, 'k', label='truth')
-plt.plot(tP, y, 'b', label='KAF')
-plt.legend(loc='lower right', prop={'size': 8})
-plt.xticks([10, 20, 30, 40, 50, 60])
-plt.xlim(1, 60)
-plt.yticks([-1e8, 0, 1e8])
-plt.ylabel(r'$\tau$ = ' + str(lag[0]))
-plt.title('SIA Anomaly Reconstructions, r = %.2f' % (r_value))
-
-x = np.squeeze(data_test[lag[1]:pLength + lag[1]])
-y = pred_traj[:pLength, lag[1]]
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(5, 1, 2)
-plt.plot(tP, x, 'k')
-plt.plot(tP, y, 'b')
-plt.xticks([10, 20, 30, 40, 50, 60])
-plt.xlim(1, 60)
-plt.yticks([-1e8, 0, 1e8])
-plt.ylabel(r'$\tau$ = ' + str(lag[1]))
-plt.title('r = %.2f' % (r_value))
-
-x = np.squeeze(data_test[lag[2]:pLength + lag[2]])
-y = pred_traj[:pLength, lag[2]]
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(5, 1, 3)
-plt.plot(tP, x, 'k')
-plt.plot(tP, y, 'b')
-plt.xticks([10, 20, 30, 40, 50, 60])
-plt.xlim(1, 60)
-plt.yticks([-1e8, 0, 1e8])
-plt.ylabel(r'$\tau$ = ' + str(lag[2]))
-plt.title('r = %.2f' % (r_value))
-
-x = np.squeeze(data_test[lag[3]:pLength + lag[3]])
-y = pred_traj[:pLength, lag[3]]
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(5, 1, 4)
-plt.plot(tP, x, 'k')
-plt.plot(tP, y, 'b')
-plt.xticks([10, 20, 30, 40, 50, 60])
-plt.xlim(1, 60)
-plt.yticks([-1e8, 0, 1e8])
-plt.ylabel(r'$\tau$ = ' + str(lag[3]))
-plt.title('r = %.2f' % (r_value))
-
-x = np.squeeze(data_test[lag[4]:pLength + lag[4]])
-y = pred_traj[:pLength, lag[4]]
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(5, 1, 5)
-plt.plot(tP, x, 'k')
-plt.plot(tP, y, 'b')
-plt.xticks([10, 20, 30, 40, 50, 60])
-plt.xlim(1, 60)
-plt.yticks([-1e8, 0, 1e8])
-plt.ylabel(r'$\tau$ = ' + str(lag[4]))
-plt.xlabel('time (months)')
-plt.title('r = %.2f' % (r_value))
-# plt.tight_layout()
-fig.set_figheight(10)
-plt.savefig(SAVE_DIR + 'Fig3.eps', format='eps', dpi=1000)
-
-
-""" Figure 4 """
-embedWin = 12
-region = 'Arctic'
-varsUsed = 'SIC_SST_SLP'
-
-dataDir = WORK_DIR + region + '_' + varsUsed + '_q' + str(embedWin) + \
-    '_train_100_499/'
-
-# concentration anomaly data
-dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
-
-pred_pcTM = dataPredICA['pred_pcIM']
-pred_pcIM = dataPredICA['pred_pcIM']
-if dampedP == 1:
-    pred_pcTMP = dataPredICA['pred_pcIMDP']
-    pred_pcIMP = dataPredICA['pred_pcIMDP']
-else:
-    pred_pcTMP = dataPredICA['pred_pcIMP']
-    pred_pcIMP = dataPredICA['pred_pcIMP']
-std_truthTM = dataPredICA['std_truthTM']
-
-# shift due to 12 month embedding window
-mM = [10, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-tmp1 = np.zeros(np.shape(pred_pcTM))
-tmp2 = np.zeros(np.shape(pred_pcTM))
-tmp3 = np.zeros(np.shape(pred_pcTM))
-tmp1 = pred_pcTM[mM, :]
-tmp2 = pred_pcTMP[mM, :]
-tmp3 = std_truthTM[mM, :]
-pred_pcTM = tmp1
-pred_pcTMP = tmp2
-std_truthTM = tmp3
-
-# shift to target
-tmp1 = np.zeros(np.shape(pred_pcTM))
-tmp2 = np.zeros(np.shape(pred_pcTM))
-for i in range(12):
-    for j in range(13):
-        newM = i + j
-        if newM > 11:
-            newM -= 12
-        tmp1[newM, j] = pred_pcTM[i, j]
-        tmp2[newM, j] = pred_pcTMP[i, j]
-pred_pcTM = tmp1
-pred_pcTMP = tmp2
-
-# mask out small variances
-pred_pcTM[std_truthTM < std_thresh] = np.nan
-pred_pcTMP[std_truthTM < std_thresh] = np.nan
-
-cTicks = np.linspace(0, 1, 3)
-
-plt.rcParams.update({'font.size': 14})
-plt.rcParams.update({'figure.autolayout': False})
-# plt.rcParams.update({'font.family': 'serif'})
-
-fig = plt.figure()
-plt.subplot(221)
-plt.imshow(pred_pcTM,
-           cmap=cmocean.cm.balance,
-           clim=(0, 1),
-           interpolation='none')
-yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
-yLabelsN = ['M', 'J', 'S', 'D']
-plt.yticks((2, 5, 8, 11), yLabels)
-plt.ylabel('Target month')
-plt.xticks((0, 3, 6, 9, 12))
-plt.xlabel('lead time (month)')
-plt.title('PC (KAF)')
-plt.plot([2, 3, 4, 5, 6, 7, 8],
-         color='green', linestyle='--', linewidth=3)
-plt.plot([8, 9, 10, 11],
-         color='green', linewidth=3)
-plt.plot([np.nan, np.nan, np.nan, np.nan, 0, 1, 2],
-         color='green', linewidth=3)
-plt.colorbar().set_ticks(cTicks)
-plt.subplot(222)
-plt.imshow(pred_pcTMP,
-           cmap=cmocean.cm.balance,
-           clim=(0, 1),
-           interpolation='none')
-plt.xticks((0, 3, 6, 9, 12))
-plt.xlabel('lead time (month)')
-plt.yticks((2, 5, 8, 11), yLabels)
-plt.title('PC (damped pers.)')
-plt.plot([2, 3, 4, 5, 6, 7, 8],
-         color='green', linestyle='--', linewidth=3)
-plt.plot([8, 9, 10, 11],
-         color='green', linewidth=3)
-plt.plot([np.nan, np.nan, np.nan, np.nan, 0, 1, 2],
-         color='green', linewidth=3)
-plt.colorbar().set_ticks(cTicks)
-plt.subplot(223)
-plt.imshow(pred_pcIM,
-           cmap=cmocean.cm.balance,
-           clim=(0, 1),
-           interpolation='none')
-yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
-yLabelsN = ['M', 'J', 'S', 'D']
-plt.yticks((2, 5, 8, 11), yLabels)
-plt.ylabel('Initial month')
-plt.xticks((0, 3, 6, 9, 12))
-plt.xlabel('lead time (month)')
-plt.title('PC (KAF)')
-plt.plot([2, 1, 0],
-         color='green', linestyle='--', linewidth=3)
-plt.plot([np.nan, np.nan, np.nan, 11, 10, 9, 8],
-         color='green', linestyle='--', linewidth=3)
-plt.plot([8, 7, 6, 5, 4, 3, 2],
-         color='green', linewidth=3)
-plt.colorbar().set_ticks(cTicks)
-plt.subplot(224)
-plt.imshow(pred_pcIMP,
-           cmap=cmocean.cm.balance,
-           clim=(0, 1),
-           interpolation='none')
-plt.xticks((0, 3, 6, 9, 12))
-plt.xlabel('lead time (month)')
-plt.yticks((2, 5, 8, 11), yLabels)
-plt.title('PC (damped pers.)')
-plt.plot([2, 1, 0],
-         color='green', linestyle='--', linewidth=3)
-plt.plot([np.nan, np.nan, np.nan, 11, 10, 9, 8],
-         color='green', linestyle='--', linewidth=3)
-plt.plot([8, 7, 6, 5, 4, 3, 2],
-         color='green', linewidth=3)
-plt.colorbar().set_ticks(cTicks)
-
-# plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
-# # cax = plt.axes([0.85, 0.3, 0.03, 0.4])
-# # cax = plt.axes([0.85, 0.1, 0.075, 0.5])
-# cax = plt.axes([0.85, 0.21, 0.04, 0.57])
-# plt.colorbar(cax=cax, ticks=cTicks)
-
-fig.set_figwidth(8)
-fig.set_figheight(6)
-plt.tight_layout()
-plt.savefig(SAVE_DIR + 'Fig4.eps', format='eps', dpi=1200)
-
-
-""" Figure 5 """
-embedWin = 12
-iceVar = 'ica'
-varsUsed = 'SIC_SST_SLP'
-
-dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
-    '_train_100_499/'
-
-compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
-
-pred_panel_1_truth = compData['pred_panel_1_truth']
-pred_panel_2_truth = compData['pred_panel_2_truth']
-pred_panel_3_truth = compData['pred_panel_3_truth']
-pred_panel_4_truth = compData['pred_panel_4_truth']
-pred_panel_5_truth = compData['pred_panel_5_truth']
-pred_panel_6_truth = compData['pred_panel_6_truth']
-pred_panel_7_truth = compData['pred_panel_7_truth']
-pred_panel_8_truth = compData['pred_panel_8_truth']
-pred_panel_9_truth = compData['pred_panel_9_truth']
-pred_panel_10_truth = compData['pred_panel_10_truth']
-pred_panel_11_truth = compData['pred_panel_11_truth']
-pred_panel_12_truth = compData['pred_panel_12_truth']
-pred_panel_13_truth = compData['pred_panel_13_truth']
-pred_panel_14_truth = compData['pred_panel_14_truth']
-pred_panel_15_truth = compData['pred_panel_15_truth']
-pred_panel_16_truth = compData['pred_panel_16_truth']
-
-pred_panel_1_ose = compData['pred_panel_1_ose']
-pred_panel_2_ose = compData['pred_panel_2_ose']
-pred_panel_3_ose = compData['pred_panel_3_ose']
-pred_panel_4_ose = compData['pred_panel_4_ose']
-pred_panel_5_ose = compData['pred_panel_5_ose']
-pred_panel_6_ose = compData['pred_panel_6_ose']
-pred_panel_7_ose = compData['pred_panel_7_ose']
-pred_panel_8_ose = compData['pred_panel_8_ose']
-pred_panel_9_ose = compData['pred_panel_9_ose']
-pred_panel_10_ose = compData['pred_panel_10_ose']
-pred_panel_11_ose = compData['pred_panel_11_ose']
-pred_panel_12_ose = compData['pred_panel_12_ose']
-pred_panel_13_ose = compData['pred_panel_13_ose']
-pred_panel_14_ose = compData['pred_panel_14_ose']
-pred_panel_15_ose = compData['pred_panel_15_ose']
-pred_panel_16_ose = compData['pred_panel_16_ose']
-
-tR = 120
-tt = np.linspace(1, tR, tR)
-
-plt.rcParams.update({'font.size': 14})
-# plt.rcParams.update({'font.family': 'serif'})
-plt.rcParams.update({'lines.linewidth': 2})
-plt.rcParams.update({'figure.autolayout': True})
-
-fig = plt.figure()
-
-x = np.squeeze(pred_panel_1_truth[:tR])
-y = np.squeeze(pred_panel_1_ose[:tR])
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(4, 3, 1)
-plt.plot(tt, x, 'k', label='truth')
-plt.plot(tt, y, 'b', label='KAF')
-plt.title('Arctic, r = %.2f' % (r_value))
-plt.xticks([1, 30, 60, 90, 120])
-plt.xlim(1, 120)
-plt.xlabel('time (months)')
-plt.yticks([-1e8, 0, 1e8])
-plt.ylabel(r'km$^2$')
-plt.legend(loc='lower right', prop={'size': 10})
-plt.legend(loc='lower right', prop={'size': 10})
-
-x = np.squeeze(pred_panel_4_truth[:tR])
-y = np.squeeze(pred_panel_4_ose[:tR])
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(4, 3, 2)
-plt.plot(tt, x, 'k', label='truth')
-plt.plot(tt, y, 'b', label='KAF')
-plt.title('Beaufort, r = %.2f' % (r_value))
-plt.xticks([1, 30, 60, 90, 120])
-plt.xlim(1, 120)
-plt.yticks([-3e7, 0, 3e7])
-
-x = np.squeeze(pred_panel_3_truth[:tR])
-y = np.squeeze(pred_panel_3_ose[:tR])
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(4, 3, 3)
-plt.plot(tt, x, 'k', label='truth')
-plt.plot(tt, y, 'b', label='KAF')
-plt.title('Chukchi, r = %.2f' % (r_value))
-plt.xticks([1, 30, 60, 90, 120])
-plt.xlim(1, 120)
-plt.yticks([-3e7, 0, 3e7])
-
-x = np.squeeze(pred_panel_6_truth[:tR])
-y = np.squeeze(pred_panel_6_ose[:tR])
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(4, 3, 4)
-plt.plot(tt, x, 'k', label='truth')
-plt.plot(tt, y, 'b', label='KAF')
-plt.title('E Siberian, r = %.2f' % (r_value))
-plt.xticks([1, 30, 60, 90, 120])
-plt.xlim(1, 120)
-plt.yticks([-3e7, 0, 3e7])
-
-x = np.squeeze(pred_panel_7_truth[:tR])
-y = np.squeeze(pred_panel_7_ose[:tR])
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(4, 3, 5)
-plt.plot(tt, x, 'k', label='truth')
-plt.plot(tt, y, 'b', label='KAF')
-plt.title('Laptev, r = %.2f' % (r_value))
-plt.xticks([1, 30, 60, 90, 120])
-plt.xlim(1, 120)
-plt.yticks([-3e7, 0, 3e7])
-
-x = np.squeeze(pred_panel_10_truth[:tR])
-y = np.squeeze(pred_panel_10_ose[:tR])
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(4, 3, 6)
-plt.plot(tt, x, 'k', label='truth')
-plt.plot(tt, y, 'b', label='KAF')
-plt.title('Kara, r = %.2f' % (r_value))
-plt.xticks([1, 30, 60, 90, 120])
-plt.xlim(1, 120)
-plt.yticks([-3e7, 0, 3e7])
-
-x = np.squeeze(pred_panel_9_truth[:tR])
-y = np.squeeze(pred_panel_9_ose[:tR])
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(4, 3, 7)
-plt.plot(tt, x, 'k', label='truth')
-plt.plot(tt, y, 'b', label='KAF')
-plt.title('Barents, r = %.2f' % (r_value))
-plt.xticks([1, 30, 60, 90, 120])
-plt.xlim(1, 120)
-plt.yticks([-3e7, 0, 3e7])
-
-x = np.squeeze(pred_panel_11_truth[:tR])
-y = np.squeeze(pred_panel_11_ose[:tR])
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(4, 3, 8)
-plt.plot(tt, x, 'k', label='truth')
-plt.plot(tt, y, 'b', label='KAF')
-plt.title('Greenland, r = %.2f' % (r_value))
-plt.xticks([1, 30, 60, 90, 120])
-plt.xlim(1, 120)
-plt.yticks([-3e7, 0, 3e7])
-
-x = np.squeeze(pred_panel_13_truth[:tR])
-y = np.squeeze(pred_panel_13_ose[:tR])
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(4, 3, 9)
-plt.plot(tt, x, 'k', label='truth')
-plt.plot(tt, y, 'b', label='KAF')
-plt.title('Labrador, r = %.2f' % (r_value))
-plt.xticks([1, 30, 60, 90, 120])
-plt.xlim(1, 120)
-plt.yticks([-3e7, 0, 3e7])
-
-x = np.squeeze(pred_panel_12_truth[:tR])
-y = np.squeeze(pred_panel_12_ose[:tR])
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(4, 3, 10)
-plt.plot(tt, x, 'k', label='truth')
-plt.plot(tt, y, 'b', label='KAF')
-plt.title('Baffin, r = %.2f' % (r_value))
-plt.xticks([1, 30, 60, 90, 120])
-plt.xlim(1, 120)
-plt.yticks([-3e7, 0, 3e7])
-
-x = np.squeeze(pred_panel_15_truth[:tR])
-y = np.squeeze(pred_panel_15_ose[:tR])
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(4, 3, 11)
-plt.plot(tt, x, 'k', label='truth')
-plt.plot(tt, y, 'b', label='KAF')
-plt.title('Bering, r = %.2f' % (r_value))
-plt.xticks([1, 30, 60, 90, 120])
-plt.xlim(1, 120)
-plt.yticks([-3e7, 0, 3e7])
-
-x = np.squeeze(pred_panel_16_truth[:tR])
-y = np.squeeze(pred_panel_16_ose[:tR])
-slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
-
-plt.subplot(4, 3, 12)
-plt.plot(tt, x, 'k', label='truth')
-plt.plot(tt, y, 'b', label='KAF')
-plt.title('Okhotsk, r = %.2f' % (r_value))
-plt.xticks([1, 30, 60, 90, 120])
-plt.xlim(1, 120)
-plt.yticks([-3e7, 0, 3e7])
-
-fig.set_figheight(10)
-fig.set_figwidth(15)
-plt.savefig(SAVE_DIR + 'Fig5.eps', format='eps', dpi=1200)
-
-
-""" Figure 6 """
-embedWin = 12
-iceVar = 'ica'
-varsUsed = 'SIC_SST_SLP'
-
-dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
-    '_train_100_499/'
-
-compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
-
-tLag = compData['tLag']
-
-pred_panel_1_rms = np.squeeze(compData['pred_panel_1_rms'])
-pred_panel_2_rms = np.squeeze(compData['pred_panel_2_rms'])
-pred_panel_3_rms = np.squeeze(compData['pred_panel_3_rms'])
-pred_panel_4_rms = np.squeeze(compData['pred_panel_4_rms'])
-pred_panel_5_rms = np.squeeze(compData['pred_panel_5_rms'])
-pred_panel_6_rms = np.squeeze(compData['pred_panel_6_rms'])
-pred_panel_7_rms = np.squeeze(compData['pred_panel_7_rms'])
-pred_panel_8_rms = np.squeeze(compData['pred_panel_8_rms'])
-pred_panel_9_rms = np.squeeze(compData['pred_panel_9_rms'])
-pred_panel_10_rms = np.squeeze(compData['pred_panel_10_rms'])
-pred_panel_11_rms = np.squeeze(compData['pred_panel_11_rms'])
-pred_panel_12_rms = np.squeeze(compData['pred_panel_12_rms'])
-pred_panel_13_rms = np.squeeze(compData['pred_panel_13_rms'])
-pred_panel_14_rms = np.squeeze(compData['pred_panel_14_rms'])
-pred_panel_15_rms = np.squeeze(compData['pred_panel_15_rms'])
-pred_panel_16_rms = np.squeeze(compData['pred_panel_16_rms'])
-
-if dampedP == 1:
-    pred_panel_1_rmsP = np.squeeze(compData['pred_panel_1_rmsDP'])
-    pred_panel_2_rmsP = np.squeeze(compData['pred_panel_2_rmsDP'])
-    pred_panel_3_rmsP = np.squeeze(compData['pred_panel_3_rmsDP'])
-    pred_panel_4_rmsP = np.squeeze(compData['pred_panel_4_rmsDP'])
-    pred_panel_5_rmsP = np.squeeze(compData['pred_panel_5_rmsDP'])
-    pred_panel_6_rmsP = np.squeeze(compData['pred_panel_6_rmsDP'])
-    pred_panel_7_rmsP = np.squeeze(compData['pred_panel_7_rmsDP'])
-    pred_panel_8_rmsP = np.squeeze(compData['pred_panel_8_rmsDP'])
-    pred_panel_9_rmsP = np.squeeze(compData['pred_panel_9_rmsDP'])
-    pred_panel_10_rmsP = np.squeeze(compData['pred_panel_10_rmsDP'])
-    pred_panel_11_rmsP = np.squeeze(compData['pred_panel_11_rmsDP'])
-    pred_panel_12_rmsP = np.squeeze(compData['pred_panel_12_rmsDP'])
-    pred_panel_13_rmsP = np.squeeze(compData['pred_panel_13_rmsDP'])
-    pred_panel_14_rmsP = np.squeeze(compData['pred_panel_14_rmsDP'])
-    pred_panel_15_rmsP = np.squeeze(compData['pred_panel_15_rmsDP'])
-    pred_panel_16_rmsP = np.squeeze(compData['pred_panel_16_rmsDP'])
-else:
-    pred_panel_1_rmsP = np.squeeze(compData['pred_panel_1_rmsP'])
-    pred_panel_2_rmsP = np.squeeze(compData['pred_panel_2_rmsP'])
-    pred_panel_3_rmsP = np.squeeze(compData['pred_panel_3_rmsP'])
-    pred_panel_4_rmsP = np.squeeze(compData['pred_panel_4_rmsP'])
-    pred_panel_5_rmsP = np.squeeze(compData['pred_panel_5_rmsP'])
-    pred_panel_6_rmsP = np.squeeze(compData['pred_panel_6_rmsP'])
-    pred_panel_7_rmsP = np.squeeze(compData['pred_panel_7_rmsP'])
-    pred_panel_8_rmsP = np.squeeze(compData['pred_panel_8_rmsP'])
-    pred_panel_9_rmsP = np.squeeze(compData['pred_panel_9_rmsP'])
-    pred_panel_10_rmsP = np.squeeze(compData['pred_panel_10_rmsP'])
-    pred_panel_11_rmsP = np.squeeze(compData['pred_panel_11_rmsP'])
-    pred_panel_12_rmsP = np.squeeze(compData['pred_panel_12_rmsP'])
-    pred_panel_13_rmsP = np.squeeze(compData['pred_panel_13_rmsP'])
-    pred_panel_14_rmsP = np.squeeze(compData['pred_panel_14_rmsP'])
-    pred_panel_15_rmsP = np.squeeze(compData['pred_panel_15_rmsP'])
-    pred_panel_16_rmsP = np.squeeze(compData['pred_panel_16_rmsP'])
-
-tt = np.linspace(0, int(tLag) - 1, int(tLag))
-
-plt.rcParams.update({'font.size': 14})
-# plt.rcParams.update({'font.family': 'serif'})
-plt.rcParams.update({'lines.linewidth': 2})
-plt.rcParams.update({'figure.autolayout': True})
-
-fig = plt.figure()
-plt.subplot(4, 3, 1)
-plt.plot(tt, pred_panel_1_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_1_rmsP, 'r', label='damped pers.')
-plt.title('Arctic')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.xlabel('lead time (months)')
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-# plt.ylim(0,1)
-# plt.ylabel(r'RMSE (km$^2$)')
-plt.ylabel('NRMSE')
-plt.legend(loc='lower right', prop={'size': 10})
-
-plt.subplot(4, 3, 2)
-plt.plot(tt, pred_panel_4_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_4_rmsP, 'r', label='damped pers.')
-plt.title('Beaufort')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-# plt.ylim(0,1)
-
-plt.subplot(4, 3, 3)
-plt.plot(tt, pred_panel_3_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_3_rmsP, 'r', label='damped pers.')
-plt.title('Chukchi')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-# plt.ylim(0,1)
-
-plt.subplot(4, 3, 4)
-plt.plot(tt, pred_panel_6_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_6_rmsP, 'r', label='damped pers.')
-plt.title('E Siberian')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-# plt.ylim(0,1)
-
-plt.subplot(4, 3, 5)
-plt.plot(tt, pred_panel_7_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_7_rmsP, 'r', label='damped pers.')
-plt.title('Laptev')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-# plt.ylim(0,1)
-
-plt.subplot(4, 3, 6)
-plt.plot(tt, pred_panel_10_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_10_rmsP, 'r', label='damped pers.')
-plt.title('Kara')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-# plt.ylim(0,1)
-
-plt.subplot(4, 3, 7)
-plt.plot(tt, pred_panel_9_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_9_rmsP, 'r', label='damped pers.')
-plt.title('Barents')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-# plt.ylim(0,1)
-
-plt.subplot(4, 3, 8)
-plt.plot(tt, pred_panel_11_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_11_rmsP, 'r', label='damped pers.')
-plt.title('Greenland')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-# plt.ylim(0,1)
-
-plt.subplot(4, 3, 9)
-plt.plot(tt, pred_panel_13_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_13_rmsP, 'r', label='damped pers.')
-plt.title('Labrador')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-# plt.ylim(0,1)
-
-plt.subplot(4, 3, 10)
-plt.plot(tt, pred_panel_12_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_12_rmsP, 'r', label='damped pers.')
-plt.title('Baffin')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-# plt.ylim(0,1)
-
-plt.subplot(4, 3, 11)
-plt.plot(tt, pred_panel_15_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_15_rmsP, 'r', label='damped pers.')
-plt.title('Bering')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-# plt.ylim(0,1)
-
-plt.subplot(4, 3, 12)
-plt.plot(tt, pred_panel_16_rms, 'b', label='KAF')
-plt.plot(tt, pred_panel_16_rmsP, 'r', label='damped pers.')
-plt.title('Okhotsk')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-# plt.ylim(0,1)
-
-fig.set_figheight(10)
-fig.set_figwidth(15)
-plt.savefig(SAVE_DIR + 'Fig6.eps', format='eps', dpi=1200)
-
-
-""" Figure 7 """
-embedWin = 12
-iceVar = 'ica'
-varsUsed = 'SIC_SST_SLP'
-
-dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
-    '_train_100_499/'
-
-compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
-
-tLag = compData['tLag']
-
-pred_panel_1_pc = np.squeeze(compData['pred_panel_1_pc'])
-pred_panel_2_pc = np.squeeze(compData['pred_panel_2_pc'])
-pred_panel_3_pc = np.squeeze(compData['pred_panel_3_pc'])
-pred_panel_4_pc = np.squeeze(compData['pred_panel_4_pc'])
-pred_panel_5_pc = np.squeeze(compData['pred_panel_5_pc'])
-pred_panel_6_pc = np.squeeze(compData['pred_panel_6_pc'])
-pred_panel_7_pc = np.squeeze(compData['pred_panel_7_pc'])
-pred_panel_8_pc = np.squeeze(compData['pred_panel_8_pc'])
-pred_panel_9_pc = np.squeeze(compData['pred_panel_9_pc'])
-pred_panel_10_pc = np.squeeze(compData['pred_panel_10_pc'])
-pred_panel_11_pc = np.squeeze(compData['pred_panel_11_pc'])
-pred_panel_12_pc = np.squeeze(compData['pred_panel_12_pc'])
-pred_panel_13_pc = np.squeeze(compData['pred_panel_13_pc'])
-pred_panel_14_pc = np.squeeze(compData['pred_panel_14_pc'])
-pred_panel_15_pc = np.squeeze(compData['pred_panel_15_pc'])
-pred_panel_16_pc = np.squeeze(compData['pred_panel_16_pc'])
-
-if dampedP == 1:
-    pred_panel_1_pcP = np.squeeze(compData['pred_panel_1_pcDP'])
-    pred_panel_2_pcP = np.squeeze(compData['pred_panel_2_pcDP'])
-    pred_panel_3_pcP = np.squeeze(compData['pred_panel_3_pcDP'])
-    pred_panel_4_pcP = np.squeeze(compData['pred_panel_4_pcDP'])
-    pred_panel_5_pcP = np.squeeze(compData['pred_panel_5_pcDP'])
-    pred_panel_6_pcP = np.squeeze(compData['pred_panel_6_pcDP'])
-    pred_panel_7_pcP = np.squeeze(compData['pred_panel_7_pcDP'])
-    pred_panel_8_pcP = np.squeeze(compData['pred_panel_8_pcDP'])
-    pred_panel_9_pcP = np.squeeze(compData['pred_panel_9_pcDP'])
-    pred_panel_10_pcP = np.squeeze(compData['pred_panel_10_pcDP'])
-    pred_panel_11_pcP = np.squeeze(compData['pred_panel_11_pcDP'])
-    pred_panel_12_pcP = np.squeeze(compData['pred_panel_12_pcDP'])
-    pred_panel_13_pcP = np.squeeze(compData['pred_panel_13_pcDP'])
-    pred_panel_14_pcP = np.squeeze(compData['pred_panel_14_pcDP'])
-    pred_panel_15_pcP = np.squeeze(compData['pred_panel_15_pcDP'])
-    pred_panel_16_pcP = np.squeeze(compData['pred_panel_16_pcDP'])
-else:
-    pred_panel_1_pcP = np.squeeze(compData['pred_panel_1_pcP'])
-    pred_panel_2_pcP = np.squeeze(compData['pred_panel_2_pcP'])
-    pred_panel_3_pcP = np.squeeze(compData['pred_panel_3_pcP'])
-    pred_panel_4_pcP = np.squeeze(compData['pred_panel_4_pcP'])
-    pred_panel_5_pcP = np.squeeze(compData['pred_panel_5_pcP'])
-    pred_panel_6_pcP = np.squeeze(compData['pred_panel_6_pcP'])
-    pred_panel_7_pcP = np.squeeze(compData['pred_panel_7_pcP'])
-    pred_panel_8_pcP = np.squeeze(compData['pred_panel_8_pcP'])
-    pred_panel_9_pcP = np.squeeze(compData['pred_panel_9_pcP'])
-    pred_panel_10_pcP = np.squeeze(compData['pred_panel_10_pcP'])
-    pred_panel_11_pcP = np.squeeze(compData['pred_panel_11_pcP'])
-    pred_panel_12_pcP = np.squeeze(compData['pred_panel_12_pcP'])
-    pred_panel_13_pcP = np.squeeze(compData['pred_panel_13_pcP'])
-    pred_panel_14_pcP = np.squeeze(compData['pred_panel_14_pcP'])
-    pred_panel_15_pcP = np.squeeze(compData['pred_panel_15_pcP'])
-    pred_panel_16_pcP = np.squeeze(compData['pred_panel_16_pcP'])
-
-tt = np.linspace(0, int(tLag) - 1, int(tLag))
-
-thresh = np.ones(tLag) * 0.5
-
-plt.rcParams.update({'font.size': 14})
-# plt.rcParams.update({'font.family': 'serif'})
-plt.rcParams.update({'lines.linewidth': 2})
-plt.rcParams.update({'figure.autolayout': True})
-
-fig = plt.figure()
-plt.subplot(4, 3, 1)
-plt.plot(tt, pred_panel_1_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_1_pcP, 'r', label='damped pers.')
-plt.plot(tt, thresh, 'k--')
-plt.title('Arctic')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.xlabel('lead time (months)')
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-plt.ylabel('PC')
-plt.legend(loc='upper right', prop={'size': 10})
-
-plt.subplot(4, 3, 2)
-plt.plot(tt, pred_panel_4_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_4_pcP, 'r', label='damped pers.')
-plt.plot(tt, thresh, 'k--')
-plt.title('Beaufort')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-
-plt.subplot(4, 3, 3)
-plt.plot(tt, pred_panel_3_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_3_pcP, 'r', label='damped pers.')
-plt.plot(tt, thresh, 'k--')
-plt.title('Chukchi')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-
-plt.subplot(4, 3, 4)
-plt.plot(tt, pred_panel_6_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_6_pcP, 'r', label='damped pers.')
-plt.plot(tt, thresh, 'k--')
-plt.title('E Siberian')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-
-plt.subplot(4, 3, 5)
-plt.plot(tt, pred_panel_7_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_7_pcP, 'r', label='damped pers.')
-plt.plot(tt, thresh, 'k--')
-plt.title('Laptev')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-
-plt.subplot(4, 3, 6)
-plt.plot(tt, pred_panel_10_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_10_pcP, 'r', label='damped pers.')
-plt.plot(tt, thresh, 'k--')
-plt.title('Kara')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-
-plt.subplot(4, 3, 7)
-plt.plot(tt, pred_panel_9_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_9_pcP, 'r', label='damped pers.')
-plt.plot(tt, thresh, 'k--')
-plt.title('Barents')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-
-plt.subplot(4, 3, 8)
-plt.plot(tt, pred_panel_11_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_11_pcP, 'r', label='damped pers.')
-plt.plot(tt, thresh, 'k--')
-plt.title('Greenland')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-
-plt.subplot(4, 3, 9)
-plt.plot(tt, pred_panel_13_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_13_pcP, 'r', label='damped pers.')
-plt.plot(tt, thresh, 'k--')
-plt.title('Labrador')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-
-plt.subplot(4, 3, 10)
-plt.plot(tt, pred_panel_12_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_12_pcP, 'r', label='damped pers.')
-plt.plot(tt, thresh, 'k--')
-plt.title('Baffin')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-
-plt.subplot(4, 3, 11)
-plt.plot(tt, pred_panel_15_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_15_pcP, 'r', label='damped pers.')
-plt.plot(tt, thresh, 'k--')
-plt.title('Bering')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-
-plt.subplot(4, 3, 12)
-plt.plot(tt, pred_panel_16_pc, 'b', label='KAF')
-plt.plot(tt, pred_panel_16_pcP, 'r', label='damped pers.')
-plt.plot(tt, thresh, 'k--')
-plt.title('Okhotsk')
-plt.xticks([0, 3, 6, 9, 12])
-plt.xlim(0, 12)
-plt.yticks([0, 0.25, 0.5, 0.75, 1])
-
-fig.set_figheight(10)
-fig.set_figwidth(15)
-plt.savefig(SAVE_DIR + 'Fig7.eps', format='eps', dpi=1200)
-
-""" Figure 8 """
-embedWin = 12
 iceVar = 'ica'
 varsUsed = 'SIC_SST_SLP'
 
@@ -1207,7 +336,879 @@ fig.set_figheight(10)
 fig.set_figwidth(15)
 plt.tight_layout()
 # plt.savefig(SAVE_DIR + iceVar + '_std.eps', format='eps', dpi=500)
-plt.savefig(SAVE_DIR + 'Fig8.eps', format='eps', dpi=500)
+plt.savefig(SAVE_DIR + 'Fig2.eps', format='eps', dpi=500)
+
+
+""" Figure 3 """
+embedWin = 12
+region = 'Arctic'
+varsUsed = 'SIC_SST_SLP'
+
+dataDir = WORK_DIR + region + '_' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
+# concentration anomaly data
+dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
+truth = dataPredICA['truth']
+pred_traj = dataPredICA['pred_traj']
+tLagL = dataPredICA['tLag']
+tLag = tLagL[0][0]
+
+truthSTD = np.std(truth)
+
+tt = np.linspace(0, tLag - 1, tLag)
+thresh = np.ones(tLag) * 0.5
+
+ts = 150
+# ts = 160
+
+x = truth[ts, :]
+y = pred_traj[ts, :]
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.rcParams.update({'font.size': 14})
+plt.rcParams.update({'figure.autolayout': True})
+# plt.rcParams.update({'font.family': 'serif'})
+plt.figure()
+plt.plot(tt, x, 'k', linewidth=2, label='truth')
+plt.plot(tt, x + truthSTD, 'k--', linewidth=0.5)
+plt.plot(tt, x - truthSTD, 'k--', linewidth=0.5)
+plt.plot(tt, y, linewidth=2, label='KAF')
+plt.xlim(0, tLag - 1)
+plt.xlabel('time (months)')
+plt.yticks((-10e7, -5e7, 0, 5e7, 10e7))
+plt.ylim(-10e7, 10e7)
+plt.ylabel(r'km$^2$')
+# plt.title('Sea Ice Area Anomaly Prediction')
+plt.title('SIA Anomaly Prediction, r = %.2f' % (r_value))
+plt.legend(loc='upper right', prop={'size': 12})
+plt.savefig(SAVE_DIR + 'Fig3.eps', format='eps', dpi=1200)
+
+
+""" Figure 4 """
+embedWin = 12
+region = 'Arctic'
+varsUsed = 'SIC_SST_SLP'
+
+dataDir = WORK_DIR + region + '_' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
+
+# concentration anomaly data
+dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
+data_testF = dataPredICA['data_test']  # 4785
+pred_trajF = dataPredICA['pred_traj']  # 4773 x 13
+
+ts = 120
+# ts = 150
+
+data_test = data_testF[ts:]
+pred_traj = pred_trajF[ts:, :]
+
+pLength = 60
+tP = np.linspace(1, pLength, pLength)
+
+lag = [0, 3, 6, 9, 12]
+
+plt.rcParams.update({'font.size': 12})
+# plt.rcParams.update({'font.family': 'serif'})
+plt.rcParams.update({'lines.linewidth': 2})
+props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+
+x = np.squeeze(data_test[lag[0]:pLength + lag[0]])
+y = pred_traj[:pLength, lag[0]]
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+fig = plt.figure()
+plt.subplot(5, 1, 1)
+plt.plot(tP, x, 'k', label='truth')
+plt.plot(tP, y, 'b', label='KAF')
+plt.legend(loc='lower right', prop={'size': 8})
+plt.xticks([10, 20, 30, 40, 50, 60])
+plt.xlim(1, 60)
+plt.yticks([-1e8, 0, 1e8])
+plt.ylabel(r'$\tau$ = ' + str(lag[0]))
+plt.title('SIA Anomaly Reconstructions, r = %.2f' % (r_value))
+
+x = np.squeeze(data_test[lag[1]:pLength + lag[1]])
+y = pred_traj[:pLength, lag[1]]
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(5, 1, 2)
+plt.plot(tP, x, 'k')
+plt.plot(tP, y, 'b')
+plt.xticks([10, 20, 30, 40, 50, 60])
+plt.xlim(1, 60)
+plt.yticks([-1e8, 0, 1e8])
+plt.ylabel(r'$\tau$ = ' + str(lag[1]))
+plt.title('r = %.2f' % (r_value))
+
+x = np.squeeze(data_test[lag[2]:pLength + lag[2]])
+y = pred_traj[:pLength, lag[2]]
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(5, 1, 3)
+plt.plot(tP, x, 'k')
+plt.plot(tP, y, 'b')
+plt.xticks([10, 20, 30, 40, 50, 60])
+plt.xlim(1, 60)
+plt.yticks([-1e8, 0, 1e8])
+plt.ylabel(r'$\tau$ = ' + str(lag[2]))
+plt.title('r = %.2f' % (r_value))
+
+x = np.squeeze(data_test[lag[3]:pLength + lag[3]])
+y = pred_traj[:pLength, lag[3]]
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(5, 1, 4)
+plt.plot(tP, x, 'k')
+plt.plot(tP, y, 'b')
+plt.xticks([10, 20, 30, 40, 50, 60])
+plt.xlim(1, 60)
+plt.yticks([-1e8, 0, 1e8])
+plt.ylabel(r'$\tau$ = ' + str(lag[3]))
+plt.title('r = %.2f' % (r_value))
+
+x = np.squeeze(data_test[lag[4]:pLength + lag[4]])
+y = pred_traj[:pLength, lag[4]]
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(5, 1, 5)
+plt.plot(tP, x, 'k')
+plt.plot(tP, y, 'b')
+plt.xticks([10, 20, 30, 40, 50, 60])
+plt.xlim(1, 60)
+plt.yticks([-1e8, 0, 1e8])
+plt.ylabel(r'$\tau$ = ' + str(lag[4]))
+plt.xlabel('time (months)')
+plt.title('r = %.2f' % (r_value))
+# plt.tight_layout()
+fig.set_figheight(10)
+plt.savefig(SAVE_DIR + 'Fig4.eps', format='eps', dpi=1000)
+
+
+""" Figure 5 """
+embedWin = 12
+region = 'Arctic'
+varsUsed = 'SIC_SST_SLP'
+
+dataDir = WORK_DIR + region + '_' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
+
+# concentration anomaly data
+dataPredICA = sio.loadmat(dataDir + 'pred_ica' + str(flag) + '.mat')
+
+pred_pcTM = dataPredICA['pred_pcIM']
+pred_pcIM = dataPredICA['pred_pcIM']
+if dampedP == 1:
+    pred_pcTMP = dataPredICA['pred_pcIMDP']
+    pred_pcIMP = dataPredICA['pred_pcIMDP']
+else:
+    pred_pcTMP = dataPredICA['pred_pcIMP']
+    pred_pcIMP = dataPredICA['pred_pcIMP']
+std_truthTM = dataPredICA['std_truthTM']
+
+# shift due to 12 month embedding window
+mM = [10, 11, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+tmp1 = np.zeros(np.shape(pred_pcTM))
+tmp2 = np.zeros(np.shape(pred_pcTM))
+tmp3 = np.zeros(np.shape(pred_pcTM))
+tmp1 = pred_pcTM[mM, :]
+tmp2 = pred_pcTMP[mM, :]
+tmp3 = std_truthTM[mM, :]
+pred_pcTM = tmp1
+pred_pcTMP = tmp2
+std_truthTM = tmp3
+
+# shift to target
+tmp1 = np.zeros(np.shape(pred_pcTM))
+tmp2 = np.zeros(np.shape(pred_pcTM))
+for i in range(12):
+    for j in range(13):
+        newM = i + j
+        if newM > 11:
+            newM -= 12
+        tmp1[newM, j] = pred_pcTM[i, j]
+        tmp2[newM, j] = pred_pcTMP[i, j]
+pred_pcTM = tmp1
+pred_pcTMP = tmp2
+
+# mask out small variances
+pred_pcTM[std_truthTM < std_thresh] = np.nan
+pred_pcTMP[std_truthTM < std_thresh] = np.nan
+
+cTicks = np.linspace(0, 1, 3)
+
+plt.rcParams.update({'font.size': 14})
+plt.rcParams.update({'figure.autolayout': False})
+# plt.rcParams.update({'font.family': 'serif'})
+
+fig = plt.figure()
+plt.subplot(221)
+plt.imshow(pred_pcTM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
+yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
+yLabelsN = ['M', 'J', 'S', 'D']
+plt.yticks((2, 5, 8, 11), yLabels)
+plt.ylabel('Target month')
+plt.xticks((0, 3, 6, 9, 12))
+plt.xlabel('lead time (month)')
+plt.title('PC (KAF)')
+plt.plot([2, 3, 4, 5, 6, 7, 8],
+         color='green', linestyle='--', linewidth=3)
+plt.plot([8, 9, 10, 11],
+         color='green', linewidth=3)
+plt.plot([np.nan, np.nan, np.nan, np.nan, 0, 1, 2],
+         color='green', linewidth=3)
+plt.colorbar().set_ticks(cTicks)
+plt.subplot(222)
+plt.imshow(pred_pcTMP,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
+plt.xticks((0, 3, 6, 9, 12))
+plt.xlabel('lead time (month)')
+plt.yticks((2, 5, 8, 11), yLabels)
+plt.title('PC (damped pers.)')
+plt.plot([2, 3, 4, 5, 6, 7, 8],
+         color='green', linestyle='--', linewidth=3)
+plt.plot([8, 9, 10, 11],
+         color='green', linewidth=3)
+plt.plot([np.nan, np.nan, np.nan, np.nan, 0, 1, 2],
+         color='green', linewidth=3)
+plt.colorbar().set_ticks(cTicks)
+plt.subplot(223)
+plt.imshow(pred_pcIM,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
+yLabels = ['Mar', 'Jun', 'Sep', 'Dec']
+yLabelsN = ['M', 'J', 'S', 'D']
+plt.yticks((2, 5, 8, 11), yLabels)
+plt.ylabel('Initial month')
+plt.xticks((0, 3, 6, 9, 12))
+plt.xlabel('lead time (month)')
+plt.title('PC (KAF)')
+plt.plot([2, 1, 0],
+         color='green', linestyle='--', linewidth=3)
+plt.plot([np.nan, np.nan, np.nan, 11, 10, 9, 8],
+         color='green', linestyle='--', linewidth=3)
+plt.plot([8, 7, 6, 5, 4, 3, 2],
+         color='green', linewidth=3)
+plt.colorbar().set_ticks(cTicks)
+plt.subplot(224)
+plt.imshow(pred_pcIMP,
+           cmap=cmocean.cm.balance,
+           clim=(0, 1),
+           interpolation='none')
+plt.xticks((0, 3, 6, 9, 12))
+plt.xlabel('lead time (month)')
+plt.yticks((2, 5, 8, 11), yLabels)
+plt.title('PC (damped pers.)')
+plt.plot([2, 1, 0],
+         color='green', linestyle='--', linewidth=3)
+plt.plot([np.nan, np.nan, np.nan, 11, 10, 9, 8],
+         color='green', linestyle='--', linewidth=3)
+plt.plot([8, 7, 6, 5, 4, 3, 2],
+         color='green', linewidth=3)
+plt.colorbar().set_ticks(cTicks)
+
+# plt.subplots_adjust(bottom=0.1, right=0.8, top=0.9)
+# # cax = plt.axes([0.85, 0.3, 0.03, 0.4])
+# # cax = plt.axes([0.85, 0.1, 0.075, 0.5])
+# cax = plt.axes([0.85, 0.21, 0.04, 0.57])
+# plt.colorbar(cax=cax, ticks=cTicks)
+
+fig.set_figwidth(8)
+fig.set_figheight(6)
+plt.tight_layout()
+plt.savefig(SAVE_DIR + 'Fig5.eps', format='eps', dpi=1200)
+
+
+""" Figure 6 """
+embedWin = 12
+iceVar = 'ica'
+varsUsed = 'SIC_SST_SLP'
+
+dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
+
+compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
+
+pred_panel_1_truth = compData['pred_panel_1_truth']
+pred_panel_2_truth = compData['pred_panel_2_truth']
+pred_panel_3_truth = compData['pred_panel_3_truth']
+pred_panel_4_truth = compData['pred_panel_4_truth']
+pred_panel_5_truth = compData['pred_panel_5_truth']
+pred_panel_6_truth = compData['pred_panel_6_truth']
+pred_panel_7_truth = compData['pred_panel_7_truth']
+pred_panel_8_truth = compData['pred_panel_8_truth']
+pred_panel_9_truth = compData['pred_panel_9_truth']
+pred_panel_10_truth = compData['pred_panel_10_truth']
+pred_panel_11_truth = compData['pred_panel_11_truth']
+pred_panel_12_truth = compData['pred_panel_12_truth']
+pred_panel_13_truth = compData['pred_panel_13_truth']
+pred_panel_14_truth = compData['pred_panel_14_truth']
+pred_panel_15_truth = compData['pred_panel_15_truth']
+pred_panel_16_truth = compData['pred_panel_16_truth']
+
+pred_panel_1_ose = compData['pred_panel_1_ose']
+pred_panel_2_ose = compData['pred_panel_2_ose']
+pred_panel_3_ose = compData['pred_panel_3_ose']
+pred_panel_4_ose = compData['pred_panel_4_ose']
+pred_panel_5_ose = compData['pred_panel_5_ose']
+pred_panel_6_ose = compData['pred_panel_6_ose']
+pred_panel_7_ose = compData['pred_panel_7_ose']
+pred_panel_8_ose = compData['pred_panel_8_ose']
+pred_panel_9_ose = compData['pred_panel_9_ose']
+pred_panel_10_ose = compData['pred_panel_10_ose']
+pred_panel_11_ose = compData['pred_panel_11_ose']
+pred_panel_12_ose = compData['pred_panel_12_ose']
+pred_panel_13_ose = compData['pred_panel_13_ose']
+pred_panel_14_ose = compData['pred_panel_14_ose']
+pred_panel_15_ose = compData['pred_panel_15_ose']
+pred_panel_16_ose = compData['pred_panel_16_ose']
+
+tR = 120
+tt = np.linspace(1, tR, tR)
+
+plt.rcParams.update({'font.size': 14})
+# plt.rcParams.update({'font.family': 'serif'})
+plt.rcParams.update({'lines.linewidth': 2})
+plt.rcParams.update({'figure.autolayout': True})
+
+fig = plt.figure()
+
+x = np.squeeze(pred_panel_1_truth[:tR])
+y = np.squeeze(pred_panel_1_ose[:tR])
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(4, 3, 1)
+plt.plot(tt, x, 'k', label='truth')
+plt.plot(tt, y, 'b', label='KAF')
+plt.title('Arctic, r = %.2f' % (r_value))
+plt.xticks([1, 30, 60, 90, 120])
+plt.xlim(1, 120)
+plt.xlabel('time (months)')
+plt.yticks([-1e8, 0, 1e8])
+plt.ylabel(r'km$^2$')
+plt.legend(loc='lower right', prop={'size': 10})
+plt.legend(loc='lower right', prop={'size': 10})
+
+x = np.squeeze(pred_panel_4_truth[:tR])
+y = np.squeeze(pred_panel_4_ose[:tR])
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(4, 3, 2)
+plt.plot(tt, x, 'k', label='truth')
+plt.plot(tt, y, 'b', label='KAF')
+plt.title('Beaufort, r = %.2f' % (r_value))
+plt.xticks([1, 30, 60, 90, 120])
+plt.xlim(1, 120)
+plt.yticks([-3e7, 0, 3e7])
+
+x = np.squeeze(pred_panel_3_truth[:tR])
+y = np.squeeze(pred_panel_3_ose[:tR])
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(4, 3, 3)
+plt.plot(tt, x, 'k', label='truth')
+plt.plot(tt, y, 'b', label='KAF')
+plt.title('Chukchi, r = %.2f' % (r_value))
+plt.xticks([1, 30, 60, 90, 120])
+plt.xlim(1, 120)
+plt.yticks([-3e7, 0, 3e7])
+
+x = np.squeeze(pred_panel_6_truth[:tR])
+y = np.squeeze(pred_panel_6_ose[:tR])
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(4, 3, 4)
+plt.plot(tt, x, 'k', label='truth')
+plt.plot(tt, y, 'b', label='KAF')
+plt.title('E Siberian, r = %.2f' % (r_value))
+plt.xticks([1, 30, 60, 90, 120])
+plt.xlim(1, 120)
+plt.yticks([-3e7, 0, 3e7])
+
+x = np.squeeze(pred_panel_7_truth[:tR])
+y = np.squeeze(pred_panel_7_ose[:tR])
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(4, 3, 5)
+plt.plot(tt, x, 'k', label='truth')
+plt.plot(tt, y, 'b', label='KAF')
+plt.title('Laptev, r = %.2f' % (r_value))
+plt.xticks([1, 30, 60, 90, 120])
+plt.xlim(1, 120)
+plt.yticks([-3e7, 0, 3e7])
+
+x = np.squeeze(pred_panel_10_truth[:tR])
+y = np.squeeze(pred_panel_10_ose[:tR])
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(4, 3, 6)
+plt.plot(tt, x, 'k', label='truth')
+plt.plot(tt, y, 'b', label='KAF')
+plt.title('Kara, r = %.2f' % (r_value))
+plt.xticks([1, 30, 60, 90, 120])
+plt.xlim(1, 120)
+plt.yticks([-3e7, 0, 3e7])
+
+x = np.squeeze(pred_panel_9_truth[:tR])
+y = np.squeeze(pred_panel_9_ose[:tR])
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(4, 3, 7)
+plt.plot(tt, x, 'k', label='truth')
+plt.plot(tt, y, 'b', label='KAF')
+plt.title('Barents, r = %.2f' % (r_value))
+plt.xticks([1, 30, 60, 90, 120])
+plt.xlim(1, 120)
+plt.yticks([-3e7, 0, 3e7])
+
+x = np.squeeze(pred_panel_11_truth[:tR])
+y = np.squeeze(pred_panel_11_ose[:tR])
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(4, 3, 8)
+plt.plot(tt, x, 'k', label='truth')
+plt.plot(tt, y, 'b', label='KAF')
+plt.title('Greenland, r = %.2f' % (r_value))
+plt.xticks([1, 30, 60, 90, 120])
+plt.xlim(1, 120)
+plt.yticks([-3e7, 0, 3e7])
+
+x = np.squeeze(pred_panel_13_truth[:tR])
+y = np.squeeze(pred_panel_13_ose[:tR])
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(4, 3, 9)
+plt.plot(tt, x, 'k', label='truth')
+plt.plot(tt, y, 'b', label='KAF')
+plt.title('Labrador, r = %.2f' % (r_value))
+plt.xticks([1, 30, 60, 90, 120])
+plt.xlim(1, 120)
+plt.yticks([-3e7, 0, 3e7])
+
+x = np.squeeze(pred_panel_12_truth[:tR])
+y = np.squeeze(pred_panel_12_ose[:tR])
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(4, 3, 10)
+plt.plot(tt, x, 'k', label='truth')
+plt.plot(tt, y, 'b', label='KAF')
+plt.title('Baffin, r = %.2f' % (r_value))
+plt.xticks([1, 30, 60, 90, 120])
+plt.xlim(1, 120)
+plt.yticks([-3e7, 0, 3e7])
+
+x = np.squeeze(pred_panel_15_truth[:tR])
+y = np.squeeze(pred_panel_15_ose[:tR])
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(4, 3, 11)
+plt.plot(tt, x, 'k', label='truth')
+plt.plot(tt, y, 'b', label='KAF')
+plt.title('Bering, r = %.2f' % (r_value))
+plt.xticks([1, 30, 60, 90, 120])
+plt.xlim(1, 120)
+plt.yticks([-3e7, 0, 3e7])
+
+x = np.squeeze(pred_panel_16_truth[:tR])
+y = np.squeeze(pred_panel_16_ose[:tR])
+slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+
+plt.subplot(4, 3, 12)
+plt.plot(tt, x, 'k', label='truth')
+plt.plot(tt, y, 'b', label='KAF')
+plt.title('Okhotsk, r = %.2f' % (r_value))
+plt.xticks([1, 30, 60, 90, 120])
+plt.xlim(1, 120)
+plt.yticks([-3e7, 0, 3e7])
+
+fig.set_figheight(10)
+fig.set_figwidth(15)
+plt.savefig(SAVE_DIR + 'Fig6.eps', format='eps', dpi=1200)
+
+
+""" Figure 7 """
+embedWin = 12
+iceVar = 'ica'
+varsUsed = 'SIC_SST_SLP'
+
+dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
+
+compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
+
+tLag = compData['tLag']
+
+pred_panel_1_rms = np.squeeze(compData['pred_panel_1_rms'])
+pred_panel_2_rms = np.squeeze(compData['pred_panel_2_rms'])
+pred_panel_3_rms = np.squeeze(compData['pred_panel_3_rms'])
+pred_panel_4_rms = np.squeeze(compData['pred_panel_4_rms'])
+pred_panel_5_rms = np.squeeze(compData['pred_panel_5_rms'])
+pred_panel_6_rms = np.squeeze(compData['pred_panel_6_rms'])
+pred_panel_7_rms = np.squeeze(compData['pred_panel_7_rms'])
+pred_panel_8_rms = np.squeeze(compData['pred_panel_8_rms'])
+pred_panel_9_rms = np.squeeze(compData['pred_panel_9_rms'])
+pred_panel_10_rms = np.squeeze(compData['pred_panel_10_rms'])
+pred_panel_11_rms = np.squeeze(compData['pred_panel_11_rms'])
+pred_panel_12_rms = np.squeeze(compData['pred_panel_12_rms'])
+pred_panel_13_rms = np.squeeze(compData['pred_panel_13_rms'])
+pred_panel_14_rms = np.squeeze(compData['pred_panel_14_rms'])
+pred_panel_15_rms = np.squeeze(compData['pred_panel_15_rms'])
+pred_panel_16_rms = np.squeeze(compData['pred_panel_16_rms'])
+
+if dampedP == 1:
+    pred_panel_1_rmsP = np.squeeze(compData['pred_panel_1_rmsDP'])
+    pred_panel_2_rmsP = np.squeeze(compData['pred_panel_2_rmsDP'])
+    pred_panel_3_rmsP = np.squeeze(compData['pred_panel_3_rmsDP'])
+    pred_panel_4_rmsP = np.squeeze(compData['pred_panel_4_rmsDP'])
+    pred_panel_5_rmsP = np.squeeze(compData['pred_panel_5_rmsDP'])
+    pred_panel_6_rmsP = np.squeeze(compData['pred_panel_6_rmsDP'])
+    pred_panel_7_rmsP = np.squeeze(compData['pred_panel_7_rmsDP'])
+    pred_panel_8_rmsP = np.squeeze(compData['pred_panel_8_rmsDP'])
+    pred_panel_9_rmsP = np.squeeze(compData['pred_panel_9_rmsDP'])
+    pred_panel_10_rmsP = np.squeeze(compData['pred_panel_10_rmsDP'])
+    pred_panel_11_rmsP = np.squeeze(compData['pred_panel_11_rmsDP'])
+    pred_panel_12_rmsP = np.squeeze(compData['pred_panel_12_rmsDP'])
+    pred_panel_13_rmsP = np.squeeze(compData['pred_panel_13_rmsDP'])
+    pred_panel_14_rmsP = np.squeeze(compData['pred_panel_14_rmsDP'])
+    pred_panel_15_rmsP = np.squeeze(compData['pred_panel_15_rmsDP'])
+    pred_panel_16_rmsP = np.squeeze(compData['pred_panel_16_rmsDP'])
+else:
+    pred_panel_1_rmsP = np.squeeze(compData['pred_panel_1_rmsP'])
+    pred_panel_2_rmsP = np.squeeze(compData['pred_panel_2_rmsP'])
+    pred_panel_3_rmsP = np.squeeze(compData['pred_panel_3_rmsP'])
+    pred_panel_4_rmsP = np.squeeze(compData['pred_panel_4_rmsP'])
+    pred_panel_5_rmsP = np.squeeze(compData['pred_panel_5_rmsP'])
+    pred_panel_6_rmsP = np.squeeze(compData['pred_panel_6_rmsP'])
+    pred_panel_7_rmsP = np.squeeze(compData['pred_panel_7_rmsP'])
+    pred_panel_8_rmsP = np.squeeze(compData['pred_panel_8_rmsP'])
+    pred_panel_9_rmsP = np.squeeze(compData['pred_panel_9_rmsP'])
+    pred_panel_10_rmsP = np.squeeze(compData['pred_panel_10_rmsP'])
+    pred_panel_11_rmsP = np.squeeze(compData['pred_panel_11_rmsP'])
+    pred_panel_12_rmsP = np.squeeze(compData['pred_panel_12_rmsP'])
+    pred_panel_13_rmsP = np.squeeze(compData['pred_panel_13_rmsP'])
+    pred_panel_14_rmsP = np.squeeze(compData['pred_panel_14_rmsP'])
+    pred_panel_15_rmsP = np.squeeze(compData['pred_panel_15_rmsP'])
+    pred_panel_16_rmsP = np.squeeze(compData['pred_panel_16_rmsP'])
+
+tt = np.linspace(0, int(tLag) - 1, int(tLag))
+
+plt.rcParams.update({'font.size': 14})
+# plt.rcParams.update({'font.family': 'serif'})
+plt.rcParams.update({'lines.linewidth': 2})
+plt.rcParams.update({'figure.autolayout': True})
+
+fig = plt.figure()
+plt.subplot(4, 3, 1)
+plt.plot(tt, pred_panel_1_rms, 'b', label='KAF')
+plt.plot(tt, pred_panel_1_rmsP, 'r', label='damped pers.')
+plt.title('Arctic')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.xlabel('lead time (months)')
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
+# plt.ylabel(r'RMSE (km$^2$)')
+plt.ylabel('NRMSE')
+plt.legend(loc='lower right', prop={'size': 10})
+
+plt.subplot(4, 3, 2)
+plt.plot(tt, pred_panel_4_rms, 'b', label='KAF')
+plt.plot(tt, pred_panel_4_rmsP, 'r', label='damped pers.')
+plt.title('Beaufort')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
+
+plt.subplot(4, 3, 3)
+plt.plot(tt, pred_panel_3_rms, 'b', label='KAF')
+plt.plot(tt, pred_panel_3_rmsP, 'r', label='damped pers.')
+plt.title('Chukchi')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
+
+plt.subplot(4, 3, 4)
+plt.plot(tt, pred_panel_6_rms, 'b', label='KAF')
+plt.plot(tt, pred_panel_6_rmsP, 'r', label='damped pers.')
+plt.title('E Siberian')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
+
+plt.subplot(4, 3, 5)
+plt.plot(tt, pred_panel_7_rms, 'b', label='KAF')
+plt.plot(tt, pred_panel_7_rmsP, 'r', label='damped pers.')
+plt.title('Laptev')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
+
+plt.subplot(4, 3, 6)
+plt.plot(tt, pred_panel_10_rms, 'b', label='KAF')
+plt.plot(tt, pred_panel_10_rmsP, 'r', label='damped pers.')
+plt.title('Kara')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
+
+plt.subplot(4, 3, 7)
+plt.plot(tt, pred_panel_9_rms, 'b', label='KAF')
+plt.plot(tt, pred_panel_9_rmsP, 'r', label='damped pers.')
+plt.title('Barents')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
+
+plt.subplot(4, 3, 8)
+plt.plot(tt, pred_panel_11_rms, 'b', label='KAF')
+plt.plot(tt, pred_panel_11_rmsP, 'r', label='damped pers.')
+plt.title('Greenland')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
+
+plt.subplot(4, 3, 9)
+plt.plot(tt, pred_panel_13_rms, 'b', label='KAF')
+plt.plot(tt, pred_panel_13_rmsP, 'r', label='damped pers.')
+plt.title('Labrador')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
+
+plt.subplot(4, 3, 10)
+plt.plot(tt, pred_panel_12_rms, 'b', label='KAF')
+plt.plot(tt, pred_panel_12_rmsP, 'r', label='damped pers.')
+plt.title('Baffin')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
+
+plt.subplot(4, 3, 11)
+plt.plot(tt, pred_panel_15_rms, 'b', label='KAF')
+plt.plot(tt, pred_panel_15_rmsP, 'r', label='damped pers.')
+plt.title('Bering')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
+
+plt.subplot(4, 3, 12)
+plt.plot(tt, pred_panel_16_rms, 'b', label='KAF')
+plt.plot(tt, pred_panel_16_rmsP, 'r', label='damped pers.')
+plt.title('Okhotsk')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+# plt.ylim(0,1)
+
+fig.set_figheight(10)
+fig.set_figwidth(15)
+plt.savefig(SAVE_DIR + 'Fig7.eps', format='eps', dpi=1200)
+
+
+""" Figure 8 """
+embedWin = 12
+iceVar = 'ica'
+varsUsed = 'SIC_SST_SLP'
+
+dataDir = WORK_DIR + iceVar + '/' + varsUsed + '_q' + str(embedWin) + \
+    '_train_100_499/'
+
+compData = sio.loadmat(dataDir + 'comp_data' + str(flag) + '.mat')
+
+tLag = compData['tLag']
+
+pred_panel_1_pc = np.squeeze(compData['pred_panel_1_pc'])
+pred_panel_2_pc = np.squeeze(compData['pred_panel_2_pc'])
+pred_panel_3_pc = np.squeeze(compData['pred_panel_3_pc'])
+pred_panel_4_pc = np.squeeze(compData['pred_panel_4_pc'])
+pred_panel_5_pc = np.squeeze(compData['pred_panel_5_pc'])
+pred_panel_6_pc = np.squeeze(compData['pred_panel_6_pc'])
+pred_panel_7_pc = np.squeeze(compData['pred_panel_7_pc'])
+pred_panel_8_pc = np.squeeze(compData['pred_panel_8_pc'])
+pred_panel_9_pc = np.squeeze(compData['pred_panel_9_pc'])
+pred_panel_10_pc = np.squeeze(compData['pred_panel_10_pc'])
+pred_panel_11_pc = np.squeeze(compData['pred_panel_11_pc'])
+pred_panel_12_pc = np.squeeze(compData['pred_panel_12_pc'])
+pred_panel_13_pc = np.squeeze(compData['pred_panel_13_pc'])
+pred_panel_14_pc = np.squeeze(compData['pred_panel_14_pc'])
+pred_panel_15_pc = np.squeeze(compData['pred_panel_15_pc'])
+pred_panel_16_pc = np.squeeze(compData['pred_panel_16_pc'])
+
+if dampedP == 1:
+    pred_panel_1_pcP = np.squeeze(compData['pred_panel_1_pcDP'])
+    pred_panel_2_pcP = np.squeeze(compData['pred_panel_2_pcDP'])
+    pred_panel_3_pcP = np.squeeze(compData['pred_panel_3_pcDP'])
+    pred_panel_4_pcP = np.squeeze(compData['pred_panel_4_pcDP'])
+    pred_panel_5_pcP = np.squeeze(compData['pred_panel_5_pcDP'])
+    pred_panel_6_pcP = np.squeeze(compData['pred_panel_6_pcDP'])
+    pred_panel_7_pcP = np.squeeze(compData['pred_panel_7_pcDP'])
+    pred_panel_8_pcP = np.squeeze(compData['pred_panel_8_pcDP'])
+    pred_panel_9_pcP = np.squeeze(compData['pred_panel_9_pcDP'])
+    pred_panel_10_pcP = np.squeeze(compData['pred_panel_10_pcDP'])
+    pred_panel_11_pcP = np.squeeze(compData['pred_panel_11_pcDP'])
+    pred_panel_12_pcP = np.squeeze(compData['pred_panel_12_pcDP'])
+    pred_panel_13_pcP = np.squeeze(compData['pred_panel_13_pcDP'])
+    pred_panel_14_pcP = np.squeeze(compData['pred_panel_14_pcDP'])
+    pred_panel_15_pcP = np.squeeze(compData['pred_panel_15_pcDP'])
+    pred_panel_16_pcP = np.squeeze(compData['pred_panel_16_pcDP'])
+else:
+    pred_panel_1_pcP = np.squeeze(compData['pred_panel_1_pcP'])
+    pred_panel_2_pcP = np.squeeze(compData['pred_panel_2_pcP'])
+    pred_panel_3_pcP = np.squeeze(compData['pred_panel_3_pcP'])
+    pred_panel_4_pcP = np.squeeze(compData['pred_panel_4_pcP'])
+    pred_panel_5_pcP = np.squeeze(compData['pred_panel_5_pcP'])
+    pred_panel_6_pcP = np.squeeze(compData['pred_panel_6_pcP'])
+    pred_panel_7_pcP = np.squeeze(compData['pred_panel_7_pcP'])
+    pred_panel_8_pcP = np.squeeze(compData['pred_panel_8_pcP'])
+    pred_panel_9_pcP = np.squeeze(compData['pred_panel_9_pcP'])
+    pred_panel_10_pcP = np.squeeze(compData['pred_panel_10_pcP'])
+    pred_panel_11_pcP = np.squeeze(compData['pred_panel_11_pcP'])
+    pred_panel_12_pcP = np.squeeze(compData['pred_panel_12_pcP'])
+    pred_panel_13_pcP = np.squeeze(compData['pred_panel_13_pcP'])
+    pred_panel_14_pcP = np.squeeze(compData['pred_panel_14_pcP'])
+    pred_panel_15_pcP = np.squeeze(compData['pred_panel_15_pcP'])
+    pred_panel_16_pcP = np.squeeze(compData['pred_panel_16_pcP'])
+
+tt = np.linspace(0, int(tLag) - 1, int(tLag))
+
+thresh = np.ones(tLag) * 0.5
+
+plt.rcParams.update({'font.size': 14})
+# plt.rcParams.update({'font.family': 'serif'})
+plt.rcParams.update({'lines.linewidth': 2})
+plt.rcParams.update({'figure.autolayout': True})
+
+fig = plt.figure()
+plt.subplot(4, 3, 1)
+plt.plot(tt, pred_panel_1_pc, 'b', label='KAF')
+plt.plot(tt, pred_panel_1_pcP, 'r', label='damped pers.')
+plt.plot(tt, thresh, 'k--')
+plt.title('Arctic')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.xlabel('lead time (months)')
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+plt.ylabel('PC')
+plt.legend(loc='upper right', prop={'size': 10})
+
+plt.subplot(4, 3, 2)
+plt.plot(tt, pred_panel_4_pc, 'b', label='KAF')
+plt.plot(tt, pred_panel_4_pcP, 'r', label='damped pers.')
+plt.plot(tt, thresh, 'k--')
+plt.title('Beaufort')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+
+plt.subplot(4, 3, 3)
+plt.plot(tt, pred_panel_3_pc, 'b', label='KAF')
+plt.plot(tt, pred_panel_3_pcP, 'r', label='damped pers.')
+plt.plot(tt, thresh, 'k--')
+plt.title('Chukchi')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+
+plt.subplot(4, 3, 4)
+plt.plot(tt, pred_panel_6_pc, 'b', label='KAF')
+plt.plot(tt, pred_panel_6_pcP, 'r', label='damped pers.')
+plt.plot(tt, thresh, 'k--')
+plt.title('E Siberian')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+
+plt.subplot(4, 3, 5)
+plt.plot(tt, pred_panel_7_pc, 'b', label='KAF')
+plt.plot(tt, pred_panel_7_pcP, 'r', label='damped pers.')
+plt.plot(tt, thresh, 'k--')
+plt.title('Laptev')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+
+plt.subplot(4, 3, 6)
+plt.plot(tt, pred_panel_10_pc, 'b', label='KAF')
+plt.plot(tt, pred_panel_10_pcP, 'r', label='damped pers.')
+plt.plot(tt, thresh, 'k--')
+plt.title('Kara')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+
+plt.subplot(4, 3, 7)
+plt.plot(tt, pred_panel_9_pc, 'b', label='KAF')
+plt.plot(tt, pred_panel_9_pcP, 'r', label='damped pers.')
+plt.plot(tt, thresh, 'k--')
+plt.title('Barents')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+
+plt.subplot(4, 3, 8)
+plt.plot(tt, pred_panel_11_pc, 'b', label='KAF')
+plt.plot(tt, pred_panel_11_pcP, 'r', label='damped pers.')
+plt.plot(tt, thresh, 'k--')
+plt.title('Greenland')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+
+plt.subplot(4, 3, 9)
+plt.plot(tt, pred_panel_13_pc, 'b', label='KAF')
+plt.plot(tt, pred_panel_13_pcP, 'r', label='damped pers.')
+plt.plot(tt, thresh, 'k--')
+plt.title('Labrador')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+
+plt.subplot(4, 3, 10)
+plt.plot(tt, pred_panel_12_pc, 'b', label='KAF')
+plt.plot(tt, pred_panel_12_pcP, 'r', label='damped pers.')
+plt.plot(tt, thresh, 'k--')
+plt.title('Baffin')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+
+plt.subplot(4, 3, 11)
+plt.plot(tt, pred_panel_15_pc, 'b', label='KAF')
+plt.plot(tt, pred_panel_15_pcP, 'r', label='damped pers.')
+plt.plot(tt, thresh, 'k--')
+plt.title('Bering')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+
+plt.subplot(4, 3, 12)
+plt.plot(tt, pred_panel_16_pc, 'b', label='KAF')
+plt.plot(tt, pred_panel_16_pcP, 'r', label='damped pers.')
+plt.plot(tt, thresh, 'k--')
+plt.title('Okhotsk')
+plt.xticks([0, 3, 6, 9, 12])
+plt.xlim(0, 12)
+plt.yticks([0, 0.25, 0.5, 0.75, 1])
+
+fig.set_figheight(10)
+fig.set_figwidth(15)
+plt.savefig(SAVE_DIR + 'Fig8.eps', format='eps', dpi=1200)
 
 """ Figure 9 """
 embedWin = 12
