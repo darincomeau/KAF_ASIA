@@ -60,10 +60,10 @@ close all
 % calc_iva_pred
 % close all
 
-% region = 'Labrador'
-% calc_ica_pred
-% calc_iva_pred
-% close all
+region = 'Labrador'
+calc_ica_pred
+calc_iva_pred
+close all
 
 % region = 'Hudson'
 % calc_ica_pred
