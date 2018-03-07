@@ -70,7 +70,7 @@ function model = nlsa_ose_ica( lonLim, latLim, trainLim, testLim, embedWin, vars
             In.Src( 1 ).yLim  = [ latLim(1) latLim(2) ];
             In.Src( 1 ).idxE  = 1 : embedWin;
 
-            In.Src( 2 ).field = 'SITq48';
+            In.Src( 2 ).field = 'SIT';
             In.Src( 2 ).xLim  = [ lonLim(1) lonLim(2) ];
             In.Src( 2 ).yLim  = [ latLim(1) latLim(2) ];
             In.Src( 2 ).idxE  = 1 : 48;
