@@ -33,9 +33,9 @@ testLim  = [500 899];
 % embedWin = 12
 % all_regions_work
 
-varsUsed = 'SIC_SST_SLP'
-embedWin = 12
-all_regions_work
+% varsUsed = 'SIC_SST_SLP'
+% embedWin = 12
+% all_regions_work
 
 % % aggregate data
 % comp_data('SIC',12,'ica',fullDataOn)
@@ -50,8 +50,8 @@ all_regions_work
 % comp_data('SIC_SIT',12,'iva',fullDataOn)
 % comp_data('SIC_SLP',12,'ica',fullDataOn)
 % comp_data('SIC_SLP',12,'iva',fullDataOn)
-comp_data('SIC_SST_SLP',12,'ica',fullDataOn)
-comp_data('SIC_SST_SLP',12,'iva',fullDataOn)
+% comp_data('SIC_SST_SLP',12,'ica',fullDataOn)
+% comp_data('SIC_SST_SLP',12,'iva',fullDataOn)
 
 % fullDataOn = 1;
 % comp_data('SIC',12,'ica',fullDataOn)
@@ -106,8 +106,11 @@ comp_data('SIC_SST_SLP',12,'iva',fullDataOn)
 % comp_data('SIC_SST_SITq48',12,'ica',fullDataOn)
 % comp_data('SIC_SST_SITq48',12,'iva',fullDataOn)
 
-
-
+trainLim = [100 499];
+testLim  = [500 899];
+varsUsed = 'SIC_SITq48'
+embedWin = 12
+all_regions_work
 
 
 

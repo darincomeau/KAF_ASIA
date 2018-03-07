@@ -70,10 +70,10 @@ function model = nlsa_ose_ica( lonLim, latLim, trainLim, testLim, embedWin, vars
             In.Src( 1 ).yLim  = [ latLim(1) latLim(2) ];
             In.Src( 1 ).idxE  = 1 : embedWin;
 
-            In.Src( 2 ).field = 'SIT';
+            In.Src( 2 ).field = 'SITq48';
             In.Src( 2 ).xLim  = [ lonLim(1) lonLim(2) ];
             In.Src( 2 ).yLim  = [ latLim(1) latLim(2) ];
-            In.Src( 2 ).idxE  = 1 : embedWin;
+            In.Src( 2 ).idxE  = 1 : 48;
         end
 
         if varsFlag == 6
@@ -120,7 +120,7 @@ function model = nlsa_ose_ica( lonLim, latLim, trainLim, testLim, embedWin, vars
             In.Src( 3 ).xLim  = [ lonLim(1) lonLim(2) ];
             In.Src( 3 ).yLim  = [ latLim(1) latLim(2) ];
             In.Src( 3 ).idxE  = 1 : 48;
-        end                
+        end             
 
         In.trgExperiment  = In.experiment;
         In.Trg            = In.Src;
@@ -197,7 +197,7 @@ function model = nlsa_ose_ica( lonLim, latLim, trainLim, testLim, embedWin, vars
             Out.Src( 2 ).field = 'SIT';
             Out.Src( 2 ).xLim  = [ lonLim(1) lonLim(2) ];
             Out.Src( 2 ).yLim  = [ latLim(1) latLim(2) ];
-            Out.Src( 2 ).idxE  = 1 : embedWin;
+            Out.Src( 2 ).idxE  = 1 : 48;
         end
 
         if varsFlag == 6
