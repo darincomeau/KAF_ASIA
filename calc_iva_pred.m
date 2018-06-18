@@ -490,9 +490,12 @@ if exist(checkFile) == 0 | predOn == 1
 
         for j = 1:mIter-1
             for i = 1:tLag
-                pred_trajM(j,i) = pred_traj(initM + (i-1) + (j-1)*12, i);
-                pred_trajDPM(j,i) = pred_trajDP(initM + (i-1) + (j-1)*12, i);
-                truthM    (j,i) = truth    (initM + (i-1) + (j-1)*12, i);
+                % pred_trajM(j,i) = pred_traj(initM + (i-1) + (j-1)*12, i);
+                % pred_trajDPM(j,i) = pred_trajDP(initM + (i-1) + (j-1)*12, i);
+                % truthM    (j,i) = truth    (initM + (i-1) + (j-1)*12, i);
+                pred_trajM(j,i) = pred_traj(initM - (i-1) + (j-1)*12, i);
+                pred_trajDPM(j,i) = pred_trajDP(initM - (i-1) + (j-1)*12, i);
+                truthM    (j,i) = truth    (initM - (i-1) + (j-1)*12, i);                
             end
         end
 
