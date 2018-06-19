@@ -35,10 +35,10 @@ testLim  = [500 899];
 
 varsUsed = 'SIC_SST_SLP'
 embedWin = 12
-% all_regions_work
-region = 'Arctic'
-calc_ica_pred
-calc_iva_pred
+all_regions_work
+% region = 'Arctic'
+% calc_ica_pred
+% calc_iva_pred
 
 % % aggregate data
 % comp_data('SIC',12,'ica',fullDataOn)
@@ -101,10 +101,14 @@ comp_data('SIC_SST_SLP',12,'iva',fullDataOn)
 % predOn = 1;
 % fullDataOn = 0;
 
-% trainLim = [100 499];
-% testLim  = [500 899];
-% varsUsed = 'SIC_SST_SITq48'
-% embedWin = 12
+trainLim = [100 499];
+testLim  = [500 899];
+varsUsed = 'SIC_SST_SITq48'
+embedWin = 12
+region = 'Arctic'
+calc_ica_pred
+calc_iva_pred
+
 % all_regions_work
 % comp_data('SIC_SST_SITq48',12,'ica',fullDataOn)
 % comp_data('SIC_SST_SITq48',12,'iva',fullDataOn)

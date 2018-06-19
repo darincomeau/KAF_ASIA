@@ -275,8 +275,8 @@ if exist(checkFile) == 0
         clear yVal yInd;
 
     elseif embedWin == 12
-        load ( fullfile( distPath, 'dataY_1_1-4785.mat' ) );
-        % load ( fullfile( distPath, 'dataY_1_1-4749.mat' ) );  
+        % load ( fullfile( distPath, 'dataY_1_1-4785.mat' ) );
+        load ( fullfile( distPath, 'dataY_1_1-4749.mat' ) );  
         % load ( fullfile( distPath, 'dataY_1_1-465.mat' ) );                
         p1 = yVal;
         y1 = yInd;
@@ -310,8 +310,8 @@ if exist(checkFile) == 0
         clear yVal yInd;
 
     elseif embedWin == 12
-        load ( fullfile( oseDistPath, 'dataY_1_1-4785.mat' ) );
-        % load ( fullfile( oseDistPath, 'dataY_1_1-4749.mat' ) ); 
+        % load ( fullfile( oseDistPath, 'dataY_1_1-4785.mat' ) );
+        load ( fullfile( oseDistPath, 'dataY_1_1-4749.mat' ) ); 
         % load ( fullfile( oseDistPath, 'dataY_1_1-465.mat' ) );        
         p1 = yVal;
         y1 = yInd;
@@ -482,7 +482,7 @@ if exist(checkFile) == 0 | predOn == 1
                 % truthM    (j,i) = truth    (initM + (i-1) + (j-1)*12, i);
                 pred_trajM(j,i) = pred_traj(initM - (i-1) + j*12, i);
                 pred_trajDPM(j,i) = pred_trajDP(initM - (i-1) + j*12, i);
-                truthM    (j,i) = truth    (initM - (i-1) + j*12, i);                
+                truthM    (j,i) = truth    (initM - (i-1) + j*12, i);
             end
         end
 
